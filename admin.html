@@ -3,28 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Administrator | JPNHS School Portal</title>
 
 <style>
-
 :root{
     --blue:#2563eb;
     --blue-dark:#1d4ed8;
     --blue-light:#eff6ff;
-
     --maroon:#7f1d2d;
     --maroon-dark:#651525;
-    --maroon-light:#fff1f2;
-
     --green:#15803d;
-    --green-light:#ecfdf3;
-
     --red:#b91c1c;
-
     --ink:#172033;
     --muted:#667085;
-
     --line:#e5e7eb;
     --bg:#f7f9fc;
     --white:#ffffff;
@@ -36,1030 +27,521 @@
 
 body{
     margin:0;
-
-    font-family:
-        Inter,
-        system-ui,
-        -apple-system,
-        "Segoe UI",
-        Arial,
-        sans-serif;
-
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
     color:var(--ink);
-
     background:
-        linear-gradient(
-            135deg,
-            #eef6ff 0%,
-            #ffffff 55%,
-            #fff5f6 100%
-        );
-
+        linear-gradient(135deg,#eef6ff 0%,#ffffff 55%,#fff5f6 100%);
     min-height:100vh;
 }
 
-
-/* =========================================================
-   LOGIN
-========================================================= */
+/* ================= LOGIN ================= */
 
 .login-screen{
-
     min-height:100vh;
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     padding:25px;
 }
 
-
 .login-box{
-
     width:100%;
-
     max-width:430px;
-
     background:white;
-
     border:1px solid var(--line);
-
     border-radius:22px;
-
     padding:34px;
-
-    box-shadow:
-        0 25px 70px
-        rgba(15,23,42,.12);
+    box-shadow:0 25px 70px rgba(15,23,42,.12);
 }
 
-
 .login-accent{
-
     width:75px;
-
     height:5px;
-
     border-radius:20px;
-
-    background:
-        linear-gradient(
-            90deg,
-            var(--blue),
-            var(--maroon)
-        );
-
+    background:linear-gradient(90deg,var(--blue),var(--maroon));
     margin-bottom:22px;
 }
 
-
 .login-box h1{
-
     margin:0;
-
     font-size:32px;
-
     letter-spacing:-.04em;
 }
 
-
 .login-box p{
-
     color:var(--muted);
-
     line-height:1.6;
 }
 
-
 .field{
-
     margin-top:17px;
 }
 
-
 .field label{
-
     display:block;
-
     font-size:13px;
-
     font-weight:700;
-
     margin-bottom:7px;
 }
 
-
 .field input,
 .field select{
-
     width:100%;
-
     padding:12px 13px;
-
-    border:
-        1px solid
-        #cfd6df;
-
+    border:1px solid #cfd6df;
     border-radius:10px;
-
     outline:none;
-
     background:white;
-
     color:var(--ink);
-
     font-size:14px;
 }
 
-
 .field input:focus,
 .field select:focus{
-
     border-color:var(--blue);
-
-    box-shadow:
-        0 0 0 4px
-        rgba(37,99,235,.10);
+    box-shadow:0 0 0 4px rgba(37,99,235,.10);
 }
 
-
 .login-button{
-
     width:100%;
-
     margin-top:20px;
 }
 
-
 .error{
-
     display:none;
-
     background:#fff1f2;
-
     color:#9f1239;
-
-    border:
-        1px solid
-        #fecdd3;
-
+    border:1px solid #fecdd3;
     border-radius:10px;
-
     padding:11px 13px;
-
     margin-top:15px;
-
     font-size:13px;
 }
-
 
 .back-link{
-
     display:inline-block;
-
     margin-top:18px;
-
     color:var(--blue);
-
     text-decoration:none;
-
     font-size:13px;
 }
 
-
-/* =========================================================
-   BUTTONS
-========================================================= */
+/* ================= BUTTONS ================= */
 
 button,
 .btn{
-
     border:0;
-
     border-radius:10px;
-
     padding:11px 15px;
-
     font-weight:700;
-
     cursor:pointer;
-
     text-decoration:none;
-
     display:inline-block;
 }
 
-
 .primary{
-
     background:var(--blue);
-
     color:white;
 }
 
-
 .primary:hover{
-
     background:var(--blue-dark);
 }
 
-
 .secondary{
-
     background:white;
-
     color:var(--ink);
-
-    border:
-        1px solid
-        var(--line);
+    border:1px solid var(--line);
 }
 
-
 .maroon{
-
     background:var(--maroon);
-
     color:white;
 }
 
-
 .maroon:hover{
-
     background:var(--maroon-dark);
 }
 
-
-.danger{
-
-    background:#fff1f2;
-
-    color:var(--red);
-
-    border:
-        1px solid
-        #fecdd3;
-}
-
-
-/* =========================================================
-   APPLICATION
-========================================================= */
+/* ================= APP ================= */
 
 .app{
-
     display:none;
-
     min-height:100vh;
 }
 
-
 .topbar{
-
     position:sticky;
-
     top:0;
-
     z-index:20;
-
-    background:
-        rgba(255,255,255,.94);
-
-    backdrop-filter:
-        blur(12px);
-
-    border-bottom:
-        1px solid
-        var(--line);
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
 }
 
-
 .topbar-inner{
-
     max-width:1250px;
-
     margin:auto;
-
     padding:15px 22px;
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     gap:15px;
 }
 
-
 .brand-title{
-
     font-weight:800;
-
     font-size:17px;
 }
 
-
 .brand-sub{
-
     color:var(--muted);
-
     font-size:12px;
-
     margin-top:2px;
 }
 
-
 .top-actions{
-
     display:flex;
-
     align-items:center;
-
     gap:9px;
 }
 
-
 .admin-badge{
-
     background:var(--blue-light);
-
     color:var(--blue-dark);
-
     padding:7px 10px;
-
     border-radius:999px;
-
     font-size:11px;
-
     font-weight:800;
 }
 
-
-/* =========================================================
-   LAYOUT
-========================================================= */
+/* ================= LAYOUT ================= */
 
 .layout{
-
     max-width:1250px;
-
     margin:auto;
-
     display:grid;
-
-    grid-template-columns:
-        230px 1fr;
-
-    min-height:
-        calc(100vh - 70px);
+    grid-template-columns:230px 1fr;
+    min-height:calc(100vh - 70px);
 }
-
 
 .sidebar{
-
     padding:22px 15px;
-
-    border-right:
-        1px solid
-        var(--line);
+    border-right:1px solid var(--line);
 }
 
-
 .sidebar-title{
-
     font-size:11px;
-
     color:var(--muted);
-
     font-weight:800;
-
-    padding:
-        0 11px 9px;
-
-    text-transform:
-        uppercase;
-
+    padding:0 11px 9px;
+    text-transform:uppercase;
     letter-spacing:.06em;
 }
 
-
 .nav-button{
-
     width:100%;
-
     background:transparent;
-
     color:var(--ink);
-
     text-align:left;
-
     padding:11px 12px;
-
     margin-bottom:4px;
-
     border-radius:10px;
 }
 
-
 .nav-button:hover{
-
     background:#f4f7fb;
 }
 
-
 .nav-button.active{
-
-    background:
-        var(--blue-light);
-
-    color:
-        var(--blue-dark);
+    background:var(--blue-light);
+    color:var(--blue-dark);
 }
 
-
 .content{
-
-    padding:
-        28px 25px 60px;
-
+    padding:28px 25px 60px;
     min-width:0;
 }
 
-
 .page{
-
     display:none;
 }
 
-
 .page.active{
-
     display:block;
 }
 
-
 .page-title{
-
     margin-bottom:22px;
 }
 
-
 .page-title h1{
-
-    margin:
-        0 0 5px;
-
+    margin:0 0 5px;
     font-size:30px;
-
     letter-spacing:-.04em;
 }
 
-
 .page-title p{
-
     margin:0;
-
     color:var(--muted);
 }
 
-
-/* =========================================================
-   CARDS
-========================================================= */
+/* ================= CARDS ================= */
 
 .card{
-
     background:white;
-
-    border:
-        1px solid
-        var(--line);
-
+    border:1px solid var(--line);
     border-radius:17px;
-
     padding:20px;
-
-    box-shadow:
-        0 10px 32px
-        rgba(15,23,42,.05);
-
+    box-shadow:0 10px 32px rgba(15,23,42,.05);
     margin-bottom:17px;
 }
 
-
 .card h2{
-
-    margin:
-        0 0 6px;
-
+    margin:0 0 6px;
     font-size:18px;
 }
 
-
 .card-sub{
-
     color:var(--muted);
-
     font-size:13px;
-
     margin-bottom:18px;
 }
 
-
-/* =========================================================
-   STATS
-========================================================= */
+/* ================= STATS ================= */
 
 .stats{
-
     display:grid;
-
-    grid-template-columns:
-        repeat(4,1fr);
-
+    grid-template-columns:repeat(4,1fr);
     gap:14px;
-
     margin-bottom:18px;
 }
 
-
 .stat{
-
     background:white;
-
-    border:
-        1px solid
-        var(--line);
-
+    border:1px solid var(--line);
     border-radius:15px;
-
     padding:18px;
 }
 
-
 .stat-label{
-
     color:var(--muted);
-
     font-size:12px;
-
     font-weight:700;
 }
 
-
 .stat-value{
-
     font-size:27px;
-
     font-weight:800;
-
     margin-top:7px;
 }
 
-
-/* =========================================================
-   FEATURE STATUS
-========================================================= */
+/* ================= FEATURES ================= */
 
 .feature-grid{
-
     display:grid;
-
-    grid-template-columns:
-        repeat(2,1fr);
-
+    grid-template-columns:repeat(2,1fr);
     gap:10px;
 }
 
-
 .feature{
-
-    border:
-        1px solid
-        var(--line);
-
+    border:1px solid var(--line);
     border-radius:12px;
-
     padding:14px;
-
     display:flex;
-
     align-items:center;
-
     justify-content:space-between;
-
     gap:15px;
 }
 
-
 .feature-name{
-
     font-weight:700;
-
     font-size:13px;
 }
 
-
 .feature-description{
-
     color:var(--muted);
-
     font-size:11px;
-
     margin-top:3px;
 }
 
-
 .pill{
-
-    padding:
-        6px 9px;
-
+    padding:6px 9px;
     border-radius:999px;
-
     font-size:10px;
-
     font-weight:800;
-
     white-space:nowrap;
 }
 
-
 .pill-unlocked{
-
-    background:
-        var(--green-light);
-
+    background:#ecfdf3;
     color:#166534;
 }
 
-
 .pill-locked{
-
-    background:
-        var(--maroon-light);
-
+    background:#fff1f2;
     color:#9f1239;
 }
 
-
-/* =========================================================
-   TABLE
-========================================================= */
+/* ================= TABLE ================= */
 
 .table-wrap{
-
     width:100%;
-
     overflow:auto;
-
-    border:
-        1px solid
-        var(--line);
-
+    border:1px solid var(--line);
     border-radius:12px;
 }
 
-
 table{
-
     width:100%;
-
-    border-collapse:
-        collapse;
+    border-collapse:collapse;
 }
-
 
 th,
 td{
-
-    padding:
-        12px 13px;
-
-    border-bottom:
-        1px solid
-        var(--line);
-
+    padding:12px 13px;
+    border-bottom:1px solid var(--line);
     text-align:left;
-
     font-size:13px;
-
     white-space:nowrap;
 }
 
-
 th{
-
     background:#f8fafc;
-
     font-size:12px;
 }
 
-
 tr:last-child td{
-
     border-bottom:0;
 }
 
-
-/* =========================================================
-   SCHOOL
-========================================================= */
+/* ================= SCHOOL ================= */
 
 .info-grid{
-
     display:grid;
-
-    grid-template-columns:
-        repeat(2,1fr);
-
+    grid-template-columns:repeat(2,1fr);
     gap:14px;
 }
 
-
 .info-box{
-
-    border:
-        1px solid
-        var(--line);
-
+    border:1px solid var(--line);
     border-radius:12px;
-
     padding:15px;
 }
 
-
 .info-label{
-
     color:var(--muted);
-
     font-size:11px;
-
     font-weight:700;
-
-    text-transform:
-        uppercase;
+    text-transform:uppercase;
 }
 
-
 .info-value{
-
     font-weight:800;
-
     margin-top:5px;
 }
 
-
-/* =========================================================
-   FORMS
-========================================================= */
-
-.form-grid{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(2,1fr);
-
-    gap:15px;
-}
-
-
-.form-group{
-
-    margin-bottom:5px;
-}
-
-
-.form-group label{
-
-    display:block;
-
-    font-size:12px;
-
-    font-weight:700;
-
-    margin-bottom:6px;
-}
-
-
-.form-group input,
-.form-group select,
-.form-group textarea{
-
-    width:100%;
-
-    padding:11px;
-
-    border:
-        1px solid
-        #cfd6df;
-
-    border-radius:9px;
-
-    font-family:inherit;
-
-    outline:none;
-}
-
-
-.form-group textarea{
-
-    min-height:100px;
-
-    resize:vertical;
-}
-
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{
-
-    border-color:
-        var(--blue);
-
-    box-shadow:
-        0 0 0 3px
-        rgba(37,99,235,.08);
-}
-
-
-/* =========================================================
-   NOTICES
-========================================================= */
+/* ================= NOTICE ================= */
 
 .notice{
-
-    padding:
-        13px 15px;
-
+    padding:13px 15px;
     border-radius:11px;
-
-    background:
-        var(--blue-light);
-
-    border:
-        1px solid
-        #bfdbfe;
-
+    background:var(--blue-light);
+    border:1px solid #bfdbfe;
     color:#1e40af;
-
     font-size:13px;
 }
-
 
 .owner-note{
-
     padding:14px;
-
     border-radius:11px;
-
     background:#fff7ed;
-
-    border:
-        1px solid
-        #fed7aa;
-
+    border:1px solid #fed7aa;
     color:#9a3412;
-
     font-size:13px;
 }
 
+/* ================= CONNECTION ================= */
 
-.success-note{
-
-    padding:13px 15px;
-
-    border-radius:11px;
-
-    background:
-        var(--green-light);
-
-    border:
-        1px solid
-        #bbf7d0;
-
-    color:#166534;
-
-    font-size:13px;
+.connection{
+    margin-top:10px;
+    font-size:12px;
+    font-weight:700;
 }
 
+.connection.ok{
+    color:#15803d;
+}
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
+.connection.bad{
+    color:#b91c1c;
+}
+
+/* ================= RESPONSIVE ================= */
 
 @media(max-width:950px){
 
     .layout{
-
         grid-template-columns:1fr;
     }
 
-
     .sidebar{
-
         border-right:0;
-
-        border-bottom:
-            1px solid
-            var(--line);
-
+        border-bottom:1px solid var(--line);
         display:flex;
-
         overflow:auto;
-
         gap:5px;
-
         padding:10px;
     }
 
-
     .sidebar-title{
-
         display:none;
     }
 
-
     .nav-button{
-
-        min-width:
-            max-content;
-
+        min-width:max-content;
         width:auto;
-
         margin:0;
     }
 
-
     .stats{
-
-        grid-template-columns:
-            repeat(2,1fr);
+        grid-template-columns:repeat(2,1fr);
     }
-
 }
-
 
 @media(max-width:650px){
 
     .topbar-inner{
-
-        padding:
-            13px 15px;
-
+        padding:13px 15px;
         flex-wrap:wrap;
     }
 
-
     .top-actions{
-
         width:100%;
     }
 
-
     .content{
-
-        padding:
-            20px 14px 45px;
+        padding:20px 14px 45px;
     }
-
 
     .stats,
     .feature-grid,
-    .info-grid,
-    .form-grid{
-
+    .info-grid{
         grid-template-columns:1fr;
     }
 
-
     .page-title h1{
-
         font-size:26px;
     }
-
 }
-
 </style>
 </head>
 
-
 <body>
 
+<!-- ================= LOGIN ================= -->
 
-<!-- =======================================================
-     ADMIN LOGIN
-======================================================== -->
-
-<div
-    id="loginScreen"
-    class="login-screen"
->
+<div id="loginScreen" class="login-screen">
 
     <div class="login-box">
 
@@ -1068,21 +550,14 @@ tr:last-child td{
         <h1>Administrator</h1>
 
         <p>
-
             Juan Pamplona National High School
-
             <br>
-
             School Administration Portal
-
         </p>
-
 
         <div class="field">
 
-            <label>
-                Username
-            </label>
+            <label>Username</label>
 
             <input
                 id="adminUsername"
@@ -1093,12 +568,9 @@ tr:last-child td{
 
         </div>
 
-
         <div class="field">
 
-            <label>
-                Password
-            </label>
+            <label>Password</label>
 
             <input
                 id="adminPassword"
@@ -1109,7 +581,6 @@ tr:last-child td{
 
         </div>
 
-
         <button
             id="loginButton"
             class="btn primary login-button"
@@ -1117,19 +588,11 @@ tr:last-child td{
             Log In
         </button>
 
-
-        <div
-            id="loginError"
-            class="error"
-        >
+        <div id="loginError" class="error">
             Invalid Administrator username or password.
         </div>
 
-
-        <a
-            class="back-link"
-            href="index.html"
-        >
+        <a class="back-link" href="index.html">
             ← Back to School Portal
         </a>
 
@@ -1138,946 +601,443 @@ tr:last-child td{
 </div>
 
 
+<!-- ================= ADMIN APP ================= -->
 
-<!-- =======================================================
-     ADMIN APPLICATION
-======================================================== -->
-
-<div
-    id="adminApp"
-    class="app"
->
-
+<div id="adminApp" class="app">
 
 <header class="topbar">
 
-    <div class="topbar-inner">
+<div class="topbar-inner">
 
-        <div>
+<div>
 
-            <div class="brand-title">
+<div class="brand-title">
+Juan Pamplona National High School
+</div>
 
-                Juan Pamplona National High School
+<div class="brand-sub">
+Administrator Portal
+</div>
 
-            </div>
+</div>
 
-            <div class="brand-sub">
+<div class="top-actions">
 
-                Administrator Portal
+<span class="admin-badge">
+ADMINISTRATOR
+</span>
 
-            </div>
+<button
+id="logoutButton"
+class="btn secondary">
+Logout
+</button>
 
-        </div>
+</div>
 
-
-        <div class="top-actions">
-
-            <span class="admin-badge">
-
-                ADMINISTRATOR
-
-            </span>
-
-
-            <button
-                id="logoutButton"
-                class="btn secondary"
-            >
-
-                Logout
-
-            </button>
-
-        </div>
-
-    </div>
+</div>
 
 </header>
 
 
-
 <div class="layout">
 
-
-<!-- =======================================================
-     SIDEBAR
-======================================================== -->
+<!-- ================= SIDEBAR ================= -->
 
 <aside class="sidebar">
 
+<div class="sidebar-title">
+Administration
+</div>
 
-    <div class="sidebar-title">
+<button
+class="nav-button active"
+data-page="dashboard">
+Dashboard
+</button>
 
-        Administration
+<button
+class="nav-button"
+data-page="school">
+School
+</button>
 
-    </div>
+<button
+class="nav-button"
+data-page="staff">
+School Staff
+</button>
 
+<button
+class="nav-button"
+data-page="features">
+Features Unlocked
+</button>
 
-    <button
-        class="nav-button active"
-        data-page="dashboard"
-    >
-        Dashboard
-    </button>
-
-
-    <button
-        class="nav-button"
-        data-page="school"
-    >
-        School
-    </button>
-
-
-    <button
-        class="nav-button"
-        data-page="staff"
-    >
-        School Staff
-    </button>
-
-
-    <button
-        class="nav-button"
-        data-page="students"
-    >
-        Students
-    </button>
-
-
-    <button
-        class="nav-button"
-        data-page="teachers"
-    >
-        Teachers
-    </button>
-
-
-    <button
-        class="nav-button"
-        data-page="registrar"
-    >
-        Registrar
-    </button>
-
-
-    <button
-        class="nav-button"
-        data-page="features"
-    >
-        Features Unlocked
-    </button>
-
-
-    <button
-        class="nav-button"
-        data-page="configuration"
-    >
-        Configuration
-    </button>
-
-
-    <button
-        class="nav-button"
-        data-page="backup"
-    >
-        Backup
-    </button>
-
+<button
+class="nav-button"
+data-page="backup">
+Backup
+</button>
 
 </aside>
 
 
-
-<!-- =======================================================
-     CONTENT
-======================================================== -->
+<!-- ================= CONTENT ================= -->
 
 <main class="content">
 
 
-
-<!-- =======================================================
-     DASHBOARD
-======================================================== -->
+<!-- DASHBOARD -->
 
 <section
-    id="dashboard"
-    class="page active"
->
-
+id="dashboard"
+class="page active">
 
 <div class="page-title">
 
-    <h1>
-        Dashboard
-    </h1>
+<h1>Dashboard</h1>
 
-    <p>
-        School overview and portal status.
-    </p>
+<p>
+School overview and portal status.
+</p>
 
+<div
+id="connectionStatus"
+class="connection">
+Connecting to Firebase...
 </div>
 
+</div>
 
 
 <div class="stats">
 
+<div class="stat">
 
-    <div class="stat">
+<div class="stat-label">
+ENROLLED STUDENTS
+</div>
 
-        <div class="stat-label">
-            ENROLLED STUDENTS
-        </div>
-
-        <div
-            id="studentCount"
-            class="stat-value"
-        >
-            0
-        </div>
-
-    </div>
-
-
-
-    <div class="stat">
-
-        <div class="stat-label">
-            SCHOOL STAFF
-        </div>
-
-        <div
-            id="staffCount"
-            class="stat-value"
-        >
-            0
-        </div>
-
-    </div>
-
-
-
-    <div class="stat">
-
-        <div class="stat-label">
-            TEACHERS
-        </div>
-
-        <div
-            id="teacherCount"
-            class="stat-value"
-        >
-            0
-        </div>
-
-    </div>
-
-
-
-    <div class="stat">
-
-        <div class="stat-label">
-            FEATURES UNLOCKED
-        </div>
-
-        <div
-            id="featureCount"
-            class="stat-value"
-        >
-            0
-        </div>
-
-    </div>
+<div
+id="studentCount"
+class="stat-value">
+0
+</div>
 
 </div>
 
 
+<div class="stat">
 
-<div class="card">
+<div class="stat-label">
+SCHOOL STAFF
+</div>
 
-    <h2>
-        School Subscription
-    </h2>
-
-
-    <div
-        id="subscriptionStatus"
-        class="notice"
-    >
-
-        Connecting to Firebase...
-
-    </div>
+<div
+id="staffCount"
+class="stat-value">
+0
+</div>
 
 </div>
 
 
+<div class="stat">
+
+<div class="stat-label">
+TEACHERS
+</div>
+
+<div
+id="teacherCount"
+class="stat-value">
+0
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-label">
+FEATURES UNLOCKED
+</div>
+
+<div
+id="featureCount"
+class="stat-value">
+0
+</div>
+
+</div>
+
+</div>
+
 
 <div class="card">
 
-    <h2>
-        Administrator Access
-    </h2>
+<h2>School Subscription</h2>
+
+<div
+id="subscriptionStatus"
+class="notice">
+Loading school information...
+</div>
+
+</div>
 
 
-    <p class="card-sub">
+<div class="card">
 
-        You can manage normal school
-        administration functions from this portal.
+<h2>Administrator Access</h2>
 
-    </p>
+<p class="card-sub">
+You can manage normal school administration
+functions from this portal.
+</p>
 
+<div class="owner-note">
 
-    <div class="owner-note">
+<strong>Feature Control:</strong>
 
-        <strong>
-            Feature Control:
-        </strong>
+Feature unlocking and locking is controlled
+exclusively from VA Access.
 
-        <br><br>
+The Administrator can only view the current
+feature status.
 
-        Feature unlocking and locking is controlled
-        exclusively from VA Access.
-
-        The Administrator can only view the
-        current feature status.
-
-    </div>
+</div>
 
 </div>
 
 </section>
 
 
-
-<!-- =======================================================
-     SCHOOL
-======================================================== -->
+<!-- SCHOOL -->
 
 <section
-    id="school"
-    class="page"
->
-
+id="school"
+class="page">
 
 <div class="page-title">
 
-    <h1>
-        School Management
-    </h1>
+<h1>School</h1>
 
-    <p>
-        View the school's current configuration.
-    </p>
+<p>
+View the school's current information.
+</p>
 
 </div>
 
 
 <div class="card">
 
-    <div class="info-grid">
+<div class="info-grid">
 
+<div class="info-box">
 
-        <div class="info-box">
+<div class="info-label">
+School ID
+</div>
 
-            <div class="info-label">
-                School ID
-            </div>
-
-            <div
-                id="schoolId"
-                class="info-value"
-            >
-                —
-            </div>
-
-        </div>
-
-
-
-        <div class="info-box">
-
-            <div class="info-label">
-                School Name
-            </div>
-
-            <div
-                id="schoolName"
-                class="info-value"
-            >
-                —
-            </div>
-
-        </div>
-
-
-
-        <div class="info-box">
-
-            <div class="info-label">
-                Short Name
-            </div>
-
-            <div
-                id="schoolShortName"
-                class="info-value"
-            >
-                —
-            </div>
-
-        </div>
-
-
-
-        <div class="info-box">
-
-            <div class="info-label">
-                Grading System
-            </div>
-
-            <div
-                id="gradingSystem"
-                class="info-value"
-            >
-                —
-            </div>
-
-        </div>
-
-
-    </div>
+<div
+id="schoolId"
+class="info-value">
+—
+</div>
 
 </div>
 
 
-<div class="card">
+<div class="info-box">
 
-    <h2>
-        Portal Status
-    </h2>
+<div class="info-label">
+School Name
+</div>
 
-    <div
-        id="portalStatus"
-        class="notice"
-    >
-        Loading...
-    </div>
+<div
+id="schoolName"
+class="info-value">
+—
+</div>
+
+</div>
+
+
+<div class="info-box">
+
+<div class="info-label">
+Short Name
+</div>
+
+<div
+id="schoolShortName"
+class="info-value">
+—
+</div>
+
+</div>
+
+
+<div class="info-box">
+
+<div class="info-label">
+Grading System
+</div>
+
+<div
+id="gradingSystem"
+class="info-value">
+—
+</div>
+
+</div>
+
+</div>
 
 </div>
 
 </section>
 
 
-
-<!-- =======================================================
-     STAFF
-======================================================== -->
+<!-- STAFF -->
 
 <section
-    id="staff"
-    class="page"
->
-
+id="staff"
+class="page">
 
 <div class="page-title">
 
-    <h1>
-        School Staff
-    </h1>
+<h1>School Staff</h1>
 
-    <p>
-        View registered school staff accounts.
-    </p>
+<p>
+View registered staff accounts.
+</p>
 
 </div>
 
 
 <div class="card">
 
-    <div class="table-wrap">
+<div class="table-wrap">
 
-        <table>
+<table>
 
-            <thead>
+<thead>
 
-                <tr>
+<tr>
 
-                    <th>
-                        Staff ID
-                    </th>
+<th>Staff ID</th>
+<th>Name</th>
+<th>Role</th>
+<th>Email</th>
+<th>Status</th>
 
-                    <th>
-                        Name
-                    </th>
+</tr>
 
-                    <th>
-                        Role
-                    </th>
+</thead>
 
-                    <th>
-                        Email
-                    </th>
+<tbody id="staffTable">
 
-                    <th>
-                        Status
-                    </th>
+<tr>
 
-                </tr>
+<td colspan="5">
+Loading staff...
+</td>
 
-            </thead>
+</tr>
 
+</tbody>
 
-            <tbody id="staffTable">
+</table>
 
-                <tr>
-
-                    <td colspan="5">
-
-                        Loading staff...
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
+</div>
 
 </div>
 
 </section>
 
 
-
-<!-- =======================================================
-     STUDENTS
-======================================================== -->
+<!-- FEATURES -->
 
 <section
-    id="students"
-    class="page"
->
-
+id="features"
+class="page">
 
 <div class="page-title">
 
-    <h1>
-        Students
-    </h1>
+<h1>Features Unlocked</h1>
 
-    <p>
-        View enrolled student records.
-    </p>
+<p>
+View the features currently available
+for this school.
+</p>
 
 </div>
 
 
 <div class="card">
 
-    <div class="table-wrap">
+<div class="notice">
 
-        <table>
+<strong>VIEW ONLY</strong>
 
-            <thead>
+<br><br>
 
-                <tr>
+Administrator cannot modify feature access.
 
-                    <th>
-                        Student ID
-                    </th>
+Feature controls are managed exclusively
+through VA Access.
 
-                    <th>
-                        Name
-                    </th>
+</div>
 
-                    <th>
-                        Grade Level
-                    </th>
+<br>
 
-                    <th>
-                        Section
-                    </th>
-
-                    <th>
-                        Status
-                    </th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody id="studentTable">
-
-                <tr>
-
-                    <td colspan="5">
-
-                        Loading students...
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
+<div
+id="featureList"
+class="feature-grid">
+</div>
 
 </div>
 
 </section>
 
 
-
-<!-- =======================================================
-     TEACHERS
-======================================================== -->
+<!-- BACKUP -->
 
 <section
-    id="teachers"
-    class="page"
->
-
+id="backup"
+class="page">
 
 <div class="page-title">
 
-    <h1>
-        Teachers
-    </h1>
+<h1>Backup</h1>
 
-    <p>
-        View registered teachers.
-    </p>
+<p>
+School data backup tools.
+</p>
 
 </div>
 
 
 <div class="card">
 
-    <div class="table-wrap">
+<h2>Complete School Backup</h2>
 
-        <table>
+<p class="card-sub">
 
-            <thead>
+Export school information and records
+for safekeeping.
 
-                <tr>
+</p>
 
-                    <th>
-                        Teacher ID
-                    </th>
+<div class="notice">
 
-                    <th>
-                        Name
-                    </th>
-
-                    <th>
-                        Subject
-                    </th>
-
-                    <th>
-                        Email
-                    </th>
-
-                    <th>
-                        Status
-                    </th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody id="teacherTable">
-
-                <tr>
-
-                    <td colspan="5">
-
-                        Loading teachers...
-
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
+Backup functionality can be connected
+to your existing export system.
 
 </div>
-
-</section>
-
-
-
-<!-- =======================================================
-     REGISTRAR
-======================================================== -->
-
-<section
-    id="registrar"
-    class="page"
->
-
-
-<div class="page-title">
-
-    <h1>
-        Registrar
-    </h1>
-
-    <p>
-        Student administration and records.
-    </p>
-
-</div>
-
-
-<div class="card">
-
-    <div class="notice">
-
-        Registrar student records are stored in
-        Firebase and can be managed from the
-        Registrar portal.
-
-    </div>
-
-</div>
-
-
-<div class="card">
-
-    <h2>
-        Registrar Status
-    </h2>
-
-    <div
-        id="registrarStatus"
-        class="success-note"
-    >
-
-        Registrar portal available.
-
-    </div>
-
-</div>
-
-</section>
-
-
-
-<!-- =======================================================
-     FEATURES
-======================================================== -->
-
-<section
-    id="features"
-    class="page"
->
-
-
-<div class="page-title">
-
-    <h1>
-        Features Unlocked
-    </h1>
-
-    <p>
-        View the features currently available
-        for this school.
-    </p>
-
-</div>
-
-
-<div class="card">
-
-    <div class="notice">
-
-        <strong>
-            VIEW ONLY
-        </strong>
-
-        <br><br>
-
-        Administrator cannot modify feature access.
-
-        <br>
-
-        Feature controls are managed exclusively
-        through VA Access.
-
-    </div>
-
-
-    <br>
-
-
-    <div
-        id="featureList"
-        class="feature-grid"
-    >
-
-    </div>
-
-</div>
-
-</section>
-
-
-
-<!-- =======================================================
-     CONFIGURATION
-======================================================== -->
-
-<section
-    id="configuration"
-    class="page"
->
-
-
-<div class="page-title">
-
-    <h1>
-        Configuration
-    </h1>
-
-    <p>
-        View the school's current configuration.
-    </p>
-
-</div>
-
-
-<div class="card">
-
-    <h2>
-        School Configuration
-    </h2>
-
-
-    <div class="form-grid">
-
-
-        <div class="form-group">
-
-            <label>
-                Grade Levels
-            </label>
-
-            <input
-                id="configGradeLevels"
-                readonly
-                placeholder="Loading..."
-            >
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                Subjects
-            </label>
-
-            <input
-                id="configSubjects"
-                readonly
-                placeholder="Loading..."
-            >
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                School Year
-            </label>
-
-            <input
-                id="configSchoolYear"
-                readonly
-                placeholder="Loading..."
-            >
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                Strand
-            </label>
-
-            <input
-                id="configStrand"
-                readonly
-                placeholder="NA"
-            >
-
-        </div>
-
-
-    </div>
-
-</div>
-
-</section>
-
-
-
-<!-- =======================================================
-     BACKUP
-======================================================== -->
-
-<section
-    id="backup"
-    class="page"
->
-
-
-<div class="page-title">
-
-    <h1>
-        Backup
-    </h1>
-
-    <p>
-        School data backup tools.
-    </p>
-
-</div>
-
-
-<div class="card">
-
-    <h2>
-        Complete School Backup
-    </h2>
-
-
-    <p class="card-sub">
-
-        Export available school information
-        for safekeeping.
-
-    </p>
-
-
-    <div class="notice">
-
-        Backup functionality is prepared for
-        connection to your school's export system.
-
-    </div>
 
 </div>
 
@@ -2091,7 +1051,6 @@ tr:last-child td{
 </div>
 
 
-
 <script>
 
 "use strict";
@@ -2101,11 +1060,8 @@ tr:last-child td{
    ADMIN LOGIN
 ========================================================= */
 
-const ADMIN_USERNAME =
-    "Administrator";
-
-const ADMIN_PASSWORD =
-    "isAdmin1234";
+const ADMIN_USERNAME = "Administrator";
+const ADMIN_PASSWORD = "isAdmin1234";
 
 
 /* =========================================================
@@ -2138,20 +1094,181 @@ const firebaseConfig = {
 };
 
 
-let firebaseReady =
-    false;
+/* =========================================================
+   FIREBASE VARIABLES
+========================================================= */
 
-let db =
-    null;
+let firebaseReady = false;
+
+let db = null;
+
+let currentSchoolId = null;
+
+let firebaseLoading = false;
 
 
 /* =========================================================
-   FIREBASE INITIALIZATION
+   HELPERS
+========================================================= */
+
+function $(id){
+
+    return document.getElementById(id);
+
+}
+
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replace(
+            /[&<>"']/g,
+            function(char){
+
+                const map = {
+
+                    "&":"&amp;",
+                    "<":"&lt;",
+                    ">":"&gt;",
+                    '"':"&quot;",
+                    "'":"&#039;"
+
+                };
+
+                return map[char];
+
+            }
+        );
+
+}
+
+
+function setConnection(
+    message,
+    good
+){
+
+    const element =
+        $("connectionStatus");
+
+    element.textContent =
+        message;
+
+    element.className =
+        good
+            ? "connection ok"
+            : "connection bad";
+
+}
+
+
+/* =========================================================
+   FIREBASE LOADER
+========================================================= */
+
+function loadFirebase(){
+
+    if(firebaseLoading || firebaseReady){
+
+        return;
+
+    }
+
+    firebaseLoading = true;
+
+
+    if(typeof firebase !== "undefined"){
+
+        initializeFirebase();
+
+        return;
+
+    }
+
+
+    const appScript =
+        document.createElement("script");
+
+    appScript.src =
+        "https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js";
+
+
+    appScript.onload =
+        function(){
+
+            const databaseScript =
+                document.createElement("script");
+
+            databaseScript.src =
+                "https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js";
+
+
+            databaseScript.onload =
+                function(){
+
+                    initializeFirebase();
+
+                };
+
+
+            databaseScript.onerror =
+                function(){
+
+                    firebaseLoading = false;
+
+                    setConnection(
+                        "Firebase Database library failed to load.",
+                        false
+                    );
+
+                };
+
+
+            document.head.appendChild(
+                databaseScript
+            );
+
+        };
+
+
+    appScript.onerror =
+        function(){
+
+            firebaseLoading = false;
+
+            setConnection(
+                "Firebase library failed to load.",
+                false
+            );
+
+        };
+
+
+    document.head.appendChild(
+        appScript
+    );
+
+}
+
+
+/* =========================================================
+   INITIALIZE FIREBASE
 ========================================================= */
 
 function initializeFirebase(){
 
     try{
+
+        if(
+            typeof firebase === "undefined"
+        ){
+
+            throw new Error(
+                "Firebase is unavailable."
+            );
+
+        }
+
 
         if(
             !firebase.apps.length
@@ -2172,15 +1289,18 @@ function initializeFirebase(){
             true;
 
 
-        console.log(
-            "Firebase connected."
+        firebaseLoading =
+            false;
+
+
+        setConnection(
+            "Connected to Firebase.",
+            true
         );
 
 
         if(
-            sessionStorage.getItem(
-                "jpnhsAdminLoggedIn"
-            ) === "true"
+            $("adminApp").style.display === "block"
         ){
 
             loadAdminData();
@@ -2191,109 +1311,18 @@ function initializeFirebase(){
     catch(error){
 
         console.error(
-            "Firebase initialization error:",
             error
         );
 
-    }
+        firebaseLoading =
+            false;
 
-}
-
-
-/* =========================================================
-   LOAD FIREBASE LIBRARY
-========================================================= */
-
-function loadFirebase(){
-
-    if(
-        typeof firebase !==
-        "undefined"
-    ){
-
-        initializeFirebase();
-
-        return;
-
-    }
-
-
-    const appScript =
-        document.createElement(
-            "script"
+        setConnection(
+            "Firebase initialization failed.",
+            false
         );
 
-
-    appScript.src =
-        "https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js";
-
-
-    appScript.onload =
-        function(){
-
-            const dbScript =
-                document.createElement(
-                    "script"
-                );
-
-
-            dbScript.src =
-                "https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js";
-
-
-            dbScript.onload =
-                initializeFirebase;
-
-
-            document.head.appendChild(
-                dbScript
-            );
-
-        };
-
-
-    document.head.appendChild(
-        appScript
-    );
-
-}
-
-
-/* =========================================================
-   HELPER
-========================================================= */
-
-function $(id){
-
-    return document.getElementById(
-        id
-    );
-
-}
-
-
-function escapeHTML(value){
-
-    return String(
-        value ?? ""
-    ).replace(
-        /[&<>"']/g,
-        function(char){
-
-            const map = {
-
-                "&":"&amp;",
-                "<":"&lt;",
-                ">":"&gt;",
-                '"':"&quot;",
-                "'":"&#039;"
-
-            };
-
-            return map[char];
-
-        }
-    );
+    }
 
 }
 
@@ -2302,86 +1331,61 @@ function escapeHTML(value){
    LOGIN
 ========================================================= */
 
-$("loginButton")
-    .addEventListener(
-        "click",
-        loginAdmin
-    );
+$("loginButton").addEventListener(
+    "click",
+    loginAdmin
+);
 
 
-$("adminUsername")
-    .addEventListener(
-        "keydown",
-        function(event){
+$("adminPassword").addEventListener(
+    "keydown",
+    function(event){
 
-            if(
-                event.key ===
-                "Enter"
-            ){
+        if(event.key === "Enter"){
 
-                loginAdmin();
-
-            }
+            loginAdmin();
 
         }
-    );
+
+    }
+);
 
 
-$("adminPassword")
-    .addEventListener(
-        "keydown",
-        function(event){
+$("adminUsername").addEventListener(
+    "keydown",
+    function(event){
 
-            if(
-                event.key ===
-                "Enter"
-            ){
+        if(event.key === "Enter"){
 
-                loginAdmin();
-
-            }
+            loginAdmin();
 
         }
-    );
+
+    }
+);
 
 
 function loginAdmin(){
 
     const username =
-        $("adminUsername")
-            .value
-            .trim();
-
+        $("adminUsername").value.trim();
 
     const password =
-        $("adminPassword")
-            .value;
+        $("adminPassword").value;
 
 
     if(
-
-        username ===
-        ADMIN_USERNAME
-
-        &&
-
-        password ===
-        ADMIN_PASSWORD
-
+        username === ADMIN_USERNAME &&
+        password === ADMIN_PASSWORD
     ){
 
-        $("loginError")
-            .style.display =
+        $("loginError").style.display =
             "none";
 
-
-        $("loginScreen")
-            .style.display =
+        $("loginScreen").style.display =
             "none";
 
-
-        $("adminApp")
-            .style.display =
+        $("adminApp").style.display =
             "block";
 
 
@@ -2391,13 +1395,24 @@ function loginAdmin(){
         );
 
 
-        loadAdminData();
+        if(firebaseReady){
+
+            loadAdminData();
+
+        }
+        else{
+
+            setConnection(
+                "Connecting to Firebase...",
+                false
+            );
+
+        }
 
     }
     else{
 
-        $("loginError")
-            .style.display =
+        $("loginError").style.display =
             "block";
 
     }
@@ -2409,20 +1424,37 @@ function loginAdmin(){
    LOGOUT
 ========================================================= */
 
-$("logoutButton")
-    .addEventListener(
-        "click",
-        function(){
+$("logoutButton").addEventListener(
+    "click",
+    function(){
 
-            sessionStorage.removeItem(
-                "jpnhsAdminLoggedIn"
-            );
+        sessionStorage.removeItem(
+            "jpnhsAdminLoggedIn"
+        );
+
+        location.reload();
+
+    }
+);
 
 
-            location.reload();
+/* =========================================================
+   SESSION
+========================================================= */
 
-        }
-    );
+if(
+    sessionStorage.getItem(
+        "jpnhsAdminLoggedIn"
+    ) === "true"
+){
+
+    $("loginScreen").style.display =
+        "none";
+
+    $("adminApp").style.display =
+        "block";
+
+}
 
 
 /* =========================================================
@@ -2498,51 +1530,40 @@ document.querySelectorAll(
    FIND SCHOOL
 ========================================================= */
 
-function findJPNHSSchool(
-    schools
-){
-
-    if(
-        !schools ||
-        typeof schools !==
-        "object"
-    ){
-
-        return null;
-
-    }
-
-
-    const ids =
-        Object.keys(
-            schools
-        );
-
+async function findSchool(){
 
     /*
-     * Exact IDs first
+     * First try /schools
      */
 
-    const preferred =
-        [
-            "jpnhs",
-            "JPNHS",
-            "jpn-hs",
-            "JPNHS001"
-        ];
+    const schoolsSnapshot =
+        await db.ref(
+            "schools"
+        ).once("value");
 
 
-    for(
-        const id of preferred
+    const schools =
+        schoolsSnapshot.val();
+
+
+    if(
+        schools &&
+        typeof schools === "object"
     ){
 
-        if(
-            schools[id]
-        ){
+        const ids =
+            Object.keys(schools);
+
+
+        if(ids.length > 0){
+
+            currentSchoolId =
+                ids[0];
+
 
             return {
-                id:id,
-                data:schools[id]
+                id:currentSchoolId,
+                data:schools[currentSchoolId] || {}
             };
 
         }
@@ -2551,76 +1572,41 @@ function findJPNHSSchool(
 
 
     /*
-     * Search school name
+     * Try /school
      */
 
-    for(
-        const id of ids
-    ){
-
-        const school =
-            schools[id] || {};
+    const schoolSnapshot =
+        await db.ref(
+            "school"
+        ).once("value");
 
 
-        const name =
-            String(
-                school.name ||
-                school.schoolName ||
-                school.school_name ||
-                ""
-            ).toLowerCase();
+    const school =
+        schoolSnapshot.val();
 
-
-        const shortName =
-            String(
-                school.shortName ||
-                school.short_name ||
-                school.acronym ||
-                ""
-            ).toLowerCase();
-
-
-        if(
-
-            name.includes(
-                "juan pamplona"
-            )
-
-            ||
-
-            shortName ===
-            "jpnhs"
-
-        ){
-
-            return {
-                id:id,
-                data:school
-            };
-
-        }
-
-    }
-
-
-    /*
-     * If only one school exists
-     */
 
     if(
-        ids.length === 1
+        school &&
+        typeof school === "object"
     ){
+
+        currentSchoolId =
+            school.id ||
+            school.schoolId ||
+            "school";
+
 
         return {
-
-            id:ids[0],
-
-            data:schools[ids[0]]
-
+            id:currentSchoolId,
+            data:school
         };
 
     }
 
+
+    /*
+     * No school found
+     */
 
     return null;
 
@@ -2635,9 +1621,7 @@ async function loadAdminData(){
 
     if(!firebaseReady){
 
-        $("subscriptionStatus")
-            .innerHTML =
-            "Connecting to Firebase...";
+        loadFirebase();
 
         return;
 
@@ -2646,38 +1630,24 @@ async function loadAdminData(){
 
     try{
 
-        const snapshot =
-            await db
-                .ref("schools")
-                .once("value");
+        setConnection(
+            "Loading school data...",
+            true
+        );
 
 
-        const schools =
-            snapshot.val();
+        const schoolResult =
+            await findSchool();
 
 
-        if(!schools){
+        if(!schoolResult){
 
             renderEmptySchool();
 
-            return;
-
-        }
-
-
-        const result =
-            findJPNHSSchool(
-                schools
+            setConnection(
+                "Connected, but no school configuration was found.",
+                false
             );
-
-
-        if(!result){
-
-            renderEmptySchool();
-
-            $("subscriptionStatus")
-                .innerHTML +=
-                "<br><br>No JPNHS school record was found.";
 
             return;
 
@@ -2685,18 +1655,14 @@ async function loadAdminData(){
 
 
         const schoolId =
-            result.id;
-
+            schoolResult.id;
 
         const school =
-            result.data || {};
+            schoolResult.data || {};
 
 
-        console.log(
-            "Using school:",
-            schoolId,
-            school
-        );
+        currentSchoolId =
+            schoolId;
 
 
         renderSchool(
@@ -2716,15 +1682,15 @@ async function loadAdminData(){
 
 
         renderFeatures(
-            school.features ||
-            school.featureControl ||
-            school.feature_control ||
-            {}
+            getFeatureData(
+                school
+            )
         );
 
 
-        loadConfiguration(
-            school
+        setConnection(
+            "School data loaded successfully.",
+            true
         );
 
     }
@@ -2736,8 +1702,14 @@ async function loadAdminData(){
         );
 
 
-        $("subscriptionStatus")
-            .innerHTML =
+        setConnection(
+            "Firebase error: " +
+            (error.message || error),
+            false
+        );
+
+
+        $("subscriptionStatus").innerHTML =
 
             "<strong>Unable to load school information.</strong>" +
 
@@ -2746,13 +1718,8 @@ async function loadAdminData(){
             "Firebase error: " +
 
             escapeHTML(
-                error.message ||
-                error
-            ) +
-
-            "<br><br>" +
-
-            "Check your Firebase Realtime Database Rules.";
+                error.message || error
+            );
 
     }
 
@@ -2760,7 +1727,7 @@ async function loadAdminData(){
 
 
 /* =========================================================
-   SCHOOL
+   SCHOOL DATA
 ========================================================= */
 
 function renderSchool(
@@ -2768,21 +1735,24 @@ function renderSchool(
     school
 ){
 
-    const name =
+    $("schoolId").textContent =
+        schoolId || "—";
+
+
+    $("schoolName").textContent =
         school.name ||
         school.schoolName ||
-        school.school_name ||
         "Juan Pamplona National High School";
 
 
-    const shortName =
+    $("schoolShortName").textContent =
         school.shortName ||
         school.short_name ||
-        school.acronym ||
+        school.abbreviation ||
         "JPNHS";
 
 
-    const grading =
+    $("gradingSystem").textContent =
         school.gradingSystem ||
         school.grading_system ||
         school.grading ||
@@ -2792,69 +1762,34 @@ function renderSchool(
     const plan =
         school.plan ||
         school.subscription ||
-        school.subscriptionPlan ||
+        school.package ||
         "STANDARD";
 
 
     const expires =
         school.expires ||
         school.expiration ||
-        school.expirationDate ||
         school.expiry ||
+        school.expirationDate ||
         "Not set";
 
 
-    let open =
-        true;
+    let status =
+        "OPEN";
 
 
     if(
-
-        school.open === false
-
-        ||
-
-        school.portalOpen ===
-        false
-
-        ||
-
-        String(
-            school.status ||
-            ""
-        ).toLowerCase() ===
-        "closed"
-
+        school.open === false ||
+        school.active === false
     ){
 
-        open =
-            false;
+        status =
+            "CLOSED";
 
     }
 
 
-    $("schoolId")
-        .textContent =
-        schoolId;
-
-
-    $("schoolName")
-        .textContent =
-        name;
-
-
-    $("schoolShortName")
-        .textContent =
-        shortName;
-
-
-    $("gradingSystem")
-        .textContent =
-        grading;
-
-
-    $("subscriptionStatus")
-        .innerHTML =
+    $("subscriptionStatus").innerHTML =
 
         "<strong>Plan:</strong> " +
         escapeHTML(plan) +
@@ -2867,36 +1802,7 @@ function renderSchool(
         "<br><br>" +
 
         "<strong>Portal Status:</strong> " +
-
-        (
-
-            open
-
-            ?
-
-            "<span style='color:#15803d;font-weight:800;'>OPEN</span>"
-
-            :
-
-            "<span style='color:#b91c1c;font-weight:800;'>CLOSED</span>"
-
-        );
-
-
-    $("portalStatus")
-        .innerHTML =
-
-        open
-
-        ?
-
-        "<strong style='color:#15803d;'>PORTAL OPEN</strong><br>" +
-        "The school portal is currently active."
-
-        :
-
-        "<strong style='color:#b91c1c;'>PORTAL CLOSED</strong><br>" +
-        "The school portal is currently disabled.";
+        escapeHTML(status);
 
 }
 
@@ -2907,34 +1813,29 @@ function renderSchool(
 
 function renderEmptySchool(){
 
-    $("schoolId")
-        .textContent =
+    $("schoolId").textContent =
         "—";
 
 
-    $("schoolName")
-        .textContent =
+    $("schoolName").textContent =
         "No school configured";
 
 
-    $("schoolShortName")
-        .textContent =
+    $("schoolShortName").textContent =
         "—";
 
 
-    $("gradingSystem")
-        .textContent =
+    $("gradingSystem").textContent =
         "—";
 
 
-    $("subscriptionStatus")
-        .innerHTML =
+    $("subscriptionStatus").innerHTML =
 
-        "<strong>No school configuration found.</strong>" +
+        "<strong>No school configuration was found.</strong>" +
 
         "<br><br>" +
 
-        "Please create or restore the school from VA Access.";
+        "Please create or import the school configuration from VA Access.";
 
 }
 
@@ -2947,231 +1848,69 @@ async function loadStudents(
     schoolId
 ){
 
-    const paths = [
+    try{
 
-        "studentsBySchool/" +
-        schoolId,
-
-        "schools/" +
-        schoolId +
-        "/students",
-
-        "students/" +
-        schoolId
-
-    ];
+        let snapshot =
+            await db.ref(
+                "studentsBySchool/" +
+                schoolId
+            ).once("value");
 
 
-    let data =
-        null;
+        let students =
+            snapshot.val();
 
 
-    for(
-        const path of paths
-    ){
+        /*
+         * Fallback:
+         * /students
+         */
 
-        try{
+        if(!students){
 
-            const snap =
-                await db
-                    .ref(path)
-                    .once("value");
-
-
-            const value =
-                snap.val();
+            snapshot =
+                await db.ref(
+                    "students"
+                ).once("value");
 
 
-            if(
-                value &&
-                typeof value ===
-                "object"
-            ){
-
-                if(
-                    Object.keys(value)
-                        .length > 0
-                ){
-
-                    data =
-                        value;
-
-                    console.log(
-                        "Students:",
-                        path
-                    );
-
-                    break;
-
-                }
-
-            }
-
-        }
-        catch(error){
-
-            console.warn(
-                path,
-                error.message
-            );
+            students =
+                snapshot.val() || {};
 
         }
 
+
+        if(
+            !students ||
+            typeof students !== "object"
+        ){
+
+            $("studentCount").textContent =
+                "0";
+
+            return;
+
+        }
+
+
+        $("studentCount").textContent =
+            Object.keys(
+                students
+            ).length;
+
     }
+    catch(error){
 
-
-    if(!data){
-
-        $("studentCount")
-            .textContent =
-            "0";
-
-
-        $("studentTable")
-            .innerHTML =
-
-            "<tr><td colspan='5'>" +
-            "No student records found." +
-            "</td></tr>";
-
-        return;
-
-    }
-
-
-    const entries =
-        Object.entries(
-            data
-        ).filter(
-            item =>
-                ![
-                    "count",
-                    "total",
-                    "metadata",
-                    "_meta"
-                ].includes(
-                    item[0]
-                )
+        console.error(
+            "Student count error:",
+            error
         );
 
 
-    $("studentCount")
-        .textContent =
-        entries.length;
-
-
-    renderStudentTable(
-        entries
-    );
-
-}
-
-
-/* =========================================================
-   STUDENT TABLE
-========================================================= */
-
-function renderStudentTable(
-    entries
-){
-
-    if(
-        entries.length === 0
-    ){
-
-        $("studentTable")
-            .innerHTML =
-            "<tr><td colspan='5'>No students found.</td></tr>";
-
-        return;
+        $("studentCount").textContent =
+            "—";
 
     }
-
-
-    $("studentTable")
-        .innerHTML =
-
-        entries.map(
-            function(item){
-
-                const id =
-                    item[0];
-
-
-                const student =
-                    item[1] || {};
-
-
-                const name =
-                    student.name ||
-                    student.fullName ||
-                    student.full_name ||
-                    (
-                        (
-                            student.firstName ||
-                            ""
-                        ) +
-                        " " +
-                        (
-                            student.lastName ||
-                            ""
-                        )
-                    ).trim() ||
-                    "—";
-
-
-                const grade =
-                    student.gradeLevel ||
-                    student.grade ||
-                    student.level ||
-                    "—";
-
-
-                const section =
-                    student.section ||
-                    student.sectionName ||
-                    "—";
-
-
-                const status =
-                    student.status ||
-                    (
-                        student.active === false
-                        ? "Inactive"
-                        : "Active"
-                    );
-
-
-                return `
-
-                    <tr>
-
-                        <td>
-                            ${escapeHTML(id)}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(name)}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(grade)}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(section)}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(status)}
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-        ).join("");
 
 }
 
@@ -3184,170 +1923,120 @@ async function loadStaff(
     schoolId
 ){
 
-    const paths = [
+    try{
 
-        "staff/" +
-        schoolId,
-
-        "staffBySchool/" +
-        schoolId,
-
-        "schools/" +
-        schoolId +
-        "/staff"
-
-    ];
+        let snapshot =
+            await db.ref(
+                "staff/" +
+                schoolId
+            ).once("value");
 
 
-    let data =
-        null;
+        let staff =
+            snapshot.val();
 
 
-    for(
-        const path of paths
-    ){
+        /*
+         * Fallback:
+         * /staff
+         */
 
-        try{
+        if(!staff){
 
-            const snap =
-                await db
-                    .ref(path)
-                    .once("value");
-
-
-            const value =
-                snap.val();
+            snapshot =
+                await db.ref(
+                    "staff"
+                ).once("value");
 
 
-            if(
-                value &&
-                typeof value ===
-                "object"
-            ){
-
-                if(
-                    Object.keys(value)
-                        .length > 0
-                ){
-
-                    data =
-                        value;
-
-                    console.log(
-                        "Staff:",
-                        path
-                    );
-
-                    break;
-
-                }
-
-            }
+            staff =
+                snapshot.val() || {};
 
         }
-        catch(error){
 
-            console.warn(
-                path,
-                error.message
+
+        if(
+            !staff ||
+            typeof staff !== "object"
+        ){
+
+            $("staffCount").textContent =
+                "0";
+
+            $("teacherCount").textContent =
+                "0";
+
+            renderStaffTable([]);
+
+            return;
+
+        }
+
+
+        const entries =
+            Object.entries(
+                staff
             );
 
-        }
+
+        $("staffCount").textContent =
+            entries.length;
+
+
+        const teachers =
+            entries.filter(
+                function(item){
+
+                    const person =
+                        item[1] || {};
+
+
+                    const role =
+                        String(
+                            person.role ||
+                            person.position ||
+                            ""
+                        ).toLowerCase();
+
+
+                    return (
+                        role.includes("teacher") ||
+                        role.includes("faculty")
+                    );
+
+                }
+            );
+
+
+        $("teacherCount").textContent =
+            teachers.length;
+
+
+        renderStaffTable(
+            entries
+        );
 
     }
+    catch(error){
 
-
-    if(!data){
-
-        $("staffCount")
-            .textContent =
-            "0";
-
-
-        $("teacherCount")
-            .textContent =
-            "0";
-
-
-        $("staffTable")
-            .innerHTML =
-            "<tr><td colspan='5'>No staff records found.</td></tr>";
-
-        return;
-
-    }
-
-
-    const entries =
-        Object.entries(
-            data
-        ).filter(
-            item =>
-                ![
-                    "count",
-                    "total",
-                    "metadata",
-                    "_meta"
-                ].includes(
-                    item[0]
-                )
+        console.error(
+            "Staff error:",
+            error
         );
 
 
-    $("staffCount")
-        .textContent =
-        entries.length;
+        $("staffCount").textContent =
+            "—";
 
 
-    const teachers =
-        entries.filter(
-            function(item){
-
-                const person =
-                    item[1] || {};
+        $("teacherCount").textContent =
+            "—";
 
 
-                const role =
-                    String(
-                        person.role ||
-                        person.position ||
-                        person.userType ||
-                        person.type ||
-                        ""
-                    ).toLowerCase();
+        $("staffTable").innerHTML =
+            "<tr><td colspan='5'>Unable to load staff.</td></tr>";
 
-
-                return (
-
-                    role.includes(
-                        "teacher"
-                    )
-
-                    ||
-
-                    role.includes(
-                        "faculty"
-                    )
-
-                );
-
-            }
-        );
-
-
-    $("teacherCount")
-        .textContent =
-        teachers.length;
-
-
-    renderStaffTable(
-        entries
-    );
-
-
-    renderTeacherTable(
-        teachers
-    );
+    }
 
 }
 
@@ -3364,18 +2053,15 @@ function renderStaffTable(
         entries.length === 0
     ){
 
-        $("staffTable")
-            .innerHTML =
-            "<tr><td colspan='5'>No staff found.</td></tr>";
+        $("staffTable").innerHTML =
+            "<tr><td colspan='5'>No staff accounts found.</td></tr>";
 
         return;
 
     }
 
 
-    $("staffTable")
-        .innerHTML =
-
+    $("staffTable").innerHTML =
         entries.map(
             function(item){
 
@@ -3383,21 +2069,21 @@ function renderStaffTable(
                     item[0];
 
 
-                const person =
+                const staff =
                     item[1] || {};
 
 
                 const name =
-                    person.name ||
-                    person.fullName ||
+                    staff.name ||
+                    staff.fullName ||
                     (
                         (
-                            person.firstName ||
+                            staff.firstName ||
                             ""
                         ) +
                         " " +
                         (
-                            person.lastName ||
+                            staff.lastName ||
                             ""
                         )
                     ).trim() ||
@@ -3405,155 +2091,52 @@ function renderStaffTable(
 
 
                 const role =
-                    person.role ||
-                    person.position ||
-                    person.userType ||
+                    staff.role ||
+                    staff.position ||
                     "—";
 
 
                 const email =
-                    person.email ||
+                    staff.email ||
                     "—";
 
 
                 const status =
-                    person.status ||
+                    staff.status ||
                     (
-                        person.active === false
-                        ? "Inactive"
-                        : "Active"
+                        staff.active === false
+                            ? "Inactive"
+                            : "Active"
                     );
 
 
                 return `
 
-                    <tr>
+<tr>
 
-                        <td>
-                            ${escapeHTML(id)}
-                        </td>
+<td>
+${escapeHTML(id)}
+</td>
 
-                        <td>
-                            ${escapeHTML(name)}
-                        </td>
+<td>
+${escapeHTML(name)}
+</td>
 
-                        <td>
-                            ${escapeHTML(role)}
-                        </td>
+<td>
+${escapeHTML(role)}
+</td>
 
-                        <td>
-                            ${escapeHTML(email)}
-                        </td>
+<td>
+${escapeHTML(email)}
+</td>
 
-                        <td>
-                            ${escapeHTML(status)}
-                        </td>
+<td>
+${escapeHTML(status)}
+</td>
 
-                    </tr>
+</tr>
 
-                `;
-
-            }
-        ).join("");
-
-}
-
-
-/* =========================================================
-   TEACHER TABLE
-========================================================= */
-
-function renderTeacherTable(
-    entries
-){
-
-    if(
-        entries.length === 0
-    ){
-
-        $("teacherTable")
-            .innerHTML =
-            "<tr><td colspan='5'>No teachers found.</td></tr>";
-
-        return;
-
-    }
-
-
-    $("teacherTable")
-        .innerHTML =
-
-        entries.map(
-            function(item){
-
-                const id =
-                    item[0];
-
-
-                const teacher =
-                    item[1] || {};
-
-
-                const name =
-                    teacher.name ||
-                    teacher.fullName ||
-                    (
-                        (
-                            teacher.firstName ||
-                            ""
-                        ) +
-                        " " +
-                        (
-                            teacher.lastName ||
-                            ""
-                        )
-                    ).trim() ||
-                    "—";
-
-
-                const subject =
-                    teacher.subject ||
-                    teacher.subjects ||
-                    "—";
-
-
-                const email =
-                    teacher.email ||
-                    "—";
-
-
-                const status =
-                    teacher.status ||
-                    "Active";
-
-
-                return `
-
-                    <tr>
-
-                        <td>
-                            ${escapeHTML(id)}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(name)}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(subject)}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(email)}
-                        </td>
-
-                        <td>
-                            ${escapeHTML(status)}
-                        </td>
-
-                    </tr>
-
-                `;
+`;
 
             }
         ).join("");
@@ -3604,72 +2187,105 @@ const FEATURE_NAMES = {
 
 
 /* =========================================================
-   FEATURE VALUE
+   GET FEATURE DATA
 ========================================================= */
 
-function isFeatureUnlocked(
-    value
+function getFeatureData(
+    school
 ){
 
-    return (
+    /*
+     * VA may store features directly
+     * inside the school.
+     */
 
-        value === true
+    if(
+        school.features &&
+        typeof school.features === "object"
+    ){
 
-        ||
+        return school.features;
 
-        value === "true"
+    }
 
-        ||
 
-        value === 1
+    /*
+     * Other possible naming.
+     */
 
-        ||
+    if(
+        school.featureControl &&
+        typeof school.featureControl === "object"
+    ){
 
-        value === "1"
+        return school.featureControl;
 
-        ||
+    }
 
-        value === "unlocked"
 
-        ||
+    if(
+        school.featureControls &&
+        typeof school.featureControls === "object"
+    ){
 
-        value === "UNLOCKED"
+        return school.featureControls;
 
-        ||
+    }
 
-        value === "enabled"
 
-        ||
-
-        value === "ENABLED"
-
-    );
+    return {};
 
 }
 
 
 /* =========================================================
-   FEATURES
+   FEATURE DISPLAY
 ========================================================= */
+
+function formatFeatureName(
+    key
+){
+
+    if(
+        FEATURE_NAMES[key]
+    ){
+
+        return FEATURE_NAMES[key];
+
+    }
+
+
+    return key
+
+        .replace(
+            /([A-Z])/g,
+            " $1"
+        )
+
+        .replace(
+            /^./,
+            function(letter){
+
+                return letter.toUpperCase();
+
+            }
+        );
+
+}
+
 
 function renderFeatures(
     featureData
 ){
 
-    if(
-        !featureData ||
-        typeof featureData !==
-        "object"
-    ){
-
-        featureData =
-            {};
-
-    }
-
-
     const container =
         $("featureList");
+
+
+    const keys =
+        Object.keys(
+            FEATURE_NAMES
+        );
 
 
     let unlocked =
@@ -3677,16 +2293,17 @@ function renderFeatures(
 
 
     container.innerHTML =
-
-        Object.keys(
-            FEATURE_NAMES
-        ).map(
+        keys.map(
             function(key){
 
+                const value =
+                    featureData[key];
+
+
                 const enabled =
-                    isFeatureUnlocked(
-                        featureData[key]
-                    );
+                    value === true ||
+                    value === "true" ||
+                    value === 1;
 
 
                 if(enabled){
@@ -3698,132 +2315,59 @@ function renderFeatures(
 
                 return `
 
-                    <div class="feature">
+<div class="feature">
 
-                        <div>
+<div>
 
-                            <div class="feature-name">
+<div class="feature-name">
 
-                                ${escapeHTML(
-                                    FEATURE_NAMES[key]
-                                )}
+${escapeHTML(
+    formatFeatureName(key)
+)}
 
-                            </div>
+</div>
 
-                            <div class="feature-description">
+<div class="feature-description">
 
-                                Controlled by VA Access
+Feature access status
 
-                            </div>
+</div>
 
-                        </div>
+</div>
 
+<span class="pill ${
+    enabled
+        ? "pill-unlocked"
+        : "pill-locked"
+}">
 
-                        <span class="pill ${
-                            enabled
-                            ? "pill-unlocked"
-                            : "pill-locked"
-                        }">
+${
+    enabled
+        ? "UNLOCKED"
+        : "LOCKED"
+}
 
-                            ${
-                                enabled
-                                ? "UNLOCKED"
-                                : "LOCKED"
-                            }
+</span>
 
-                        </span>
+</div>
 
-                    </div>
-
-                `;
+`;
 
             }
         ).join("");
 
 
-    $("featureCount")
-        .textContent =
+    $("featureCount").textContent =
         unlocked;
 
 }
 
 
 /* =========================================================
-   CONFIGURATION
-========================================================= */
-
-function loadConfiguration(
-    school
-){
-
-    const config =
-        school.configuration ||
-        school.config ||
-        {};
-
-
-    $("configGradeLevels")
-        .value =
-
-        school.gradeLevels ||
-        config.gradeLevels ||
-        config.grades ||
-        "Not configured";
-
-
-    $("configSubjects")
-        .value =
-
-        school.subjects ||
-        config.subjects ||
-        "Not configured";
-
-
-    $("configSchoolYear")
-        .value =
-
-        school.schoolYear ||
-        config.schoolYear ||
-        "Not configured";
-
-
-    $("configStrand")
-        .value =
-
-        school.strand ||
-        config.strand ||
-        "NA";
-
-}
-
-
-/* =========================================================
-   START
+   START FIREBASE
 ========================================================= */
 
 loadFirebase();
-
-
-/* =========================================================
-   RESTORE LOGIN SESSION
-========================================================= */
-
-if(
-    sessionStorage.getItem(
-        "jpnhsAdminLoggedIn"
-    ) === "true"
-){
-
-    $("loginScreen")
-        .style.display =
-        "none";
-
-
-    $("adminApp")
-        .style.display =
-        "block";
-
-}
 
 </script>
 
