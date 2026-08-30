@@ -1,0 +1,11 @@
+JPNHS PORTAL UPDATE
+===================
+
+1. Registrar student editing now performs a true update on the existing Student ID.
+2. Teacher grade entry now shows assigned students reliably and accepts numeric 0–100 grades.
+3. Teacher assignments are matched to the logged-in Staff ID.
+4. UI redesigned with a clean light, blue, and maroon visual system.
+5. Temporary logo elements removed.
+6. Added index.html public landing page based on the uploaded client preference PDF.
+7. VA is intentionally not exposed in the client-facing portal.
+8. archive.html had a JavaScript syntax issue in its grading-system object; this was corrected.
