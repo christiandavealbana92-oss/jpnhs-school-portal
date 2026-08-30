@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Juan Pamplona National High School</title>
+<style>
+:root{--blue:#2563eb;--blue2:#1d4ed8;--maroon:#7f1d2d;--ink:#172033;--muted:#667085;--line:#e5e7eb;--bg:#f7f9fc;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:linear-gradient(135deg,#eef6ff,#fff 58%,#fff5f6);color:var(--ink);min-height:100vh}
+header{background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.header-in{max-width:1180px;margin:auto;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.school-name{font-weight:800;letter-spacing:-.03em;font-size:18px}.school-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.badge{padding:8px 11px;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:700}
+main{max-width:1180px;margin:auto;padding:70px 24px 90px}
+.hero{max-width:760px}.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:#fff;border:1px solid #dbeafe;color:#1d4ed8;font-weight:700;font-size:12px}
+h1{font-size:clamp(38px,6vw,64px);line-height:1.02;letter-spacing:-.055em;margin:18px 0 14px}
+h1 span{color:var(--maroon)}.lead{font-size:17px;color:var(--muted);max-width:680px}
+.accent{height:5px;width:78px;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--maroon));margin:22px 0 34px}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:760px}
+a{text-decoration:none}.action{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border:1px solid var(--line);background:#fff;border-radius:16px;color:var(--ink);box-shadow:0 10px 30px rgba(15,23,42,.06);transition:.16s}
+.action:hover{transform:translateY(-2px);border-color:#bfdbfe;box-shadow:0 16px 34px rgba(37,99,235,.10)}
+.action strong{display:block}.action small{display:block;color:var(--muted);margin-top:3px}.arrow{font-size:20px;color:var(--blue)}
+.action.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.action.primary small,.action.primary .arrow{color:#dbeafe}
+.action.admin{border-color:#f1d4d9}.action.admin .arrow{color:var(--maroon)}
+.more{margin-top:18px;max-width:760px}.more summary{cursor:pointer;display:inline-flex;align-items:center;gap:8px;padding:10px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font-weight:700;box-shadow:0 8px 24px rgba(15,23,42,.05)}.more summary::marker{color:var(--maroon)}.more-panel{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.85)}.more-panel a{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:10px;color:var(--ink)}.more-panel a:hover{background:#f8fafc;color:var(--blue)}.owner-link small{color:var(--muted);display:block;margin-top:2px}
+footer{max-width:1180px;margin:auto;padding:0 24px 28px;color:var(--muted);font-size:12px}
+@media(max-width:650px){main{padding:45px 18px 65px}.header-in{padding:15px 18px}.actions{grid-template-columns:1fr}h1{font-size:42px}}
+</style></head>
+<body>
+<header><div class="header-in"><div><div class="school-name">Juan Pamplona National High School</div><div class="school-sub">School Portal</div></div><span class="badge">Online Portal</span></div></header>
+<main><div class="hero"><span class="eyebrow">WELCOME</span><h1>One portal for <span>school management.</span></h1><p class="lead">Access enrollment, student records, teaching tools, reports, and school administration from one clean and modern workspace.</p><div class="accent"></div></div>
+<div class="actions">
+<a class="action primary" href="registrar.html"><div><strong>Enroll Now</strong><small>Open the enrollment portal</small></div><span class="arrow">→</span></a>
+<a class="action" href="student.html"><div><strong>Student Login</strong><small>View grades, attendance and records</small></div><span class="arrow">→</span></a>
+<a class="action" href="teacher.html"><div><strong>Teacher Login</strong><small>Manage assigned classes and grades</small></div><span class="arrow">→</span></a>
+<a class="action admin" href="super-admin.html"><div><strong>Admin Login</strong><small>Manage school configuration and staff</small></div><span class="arrow">→</span></a>
+<a class="action admin" href="registrar.html"><div><strong>Registrar Login</strong><small>Manage student records and assignments</small></div><span class="arrow">→</span></a>
+</div>
+<details class="more"><summary>Other Options</summary><div class="more-panel"><a class="owner-link" href="va.html"><div><strong>VA Access</strong><small>Private owner tools and plan activation</small></div><span class="arrow">→</span></a></div></details>
+</main>
+<footer>Juan Pamplona National High School • School Portal</footer>
+</body></html>

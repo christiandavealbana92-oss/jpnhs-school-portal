@@ -1,0 +1,126 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Super Admin</title><style>
+:root{
+  --blue:#2563eb;--blue-dark:#1d4ed8;--blue-soft:#eff6ff;
+  --maroon:#7f1d2d;--maroon-dark:#641624;--maroon-soft:#fff1f2;
+  --ink:#172033;--muted:#667085;--line:#e5e7eb;--bg:#f7f9fc;
+  --white:#fff;--danger:#b42318;--ok:#15803d;--shadow:0 8px 28px rgba(15,23,42,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.55}
+.top{background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.topin{max-width:1440px;margin:auto;padding:14px 24px;display:flex;align-items:center;gap:16px}
+.brand{display:flex;align-items:center;gap:12px;min-width:240px}
+.brand b{display:block;font-size:15px;letter-spacing:-.01em}
+.brand small{display:block;color:var(--muted);margin-top:2px}
+.top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.layout{max-width:1440px;margin:auto;display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 70px)}
+.side{background:#fff;border-right:1px solid var(--line);padding:18px 14px}
+.side button{width:100%;border:0;background:transparent;text-align:left;padding:12px 14px;border-radius:10px;color:#475467;margin-bottom:5px;font-weight:600;transition:.15s}
+.side button.active,.side button:hover{background:var(--blue-soft);color:var(--blue);font-weight:700}
+.main{padding:28px}
+.page{display:none}.page.active{display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:var(--shadow)}
+.card h2,.card h3{margin-top:0;letter-spacing:-.02em}
+.card h2{font-size:20px}.card h3{font-size:16px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-size:12px;font-weight:700;color:#475467}
+.field input,.field select,.field textarea{width:100%;border:1px solid #d0d5dd;border-radius:10px;padding:11px 12px;background:#fff;color:var(--ink);outline:none;transition:.15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(37,99,235,.10)}
+.btn{border:0;border-radius:10px;padding:11px 15px;background:var(--blue);color:#fff;font-weight:700;transition:.15s}
+.btn:hover{background:var(--blue-dark);transform:translateY(-1px)}
+.btn.secondary{background:#eef2f7;color:#344054}.btn.secondary:hover{background:#e4e9f0}
+.btn.maroon{background:var(--maroon)}.btn.maroon:hover{background:var(--maroon-dark)}
+.btn.danger{background:var(--danger)}.btn.success{background:var(--ok)}
+.btn.small{padding:8px 11px;font-size:12px;border-radius:8px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.stat strong{font-size:28px;display:block;margin-top:5px;letter-spacing:-.03em}
+.muted{color:var(--muted)}
+.notice{padding:13px 15px;border-radius:11px;background:var(--blue-soft);border:1px solid #bfdbfe;margin:0 0 14px}
+.notice.warn{background:#fffbeb;border-color:#fde68a}.notice.error{background:var(--maroon-soft);border-color:#fecdd3;color:#881337}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px}
+.table{width:100%;border-collapse:collapse;background:#fff}
+.table th,.table td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;font-size:13px}
+.table th{background:#f8fafc;color:#475467;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+.table tr:last-child td{border-bottom:0}.table tbody tr:hover{background:#fafcff}
+.pill{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:700;background:#eef2f7;color:#475467}
+.pill.ok{background:#ecfdf3;color:#166534}.pill.bad{background:var(--maroon-soft);color:#9f1239}
+.switch{display:flex;align-items:center;justify-content:space-between;padding:12px;border-bottom:1px solid var(--line)}
+.switch input{width:18px;height:18px}
+.login{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#eef6ff 0%,#fff 55%,#fff5f6 100%)}
+.loginbox{width:min(460px,100%);background:#fff;border:1px solid var(--line);border-radius:20px;padding:32px;box-shadow:0 22px 70px rgba(15,23,42,.12)}
+.loginbox h1{margin:0 0 6px;font-size:26px;letter-spacing:-.04em}.loginbox .muted{margin-top:0}
+.login-accent{height:5px;width:64px;background:linear-gradient(90deg,var(--blue),var(--maroon));border-radius:99px;margin-bottom:20px}
+.hidden{display:none!important}
+.search{max-width:420px}
+.empty{text-align:center;padding:40px;color:var(--muted)}
+.section-title{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
+.section-title h2{margin:0}.section-title p{margin:5px 0 0;color:var(--muted)}
+.edit-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid #bfdbfe;background:var(--blue-soft);border-radius:11px;margin-bottom:16px;color:#1e3a8a}
+.grade-input{min-width:78px;text-align:center;font-weight:700}
+.report{background:#fff;color:#111;padding:30px;width:100%;max-width:900px;margin:auto;border:1px solid #ddd}
+.report header{display:flex;gap:12px;align-items:center;border-bottom:3px solid var(--maroon);padding-bottom:10px}
+.report h2{margin:4px 0;font-size:18px}.report table{width:100%;border-collapse:collapse;margin:12px 0}
+.report th,.report td{border:1px solid #777;padding:6px;font-size:11px}.report th{background:#f3f4f6}
+.sig{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:40px;text-align:center}.sig div{border-top:1px solid #333;padding-top:5px}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+.modal.show{display:flex}.modalbox{background:#fff;width:min(800px,100%);max-height:90vh;overflow:auto;border-radius:16px;padding:22px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.side{display:flex;overflow:auto;border-right:0;border-bottom:1px solid var(--line);gap:5px;padding:10px}.side button{min-width:max-content;width:auto}.grid,.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.topin{padding:12px 15px;flex-wrap:wrap}.brand{min-width:0}.top-actions{width:100%;margin-left:0}.grid,.grid2,.stats{grid-template-columns:1fr}.main{padding:14px}.card{padding:17px}.sig{grid-template-columns:1fr}.report{padding:16px}.loginbox{padding:24px}}
+</style><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script></head><body><div class="top"><div class="topin"><div class="brand"><div><b>School Portal Super Admin</b><small data-school-name>Control Center</small></div></div><div class="top-actions"><span id="who" class="muted"></span><button id="logout" class="btn secondary">Logout</button></div></div></div><div id="login" class="login"><div class="loginbox"><h1>Super Admin</h1><p class="muted">Authorized owner access only.</p><div class="field"><label>Email</label><input id="email" type="email" value="christiandavealbana92@gmail.com"></div><div class="field" style="margin-top:10px"><label>Password</label><input id="pass" type="password"></div><div class="actions"><button id="loginBtn" class="btn">Sign in</button></div><p id="msg" class="notice hidden"></p></div></div><div id="app" class="layout hidden"><aside class="side"><button class="active" data-page="dashboard">Dashboard</button><button data-page="schools">Schools</button><button data-page="staff">Staff</button><button data-page="configuration">Configuration</button><button data-page="backup">Backup</button></aside><main class="main"><section id="dashboard" class="page active"><h2>Dashboard</h2><div class="stats"><div class="stat">Schools<strong id="schoolCount">0</strong></div><div class="stat">Students<strong id="studentCount">0</strong></div><div class="stat">Active Portals<strong id="activeCount">0</strong></div><div class="stat">Expiring Soon<strong id="expiringCount">0</strong></div></div></section><section id="schools" class="page"><div class="card"><h2>School Management</h2><div class="grid"><div class="field"><label>School ID</label><input id="sid" value="jpnhs"></div><div class="field"><label>School Name</label><input id="sname" value="Juan Pamplona National High School"></div><div class="field"><label>Short Name</label><input id="short" value="JPNHS"></div><div class="field"><label>School Year</label><input id="sy" value="2026-2027"></div><div class="field"><label>Grading System</label><select id="grading"><option>4Q</option><option>2SEM</option><option>3TRIM</option></select></div><div class="field"><label>Plan</label><select id="plan"><option>BASIC</option><option>STANDARD</option><option>PREMIUM</option></select></div><div class="field"><label>Expires</label><input id="expires" type="date"></div><div class="field"><label>Portal Status</label><select id="portal"><option value="true">Open</option><option value="false">Closed</option></select></div></div><div class="actions"><button class="btn" id="saveSchool">Save School</button><button class="btn secondary" id="loadSchool">Load Selected</button></div></div><div class="card"><h3>Schools</h3><div class="tablewrap"><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Year</th><th>Plan</th><th>Expires</th><th>Status</th><th></th></tr></thead><tbody id="schoolRows"></tbody></table></div></div></section><section id="staff" class="page"><div class="card"><h2>Staff Accounts</h2><div class="grid"><div class="field"><label>Staff ID</label><input id="staffId" placeholder="R-0001 / T-0001"></div><div class="field"><label>Full Name</label><input id="staffName"></div><div class="field"><label>Email</label><input id="staffEmail" type="email"></div><div class="field"><label>Temporary Password</label><input id="staffPass" type="password"></div><div class="field"><label>Role</label><select id="staffRole"><option>registrar</option><option>teacher</option><option>schoolAdmin</option></select></div></div><div class="actions"><button class="btn" id="createStaff">Create Staff</button></div><p class="notice">Firebase Authentication creates the sign-in account. The staff ID is the portal username shown to the school.</p></div><div class="card"><h3>Existing Staff</h3><div class="tablewrap"><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Email</th><th>Status</th></tr></thead><tbody id="staffRows"></tbody></table></div></div></section><section id="configuration" class="page"><div class="card"><h2>Feature Controls</h2><p class="muted">Select a school first, then adjust its features. Plan presets can be applied automatically.</p><div id="features"></div><div class="actions"><button class="btn" id="saveFeatures">Save Features</button><button class="btn secondary" id="applyPlan">Apply Plan Preset</button></div></div><div class="card"><h2>Academic Configuration</h2><div class="grid2"><div><h3>Grade Levels</h3><div class="field"><input id="newGrade" placeholder="Grade 7"></div><div class="actions"><button class="btn small" id="addGrade">Add Grade</button></div><div id="gradeList"></div></div><div><h3>Subjects</h3><div class="field"><input id="newSubject" placeholder="Mathematics"></div><div class="actions"><button class="btn small" id="addSubject">Add Subject</button></div><div id="subjectList"></div></div></div></div></section><section id="backup" class="page"><div class="card"><h2>Complete School Backup</h2><p>Exports school settings, staff, students, sections, assignments, grades, core values and attendance to one Excel workbook.</p><button class="btn" id="exportAll">Export ALL Data to Excel</button><p id="backupMsg" class="notice hidden"></p></div><div class="card"><h2>Portal Controls</h2><div class="actions"><button class="btn success" id="openPortal">Open Portal</button><button class="btn danger" id="closePortal">Close Portal</button></div></div></section></main></div><script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDIm2towADazJ9yuhUaIzVfX7ZaQEFbCpI",
+  authDomain: "jpnhs-a2ba2.firebaseapp.com",
+  databaseURL: "https://jpnhs-a2ba2-default-rtdb.firebaseio.com",
+  projectId: "jpnhs-a2ba2",
+  storageBucket: "jpnhs-a2ba2.firebasestorage.app",
+  messagingSenderId: "689552509381",
+  appId: "1:689552509381:web:98d043fc17189a636ea3ac"
+};
+
+firebase.initializeApp(firebaseConfig); const db=firebase.database(), auth=firebase.auth();
+const qs=new URLSearchParams(location.search); const SCHOOL_ID=qs.get('school')||localStorage.getItem('schoolID')||'jpnhs';
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const today=()=>new Date().toISOString().slice(0,10);
+const gradingTerms={'4Q':['Q1','Q2','Q3','Q4','Final'],'2SEM':['SEM1','SEM2','Final'],'3TRIM':['T1','T2','T3','Final']};
+const depedValues=['Maka-Diyos','Makatao','Makakalikasan','Makabansa','Respect for Human Dignity','Respect for Others','Peace and Order','Justice','Honesty','Love of Country','Care for the Environment','Self-Discipline'];
+async function school(){let s=(await db.ref('schools/'+SCHOOL_ID).once('value')).val();if(!s)throw Error('School configuration not found. Create it in Super Admin first.');if(s.expires&&s.expires<today()&&!location.pathname.endsWith('closed.html')){location.href='closed.html';return null}return s}
+function setBrand(s){$$('[data-school-name]').forEach(x=>x.textContent=s?.name||'School Portal');$$('[data-school-logo]').forEach(x=>x.textContent=(s?.shortName||s?.name||'SP').split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase());}
+function termsSelect(el,g){el.innerHTML=(gradingTerms[g]||[]).map(x=>`<option value="${x}">${x}</option>`).join('')}
+function gradeAverage(grades){let a=[];Object.values(grades||{}).forEach(g=>Object.values(g||{}).forEach(v=>{if(v!==''&&v!=null&&!isNaN(+v)&&+v<=100)a.push(+v)}));return a.length?a.reduce((x,y)=>x+y,0)/a.length:0}
+function calcFinal(vals){let nums=vals.filter(v=>v!==''&&!isNaN(+v)).map(Number);return nums.length?Math.round(nums.reduce((a,b)=>a+b,0)/nums.length):''}
+function downloadExcel(rows,name){let ws=XLSX.utils.json_to_sheet(rows);let wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Data');XLSX.writeFile(wb,name)}
+function pdfFrom(el,name,landscape=false){return html2canvas(el,{scale:1.5,backgroundColor:'#fff'}).then(c=>{const {jsPDF}=window.jspdf;let pdf=new jsPDF(landscape?'l':'p','mm','a4');let w=pdf.internal.pageSize.getWidth(),h=pdf.internal.pageSize.getHeight();let ratio=Math.min((w-10)/c.width,(h-10)/c.height);pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',5,5,c.width*ratio,c.height*ratio);pdf.save(name)})}
+function twoPagePDF(p1,p2,name){const {jsPDF}=window.jspdf;let pdf=new jsPDF('p','mm','a4');[p1,p2].forEach((el,i)=>{html2canvas(el,{scale:1.5,backgroundColor:'#fff'}).then(c=>{let w=pdf.internal.pageSize.getWidth(),h=pdf.internal.pageSize.getHeight(),r=Math.min((w-10)/c.width,(h-10)/c.height);if(i)pdf.addPage();pdf.addImage(c.toDataURL('image/jpeg',.9),'JPEG',5,5,c.width*r,c.height*r);if(i===1)pdf.save(name)})})}
+function nav(){ $$('.side button').forEach(b=>b.onclick=()=>{$$('.page').forEach(p=>p.classList.remove('active'));$('#'+b.dataset.page)?.classList.add('active');$$('.side button').forEach(x=>x.classList.remove('active'));b.classList.add('active')}) }
+</script><script>const OWNER='christiandavealbana92@gmail.com';let currentSchoolId=SCHOOL_ID,currentSchool=null,featureNames=['student','teacher','registrar','pdfReportCard','attendance','coreValues','excelExport','archive','sms','parent','onlineEnrollment'];
+$('#loginBtn').onclick=async()=>{try{if($('#email').value.trim().toLowerCase()!==OWNER)throw Error('This email is not authorized.');await auth.signInWithEmailAndPassword($('#email').value.trim(),$('#pass').value);$('#login').classList.add('hidden');$('#app').classList.remove('hidden');$('#who').textContent=OWNER;await refresh()}catch(e){$('#msg').textContent=e.message;$('#msg').classList.remove('hidden')}};
+$('#logout').onclick=()=>auth.signOut().then(()=>location.reload());
+async function refresh(){let all=(await db.ref('schools').once('value')).val()||{};let rows=Object.entries(all).map(([id,s])=>`<tr><td>${esc(id)}</td><td>${esc(s.name)}</td><td>${esc(s.schoolYear||'')}</td><td>${esc(s.plan||'')}</td><td>${esc(s.expires||'')}</td><td><span class="pill ${s.open!==false?'ok':'bad'}">${s.open!==false?'OPEN':'CLOSED'}</span></td><td><button class="btn small" onclick="selectSchool('${id}')">Manage</button></td></tr>`).join('');$('#schoolRows').innerHTML=rows||'<tr><td colspan="7" class="empty">No schools yet.</td></tr>';$('#schoolCount').textContent=Object.keys(all).length;let cnt=0;for(let id of Object.keys(all)){let st=(await db.ref('studentsBySchool/'+id).once('value')).val()||{};cnt+=Object.keys(st).length}$('#studentCount').textContent=cnt;$('#activeCount').textContent=Object.values(all).filter(s=>s.open!==false).length;$('#expiringCount').textContent=Object.values(all).filter(s=>s.expires&&((new Date(s.expires)-new Date())/86400000)<30).length;loadSchool()}
+window.selectSchool=async id=>{currentSchoolId=id;localStorage.setItem('schoolID',id);await loadSchool()};
+async function loadSchool(){let s=(await db.ref('schools/'+currentSchoolId).once('value')).val();if(!s)return;currentSchool=s;$('#sid').value=currentSchoolId;$('#sname').value=s.name||'';$('#short').value=s.shortName||'';$('#sy').value=s.schoolYear||'';$('#grading').value=s.gradingSystem||'4Q';$('#plan').value=s.plan||'STANDARD';$('#expires').value=s.expires||'';$('#portal').value=String(s.open!==false);setBrand(s);renderFeatures(s.features||{});renderLists(s)}
+$('#saveSchool').onclick=async()=>{let id=$('#sid').value.trim();if(!id)return alert('School ID required');currentSchoolId=id;localStorage.setItem('schoolID',id);let old=(await db.ref('schools/'+id).once('value')).val()||{};let data={...old,name:$('#sname').value.trim(),shortName:$('#short').value.trim(),schoolYear:$('#sy').value.trim(),gradingSystem:$('#grading').value,plan:$('#plan').value,expires:$('#expires').value,open:$('#portal').value==='true'};if(!data.features)data.features=planFeatures(data.plan);await db.ref('schools/'+id).set(data);alert('School saved.');refresh()};
+function planFeatures(p){let f=Object.fromEntries(featureNames.map(x=>[x,false]));if(p==='BASIC')Object.assign(f,{student:true,registrar:true,teacher:true,attendance:true,excelExport:true,archive:true});if(p==='STANDARD')Object.assign(f,{student:true,registrar:true,teacher:true,pdfReportCard:true,attendance:true,coreValues:true,excelExport:true,archive:true,parent:true,onlineEnrollment:true});if(p==='PREMIUM')f=Object.fromEntries(featureNames.map(x=>[x,true]));return f}
+function renderFeatures(f){$('#features').innerHTML=featureNames.map(x=>`<div class="switch"><span>${x.replace(/([A-Z])/g,' $1').replace(/^./,c=>c.toUpperCase())}</span><input type="checkbox" data-feature="${x}" ${f[x]?'checked':''}></div>`).join('')}
+$('#applyPlan').onclick=()=>renderFeatures(planFeatures($('#plan').value));$('#saveFeatures').onclick=async()=>{let f={};$$('[data-feature]').forEach(x=>f[x.dataset.feature]=x.checked);await db.ref('schools/'+currentSchoolId+'/features').set(f);alert('Features saved.')};
+function renderLists(s){let g=s.gradeLevels||['Grade 7','Grade 8','Grade 9','Grade 10','Grade 11','Grade 12'];let sub=s.subjects||['English','Mathematics','Science','Filipino','Araling Panlipunan','MAPEH','TLE'];$('#gradeList').innerHTML=g.map(x=>`<span class="pill">${esc(x)}</span> `).join('');$('#subjectList').innerHTML=sub.map(x=>`<span class="pill">${esc(x)}</span> `).join('')}
+$('#addGrade').onclick=async()=>{let v=$('#newGrade').value.trim();if(!v)return;let a=currentSchool.gradeLevels||[];if(!a.includes(v))a.push(v);await db.ref('schools/'+currentSchoolId+'/gradeLevels').set(a);loadSchool()};$('#addSubject').onclick=async()=>{let v=$('#newSubject').value.trim();if(!v)return;let a=currentSchool.subjects||[];if(!a.includes(v))a.push(v);await db.ref('schools/'+currentSchoolId+'/subjects').set(a);loadSchool()};
+$('#createStaff').onclick=async()=>{try{let id=$('#staffId').value.trim(),email=$('#staffEmail').value.trim(),pw=$('#staffPass').value;if(!id||!email||!pw)throw Error('Complete all staff fields.');let cred=await auth.createUserWithEmailAndPassword(email,pw);await db.ref('staff/'+currentSchoolId+'/'+id).set({schoolID:currentSchoolId,name:$('#staffName').value.trim(),email,role:$('#staffRole').value,active:true,uid:cred.user.uid});await auth.signOut();alert('Staff created. If you were logged out, sign back in as Super Admin.');loadStaff()}catch(e){alert(e.message)}};
+async function loadStaff(){let x=(await db.ref('staff/'+currentSchoolId).once('value')).val()||{};$('#staffRows').innerHTML=Object.entries(x).map(([id,s])=>`<tr><td>${esc(id)}</td><td>${esc(s.name)}</td><td>${esc(s.role)}</td><td>${esc(s.email)}</td><td>${s.active===false?'Blocked':'Active'}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">No staff.</td></tr>'};
+$('#exportAll').onclick=async()=>{let [school,students,staff,sections,assign]=await Promise.all([db.ref('schools/'+currentSchoolId).once('value'),db.ref('studentsBySchool/'+currentSchoolId).once('value'),db.ref('staff/'+currentSchoolId).once('value'),db.ref('sections/'+currentSchoolId).once('value'),db.ref('assignments/'+currentSchoolId).once('value')]);let st=students.val()||{};let rows=Object.entries(st).map(([id,s])=>({studentID:id,...s,grades:JSON.stringify(s.grades||{}),coreValues:JSON.stringify(s.coreValues||{}),attendance:JSON.stringify(s.attendance||{})}));let wb=XLSX.utils.book_new();[['Students',rows],['Staff',Object.entries(staff.val()||{}).map(([id,s])=>({staffID:id,...s}))],['Sections',Object.entries(sections.val()||{}).map(([id,s])=>({sectionID:id,...s}))],['Assignments',Object.entries(assign.val()||{}).map(([id,s])=>({assignmentID:id,...s}))],['School', [school.val()]]].forEach(([n,r])=>XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(r),n));XLSX.writeFile(wb,`${currentSchoolId}-${school.val()?.schoolYear||'backup'}-FULL-BACKUP.xlsx`)};
+$('#openPortal').onclick=()=>db.ref('schools/'+currentSchoolId+'/open').set(true).then(()=>alert('Portal opened.'));$('#closePortal').onclick=()=>db.ref('schools/'+currentSchoolId+'/open').set(false).then(()=>alert('Portal closed.'));
+nav();loadStaff();
+</script></body></html>
