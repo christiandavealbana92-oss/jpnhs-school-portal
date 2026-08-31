@@ -904,6 +904,14 @@ tr:last-child td{
 .grade-group{grid-column:1/-1;font-size:12px;color:#52637a;text-transform:uppercase;letter-spacing:.04em;margin-top:8px}
 @media(max-width:900px){.grade-checklist{grid-template-columns:repeat(2,minmax(140px,1fr))}}
 @media(max-width:600px){.grade-checklist{grid-template-columns:1fr}}
+
+.grading-terms-checklist{display:grid;grid-template-columns:1fr;gap:8px;margin-top:7px}
+.grading-term-check{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid #dce5ef;border-radius:10px;background:#fff;cursor:pointer}
+.grading-term-check:hover{background:#f6faff;border-color:#9fc7ea}
+.grading-term-check input{width:18px;height:18px;margin-top:2px;accent-color:var(--blue)}
+.grading-term-check strong{display:block;font-size:13px}
+.grading-term-check small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.field-help{display:block;color:var(--muted);font-size:11px;line-height:1.5;margin-top:7px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script><script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script></head>
 
@@ -1718,8 +1726,13 @@ Manage basic school configuration.
 <input id="configSchoolYear" type="text" placeholder="2026-2027">
 </div>
 <div class="field">
-<label>Grading System</label>
-<select id="configGrading"><option value="Standard">Standard</option><option value="DepEd">DepEd</option></select>
+<label>Grading Terms Used by This School</label>
+<div id="gradingTermsChecklist" class="grading-terms-checklist">
+<label class="grading-term-check"><input type="checkbox" class="config-grading-term" value="4Q"><span><strong>4 Quarters</strong><small>Q1, Q2, Q3, Q4 + Final</small></span></label>
+<label class="grading-term-check"><input type="checkbox" class="config-grading-term" value="2SEM"><span><strong>2 Terms / Semesters</strong><small>SEM1, SEM2 + Final</small></span></label>
+<label class="grading-term-check"><input type="checkbox" class="config-grading-term" value="3TRIM"><span><strong>3 Terms / Trimesters</strong><small>T1, T2, T3 + Final</small></span></label>
+</div>
+<small class="field-help">Check the grading term systems that this school uses. The checked terms will automatically appear in the Registrar Portal.</small>
 </div>
 </div>
 
@@ -2045,1879 +2058,1911 @@ const firebaseConfig = {
         "jpnhs-a2ba2.firebaseapp.com",
 
     databaseURL:
-        "https://jpnhs-a2ba2-default-rtdb.firebaseio.com",
-
-    projectId:
-        "jpnhs-a2ba2",
-
-    storageBucket:
-        "jpnhs-a2ba2.firebasestorage.app",
-
-    messagingSenderId:
-        "689552509381",
-
-    appId:
-        "1:689552509381:web:98d043fc17189a636ea3ac"
-
+        "https://jpnhs-a2ba2-default-rtdb.firebaseio.com", 
+ 
+    projectId: 
+        "jpnhs-a2ba2", 
+ 
+    storageBucket: 
+        "jpnhs-a2ba2.firebasestorage.app", 
+ 
+    messagingSenderId: 
+        "689552509381", 
+ 
+    appId: 
+        "1:689552509381:web:98d043fc17189a636ea3ac" 
+ 
+}; 
+ 
+ 
+firebase.initializeApp( 
+    firebaseConfig 
+); 
+ 
+const db = 
+    firebase.database(); 
+ 
+ 
+/* ===================================================== 
+   HELPERS 
+===================================================== */ 
+ 
+function $(id){ 
+ 
+    return document.getElementById(id); 
+ 
+} 
+ 
+ 
+function escapeHTML(value){ 
+ 
+    return String( 
+        value ?? "" 
+    ).replace( 
+        /[&<>"']/g, 
+        function(char){ 
+ 
+            const map = { 
+ 
+                "&":"&amp;", 
+                "<":"&lt;", 
+                ">":"&gt;", 
+                '"':"&quot;", 
+                "'":"&#039;" 
+ 
+            }; 
+ 
+            return map[char]; 
+ 
+        } 
+    ); 
+ 
+} 
+ 
+ 
+function objectCount(data){ 
+ 
+    if( 
+        !data || 
+        typeof data !== "object" 
+    ){ 
+ 
+        return 0; 
+ 
+    } 
+ 
+    return Object.keys(data).length; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   LOGIN 
+===================================================== */ 
+ 
+$("loginButton").addEventListener( 
+    "click", 
+    loginAdmin 
+); 
+ 
+ 
+$("adminUsername").addEventListener( 
+    "keydown", 
+    function(event){ 
+ 
+        if( 
+            event.key === "Enter" 
+        ){ 
+ 
+            loginAdmin(); 
+ 
+        } 
+ 
+    } 
+); 
+ 
+ 
+$("adminPassword").addEventListener( 
+    "keydown", 
+    function(event){ 
+ 
+        if( 
+            event.key === "Enter" 
+        ){ 
+ 
+            loginAdmin(); 
+ 
+        } 
+ 
+    } 
+); 
+ 
+ 
+function loginAdmin(){ 
+ 
+    const username = 
+        $("adminUsername").value.trim(); 
+ 
+    const password = 
+        $("adminPassword").value; 
+ 
+ 
+    if( 
+        username === ADMIN_USERNAME && 
+        password === ADMIN_PASSWORD 
+    ){ 
+ 
+        $("loginError").style.display = 
+            "none"; 
+ 
+        $("loginScreen").style.display = 
+            "none"; 
+ 
+        $("adminApp").style.display = 
+            "block"; 
+ 
+ 
+        sessionStorage.setItem("jpnhsAdminLoggedIn","true"); 
+        localStorage.setItem("schoolPortalUser", JSON.stringify({key:"admin:Administrator",name:"Administrator",role:"Administrator"})); 
+ 
+ 
+        loadAdminData(); 
+ 
+    } 
+    else{ 
+ 
+        $("loginError").style.display = 
+            "block"; 
+ 
+    } 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   LOGOUT 
+===================================================== */ 
+ 
+$("logoutButton").addEventListener( 
+    "click", 
+    function(){ 
+ 
+        sessionStorage.removeItem("jpnhsAdminLoggedIn"); 
+        localStorage.removeItem("schoolPortalUser"); 
+ 
+        location.reload(); 
+ 
+    } 
+); 
+ 
+ 
+/* ===================================================== 
+   SESSION 
+===================================================== */ 
+ 
+if( 
+    sessionStorage.getItem( 
+        "jpnhsAdminLoggedIn" 
+    ) === "true" 
+){ 
+ 
+    $("loginScreen").style.display = 
+        "none"; 
+ 
+    $("adminApp").style.display = 
+        "block"; 
+ 
+    loadAdminData(); 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   NAVIGATION 
+===================================================== */ 
+ 
+document.querySelectorAll( 
+    ".nav-button" 
+).forEach( 
+    function(button){ 
+ 
+        button.addEventListener( 
+            "click", 
+            function(){ 
+ 
+                const page = 
+                    button.dataset.page; 
+ 
+ 
+                document.querySelectorAll( 
+                    ".nav-button" 
+                ).forEach( 
+                    function(item){ 
+ 
+                        item.classList.remove( 
+                            "active" 
+                        ); 
+ 
+                    } 
+                ); 
+ 
+ 
+                document.querySelectorAll( 
+                    ".page" 
+                ).forEach( 
+                    function(item){ 
+ 
+                        item.classList.remove( 
+                            "active" 
+                        ); 
+ 
+                    } 
+                ); 
+ 
+ 
+                button.classList.add( 
+                    "active" 
+                ); 
+ 
+ 
+                const target = 
+                    document.getElementById( 
+                        page 
+                    ); 
+ 
+ 
+                if(target){ 
+ 
+                    target.classList.add( 
+                        "active" 
+                    ); 
+ 
+                } 
+ 
+            } 
+        ); 
+ 
+    } 
+); 
+ 
+ 
+/* ===================================================== 
+   FIND SCHOOL 
+===================================================== */ 
+ 
+async function findSchool(){ 
+    const requestedSchool = new URLSearchParams(location.search).get("school"); 
+ 
+    const snapshot = 
+        await db.ref( 
+            "schools" 
+        ).once("value"); 
+ 
+ 
+    const schools = 
+        snapshot.val() || {}; 
+ 
+ 
+    const ids = Object.keys(schools); 
+ 
+    const preferred = requestedSchool && ids.includes(requestedSchool) ? requestedSchool : (ids.includes('jpnhs') ? 'jpnhs' : ids[0]); 
+ 
+ 
+    if( 
+        ids.length === 0 
+    ){ 
+ 
+        return null; 
+ 
+    } 
+ 
+ 
+    return { 
+ 
+        id:preferred, 
+ 
+        data: 
+            schools[preferred] || {} 
+ 
+    }; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   LOAD ADMIN DATA 
+===================================================== */ 
+ 
+async function loadAdminData(){ 
+ 
+    try{ 
+ 
+        const school = 
+            await findSchool(); 
+ 
+ 
+        if(!school){ 
+ 
+            renderEmptySchool(); 
+ 
+            return; 
+ 
+        } 
+ 
+ 
+        currentSchoolId = 
+            school.id; 
+ 
+        currentSchool = 
+            school.data; 
+ 
+ 
+        renderSchool( 
+            school.id, 
+            school.data 
+        ); 
+ 
+        renderAdminBranding(); 
+ 
+ 
+        await loadStudents( 
+            school.id 
+        ); 
+        adminStudents = (await db.ref("studentsBySchool/" + school.id).once("value")).val() || {}; 
+        adminSections = (await db.ref("sections/" + school.id).once("value")).val() || {}; 
+        setupAdminStudentRegistration(); 
+ 
+ 
+        await loadStaff( 
+            school.id 
+        ); 
+ 
+ 
+        renderFeatures( 
+            school.data.features || 
+            {} 
+        ); 
+ 
+ 
+        loadConfiguration( 
+            school.data 
+        ); 
+ 
+    } 
+    catch(error){ 
+ 
+        console.error( 
+            "ADMIN FIREBASE ERROR:", 
+            error 
+        ); 
+ 
+ 
+        $("subscriptionStatus").innerHTML = 
+ 
+            "<strong>Unable to load school information.</strong>" + 
+ 
+            "<br><br>" + 
+ 
+            "Firebase error: " + 
+ 
+            escapeHTML( 
+                error.message 
+            ) + 
+ 
+            "<br><br>" + 
+ 
+            "Check your Firebase Realtime Database Rules."; 
+ 
+    } 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   CURRENT SCHOOL 
+===================================================== */ 
+ 
+let currentSchoolId = 
+    null; 
+ 
+let currentSchool = 
+    {}; 
+ 
+let adminStudents = {}; 
+let adminSections = {}; 
+ 
+ 
+/* ===================================================== 
+   SCHOOL 
+===================================================== */ 
+ 
+function renderSchool( 
+    schoolId, 
+    school 
+){ 
+ 
+    $("schoolId").textContent = 
+        schoolId || "—"; 
+ 
+ 
+    $("schoolName").textContent = 
+        school.name || 
+        school.schoolName || 
+        "School Portal"; 
+ 
+ 
+    $("schoolShortName").textContent = 
+        school.shortName || 
+        school.short_name || 
+        "SP"; 
+ 
+ 
+    const displayTerms=normalizeGradingTerms(school.gradingTerms || school.grading_terms);
+    $("gradingSystem").textContent = displayTerms.length
+        ? gradingTermsLabel(displayTerms)
+        : (school.gradingSystem || school.grading_system || "Not configured"); 
+ 
+ 
+    const plan = 
+        school.plan || 
+        school.subscription || 
+        "STANDARD"; 
+ 
+ 
+    const expires = 
+        school.expires || 
+        school.expiration || 
+        school.expiry || 
+        "Not set"; 
+ 
+ 
+    const status = 
+        school.open === false 
+            ? "CLOSED" 
+            : "OPEN"; 
+ 
+ 
+    $("subscriptionStatus").innerHTML = 
+ 
+        "<strong>Plan:</strong> " + 
+ 
+        escapeHTML(plan) + 
+ 
+        "<br>" + 
+ 
+        "<strong>Expiration:</strong> " + 
+ 
+        escapeHTML(expires) + 
+ 
+        "<br>" + 
+ 
+        "<strong>Portal Status:</strong> " + 
+ 
+        escapeHTML(status); 
+ 
+} 
+ 
+ 
+function renderEmptySchool(){ 
+ 
+    $("schoolId").textContent = 
+        "—"; 
+ 
+    $("schoolName").textContent = 
+        "No school configured"; 
+ 
+    $("schoolShortName").textContent = 
+        "—"; 
+ 
+    $("gradingSystem").textContent = 
+        "—"; 
+ 
+    $("subscriptionStatus").innerHTML = 
+ 
+        "<strong>No school configuration was found.</strong>" + 
+ 
+        "<br><br>" + 
+ 
+        "Use VA Access to import or configure the school."; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   STUDENTS 
+===================================================== */ 
+ 
+async function loadStudents( 
+    schoolId 
+){ 
+ 
+    const possiblePaths = [ 
+ 
+        "studentsBySchool/" + 
+        schoolId, 
+ 
+        "students/" + 
+        schoolId, 
+ 
+        "studentRecords/" + 
+        schoolId 
+ 
+    ]; 
+ 
+ 
+    let students = 
+        {}; 
+ 
+    let found = 
+        false; 
+ 
+ 
+    for( 
+        const path of possiblePaths 
+    ){ 
+ 
+        try{ 
+ 
+            const snapshot = 
+                await db.ref( 
+                    path 
+                ).once("value"); 
+ 
+ 
+            const value = 
+                snapshot.val(); 
+ 
+ 
+            if( 
+                value && 
+                typeof value === "object" && 
+                Object.keys(value).length > 0 
+            ){ 
+ 
+                students = 
+                    value; 
+ 
+                found = 
+                    true; 
+ 
+                break; 
+ 
+            } 
+ 
+        } 
+        catch(error){ 
+ 
+            console.warn( 
+                "Student path unavailable:", 
+                path, 
+                error.message 
+            ); 
+ 
+        } 
+ 
+    } 
+ 
+ 
+    const entries = 
+        Object.entries( 
+            students 
+        ); 
+ 
+ 
+    $("studentCount").textContent = 
+        entries.length; 
+ 
+ 
+    $("studentPageCount").textContent = 
+        entries.length; 
+ 
+ 
+    renderStudentTable( 
+        entries 
+    ); 
+ 
+} 
+ 
+ 
+function renderStudentTable( 
+    entries 
+){ 
+ 
+    const table = 
+        $("studentTable"); 
+ 
+ 
+    if( 
+        entries.length === 0 
+    ){ 
+ 
+        table.innerHTML = 
+ 
+            "<tr>" + 
+ 
+            "<td colspan='5'>" + 
+ 
+            "No registered students found." + 
+ 
+            "</td>" + 
+ 
+            "</tr>"; 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    table.innerHTML = 
+ 
+        entries.map( 
+            function(item){ 
+ 
+                const id = 
+                    item[0]; 
+ 
+                const student = 
+                    item[1] || {}; 
+ 
+ 
+                const name = 
+                    student.name || 
+                    student.fullName || 
+                    ( 
+                        ( 
+                            student.firstName || 
+                            "" 
+                        ) + 
+                        " " + 
+                        ( 
+                            student.lastName || 
+                            "" 
+                        ) 
+                    ).trim() || 
+                    "—"; 
+ 
+ 
+                const grade = 
+                    student.gradeLevel || 
+                    student.grade || 
+                    student.yearLevel || 
+                    "—"; 
+ 
+ 
+                const section = 
+                    student.section || 
+                    student.sectionName || 
+                    "—"; 
+ 
+ 
+                const schoolYear = 
+                    student.schoolYear || 
+                    student.sy || 
+                    "—"; 
+ 
+ 
+                return ` 
+ 
+<tr> 
+ 
+<td> 
+${escapeHTML(id)} 
+</td> 
+ 
+<td> 
+${escapeHTML(name)} 
+</td> 
+ 
+<td> 
+${escapeHTML(grade)} 
+</td> 
+ 
+<td> 
+${escapeHTML(section)} 
+</td> 
+ 
+<td> 
+${escapeHTML(schoolYear)} 
+</td> 
+ 
+</tr> 
+ 
+`; 
+ 
+            } 
+        ).join(""); 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   STAFF 
+===================================================== */ 
+ 
+async function loadStaff( 
+    schoolId 
+){ 
+ 
+    try{ 
+ 
+        const snapshot = 
+            await db.ref( 
+                "staff/" + 
+                schoolId 
+            ).once("value"); 
+ 
+ 
+        const staff = 
+            snapshot.val() || {}; 
+ 
+ 
+        const entries = 
+            Object.entries( 
+                staff 
+            ); 
+ 
+ 
+        $("staffCount").textContent = 
+            entries.length; 
+ 
+ 
+        const teachers = 
+            entries.filter( 
+                function(item){ 
+ 
+                    const person = 
+                        item[1] || {}; 
+ 
+ 
+                    const role = 
+                        String( 
+                            person.role || "" 
+                        ).toLowerCase(); 
+ 
+ 
+                    return ( 
+                        role.includes( 
+                            "teacher" 
+                        ) || 
+                        role === 
+                            "faculty" 
+                    ); 
+ 
+                } 
+            ); 
+ 
+ 
+        $("teacherCount").textContent = 
+            teachers.length; 
+ 
+ 
+        renderStaffTable( 
+            entries 
+        ); 
+ 
+    } 
+    catch(error){ 
+ 
+        console.error( 
+            "Staff error:", 
+            error 
+        ); 
+ 
+ 
+        $("staffCount").textContent = 
+            "—"; 
+ 
+        $("teacherCount").textContent = 
+            "—"; 
+ 
+ 
+        $("staffTable").innerHTML = 
+ 
+            "<tr>" + 
+ 
+            "<td colspan='5'>" + 
+ 
+            "Unable to load staff: " + 
+ 
+            escapeHTML( 
+                error.message 
+            ) + 
+ 
+            "</td>" + 
+ 
+            "</tr>"; 
+ 
+    } 
+ 
+} 
+ 
+ 
+function renderStaffTable( 
+    entries 
+){ 
+ 
+    if( 
+        entries.length === 0 
+    ){ 
+ 
+        $("staffTable").innerHTML = 
+ 
+            "<tr>" + 
+ 
+            "<td colspan='5'>" + 
+ 
+            "No staff accounts found." + 
+ 
+            "</td>" + 
+ 
+            "</tr>"; 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    $("staffTable").innerHTML = 
+ 
+        entries.map( 
+            function(item){ 
+ 
+                const id = 
+                    item[0]; 
+ 
+                const staff = 
+                    item[1] || {}; 
+ 
+ 
+                const name = 
+                    staff.name || 
+                    staff.fullName || 
+                    ( 
+                        ( 
+                            staff.firstName || 
+                            "" 
+                        ) + 
+                        " " + 
+                        ( 
+                            staff.lastName || 
+                            "" 
+                        ) 
+                    ).trim() || 
+                    "—"; 
+ 
+ 
+                const role = 
+                    staff.role || 
+                    "—"; 
+ 
+ 
+                const email = 
+                    staff.email || 
+                    "—"; 
+ 
+ 
+                const status = 
+                    staff.status || 
+                    ( 
+                        staff.active === false 
+                            ? "Inactive" 
+                            : "Active" 
+                    ); 
+ 
+ 
+                return ` 
+ 
+<tr> 
+ 
+<td> 
+${escapeHTML(id)} 
+</td> 
+ 
+<td> 
+${escapeHTML(name)} 
+</td> 
+ 
+<td> 
+${escapeHTML(role)} 
+</td> 
+ 
+<td> 
+${escapeHTML(email)} 
+</td> 
+ 
+<td> 
+${escapeHTML(status)} 
+</td> 
+ 
+</tr> 
+ 
+`; 
+ 
+            } 
+        ).join(""); 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   ADMIN STUDENT REGISTRATION / 9-DIGIT IDN 
+===================================================== */ 
+function adminEnabledLevels(){ 
+    const v=currentSchool.gradeLevels; 
+    if(Array.isArray(v)) return v.map(String).filter(Boolean); 
+    if(v&&typeof v==='object') return Object.entries(v).filter(([,x])=>x!==false&&x!=null).map(([k,x])=>typeof x==='string'?x:(x&&x.name?String(x.name):String(k))); 
+    return []; 
+} 
+function adminGenerateIDN(){ 
+    let id; 
+    do{id=String(Math.floor(100000000+Math.random()*900000000));}while(adminStudents[id]); 
+    $("adminStudentIDN").value=id; 
+    return id; 
+} 
+function adminStudentMessage(msg,ok=false){const b=$("adminStudentMessage");if(!b)return;b.textContent=msg;b.style.display='block';b.className=ok?'notice':'notice error';} 
+function setupAdminStudentRegistration(){ 
+    const levels=adminEnabledLevels(); 
+    if($("adminStudentLevel")){ 
+        $("adminStudentLevel").innerHTML='<option value="">Select grade level</option>'+levels.map(x=>'<option value="'+escapeHTML(x)+'">'+escapeHTML(x)+'</option>').join(''); 
+        $("adminStudentLevel").onchange=()=>{ 
+            const level=$("adminStudentLevel").value; 
+            const sections=Object.values(adminSections||{}).filter(x=>x&&x.level===level&&!x.blocked).map(x=>x.name).filter(Boolean); 
+            $("adminStudentSection").innerHTML='<option value="">Select section</option>'+sections.map(x=>'<option value="'+escapeHTML(x)+'">'+escapeHTML(x)+'</option>').join(''); 
+        }; 
+    } 
+} 
+$("adminGenerateIDN")?.addEventListener('click',adminGenerateIDN); 
+$("adminClearStudent")?.addEventListener('click',()=>{ 
+    ['adminStudentIDN','adminStudentName','adminStudentBirthday','adminStudentGuardian','adminStudentAddress','adminStudentContact','adminStudentLRN'].forEach(id=>{if($(id))$(id).value='';}); 
+    if($("adminStudentLevel"))$("adminStudentLevel").value=''; 
+    if($("adminStudentSection"))$("adminStudentSection").innerHTML='<option value="">Select section</option>'; 
+    if($("adminStudentMessage"))$("adminStudentMessage").style.display='none'; 
+}); 
+$("adminSaveStudent")?.addEventListener('click',async()=>{ 
+    try{ 
+        if(!currentSchoolId)throw Error('School configuration has not loaded yet.'); 
+        let id=$("adminStudentIDN").value.trim(); 
+        if(!/^\d{9}$/.test(id))id=adminGenerateIDN(); 
+        if(adminStudents[id]){id=adminGenerateIDN();} 
+        const name=$("adminStudentName").value.trim(), birthday=$("adminStudentBirthday").value, level=$("adminStudentLevel").value, section=$("adminStudentSection").value; 
+        if(!name||!birthday||!level||!section)throw Error('Please complete the student name, birthday, grade level, and section.'); 
+        if(!adminEnabledLevels().includes(level))throw Error('This grade level is not enabled in School Configuration.'); 
+        const data={schoolID:currentSchoolId,studentID:id,name,fullName:name,birthday,level,section,guardian:$("adminStudentGuardian").value.trim(),address:$("adminStudentAddress").value.trim(),contact:$("adminStudentContact").value.trim(),lrn:$("adminStudentLRN").value.trim(),schoolYear:currentSchool.schoolYear||'',gradingSystem:currentSchool.gradingSystem||'Standard',grades:{},coreValues:{},attendance:{},createdAt:new Date().toISOString(),registeredBy:'Administrator'}; 
+        await db.ref('studentsBySchool/'+currentSchoolId+'/'+id).set(data); 
+        adminStudents[id]=data; 
+        adminStudentMessage('Student registered successfully. Student ID: '+id,true); 
+        $("adminStudentIDN").value='';$("adminStudentName").value='';$("adminStudentBirthday").value='';$("adminStudentGuardian").value='';$("adminStudentAddress").value='';$("adminStudentContact").value='';$("adminStudentLRN").value='';$("adminStudentLevel").value='';$("adminStudentSection").innerHTML='<option value="">Select section</option>'; 
+        await loadStudents(currentSchoolId); 
+    }catch(e){adminStudentMessage('Unable to register student: '+e.message,false);} 
+}); 
+ 
+/* ===================================================== 
+   REGISTER STAFF 
+===================================================== */ 
+ 
+$("addStaffButton").addEventListener( 
+    "click", 
+    registerStaff 
+); 
+ 
+ 
+async function registerStaff(){ 
+ 
+    if(!currentSchoolId){ 
+ 
+        showStaffMessage( 
+            "School configuration has not loaded yet.", 
+            false 
+        ); 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    const staffId = 
+        $("newStaffId") 
+        .value 
+        .trim(); 
+ 
+ 
+    const name = 
+        $("newStaffName") 
+        .value 
+        .trim(); 
+ 
+ 
+    const role = 
+        $("newStaffRole") 
+        .value; 
+ 
+ 
+    const email = 
+        $("newStaffEmail") 
+        .value 
+        .trim(); 
+ 
+ 
+    const password = 
+        $("newStaffPassword") 
+        .value; 
+ 
+ 
+    const status = 
+        $("newStaffStatus") 
+        .value; 
+ 
+ 
+    if( 
+        !staffId || 
+        !name || 
+        !role || 
+        !email || 
+        !password 
+    ){ 
+ 
+        showStaffMessage( 
+            "Please complete all staff account fields.", 
+            false 
+        ); 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    try{ 
+ 
+        const staffRef = 
+            db.ref( 
+                "staff/" + 
+                currentSchoolId + 
+                "/" + 
+                staffId 
+            ); 
+ 
+ 
+        const existing = 
+            await staffRef.once( 
+                "value" 
+            ); 
+ 
+ 
+        if( 
+            existing.exists() 
+        ){ 
+ 
+            showStaffMessage( 
+                "That Staff ID already exists.", 
+                false 
+            ); 
+ 
+            return; 
+ 
+        } 
+ 
+ 
+        await staffRef.set({ 
+ 
+            staffId: 
+                staffId, 
+ 
+            name: 
+                name, 
+ 
+            fullName: 
+                name, 
+ 
+            role: 
+                role, 
+ 
+            email: 
+                email, 
+ 
+            password: 
+                password, 
+ 
+            status: 
+                status, 
+ 
+            active: 
+                status === 
+                    "Active", 
+ 
+            createdAt: 
+                new Date() 
+                    .toISOString() 
+ 
+        }); 
+ 
+ 
+        showStaffMessage( 
+            "Staff account registered successfully.", 
+            true 
+        ); 
+ 
+ 
+        $("newStaffId").value = 
+            ""; 
+ 
+        $("newStaffName").value = 
+            ""; 
+ 
+        $("newStaffRole").value = 
+            ""; 
+ 
+        $("newStaffEmail").value = 
+            ""; 
+ 
+        $("newStaffPassword").value = 
+            ""; 
+ 
+ 
+        await loadStaff( 
+            currentSchoolId 
+        ); 
+ 
+    } 
+    catch(error){ 
+ 
+        console.error( 
+            "REGISTER STAFF ERROR:", 
+            error 
+        ); 
+ 
+ 
+        showStaffMessage( 
+            "Unable to register staff: " + 
+            error.message, 
+            false 
+        ); 
+ 
+    } 
+ 
+} 
+ 
+ 
+function showStaffMessage( 
+    message, 
+    success 
+){ 
+ 
+    const box = 
+        $("staffMessage"); 
+ 
+ 
+    box.style.display = 
+        "block"; 
+ 
+ 
+    box.className = 
+        success 
+            ? "notice success" 
+            : "notice"; 
+ 
+ 
+    box.textContent = 
+        message; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   CONFIGURATION 
+===================================================== */ 
+ 
+const CONFIG_GRADE_LEVELS = ["Kindergarten","Grade 1","Grade 2","Grade 3","Grade 4","Grade 5","Grade 6","Grade 7","Grade 8","Grade 9","Grade 10","Grade 11","Grade 12","College 1","College 2","College 3","College 4"]; 
+ 
+function normalizeGradeLevels(value){ 
+    if(Array.isArray(value)) return value.map(String).filter(Boolean); 
+    if(value && typeof value === "object") return Object.entries(value).filter(([,v]) => v !== false && v != null).map(([k,v]) => typeof v === "string" ? v : (v && v.name ? String(v.name) : String(k))); 
+    return []; 
+} 
+ 
+function renderGradeLevelChecklist(selected){ 
+    const set = new Set(normalizeGradeLevels(selected)); 
+    const box = $("gradeLevelChecklist"); 
+    if(!box) return; 
+    const groups = [ 
+        ["Early / Basic Education",["Kindergarten"]], 
+        ["Elementary",["Grade 1","Grade 2","Grade 3","Grade 4","Grade 5","Grade 6"]], 
+        ["Junior High School",["Grade 7","Grade 8","Grade 9","Grade 10"]], 
+        ["Senior High School",["Grade 11","Grade 12"]], 
+        ["College",["College 1","College 2","College 3","College 4"]] 
+    ]; 
+    box.innerHTML = groups.map(([title,levels]) => `<div class="grade-group">${escapeHTML(title)}</div>${levels.map(level => `<label class="grade-check"><input type="checkbox" class="config-grade" value="${escapeHTML(level)}" ${set.has(level)?"checked":""}><span>${escapeHTML(level)}</span></label>`).join("")}`).join(""); 
+} 
+ 
+function getSelectedGradeLevels(){ return Array.from(document.querySelectorAll(".config-grade:checked")).map(x=>x.value); } 
+ 
+$("selectAllGradeLevels").addEventListener("click",()=>document.querySelectorAll(".config-grade").forEach(x=>x.checked=true)); 
+$("clearAllGradeLevels").addEventListener("click",()=>document.querySelectorAll(".config-grade").forEach(x=>x.checked=false)); 
+ 
+// ---------------- SCHOOL BRANDING ---------------- 
+function brandingInitials(name){return String(name||'School Portal').trim().split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase()||'SP'} 
+function compressImage(file,maxSize=500,quality=.82){return new Promise((resolve,reject)=>{if(!file)return resolve('');const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const scale=Math.min(1,maxSize/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',quality));};img.onerror=reject;img.src=r.result};r.onerror=reject;r.readAsDataURL(file)})} 
+function showBrandingMessage(id,msg,ok=true){const e=$(id);if(!e)return;e.textContent=msg;e.style.display='block';e.style.background=ok?'#ecfdf3':'#fff1f2';e.style.borderColor=ok?'#bbf7d0':'#fecdd3';e.style.color=ok?'#166534':'#9f1239'} 
+function partnerArray(){const p=currentSchool?.partners;if(Array.isArray(p))return p;return p&&typeof p==='object'?Object.entries(p).map(([id,v])=>({...v,id})):[]} 
+function renderAdminBranding(){const s=currentSchool||{};const logo=$('adminSchoolLogoPreview');if(logo){logo.innerHTML=s.logo?`<img src="${escapeHTML(s.logo)}" alt="School logo">`:escapeHTML(brandingInitials(s.shortName||s.name));}const topLogo=$('adminTopLogo');if(topLogo)topLogo.innerHTML=s.logo?`<img src="${escapeHTML(s.logo)}" alt="School logo">`:escapeHTML(brandingInitials(s.shortName||s.name));[$('topSchoolName'),$('topSchoolName2')].forEach(e=>{if(e)e.textContent=s.name||s.schoolName||'School Portal'});const tp=$('adminTopPartners');if(tp){tp.innerHTML=partnerArray().map(p=>`<span class="admin-top-partner">${p.logo?`<img src="${escapeHTML(p.logo)}" alt="">`:escapeHTML(brandingInitials(p.name))}<span>${escapeHTML(p.name||'Partner')}</span></span>`).join('')}const box=$('partnerList');if(!box)return;const partners=partnerArray();box.innerHTML=partners.length?partners.map((p,i)=>`<div class="partner-item"><div class="partner-logo">${p.logo?`<img src="${escapeHTML(p.logo)}" alt="">`:escapeHTML(brandingInitials(p.name))}</div><div class="partner-meta"><strong>${escapeHTML(p.name||'Unnamed Partner')}</strong><small>Visible on school portals, PDFs and Excel exports</small></div><div class="partner-actions"><button type="button" class="btn secondary small" onclick="editPartner(${i})">Edit</button><button type="button" class="btn danger small" onclick="deletePartner(${i})">Remove</button></div></div>`).join(''):'<div class="empty">No partners added yet.</div>'} 
+let editingPartnerIndex=-1; 
+$('saveSchoolLogoButton')?.addEventListener('click',async()=>{try{if(!currentSchoolId)return showBrandingMessage('logoMessage','School is not loaded.',false);const f=$('schoolLogoFile').files[0];if(!f)return showBrandingMessage('logoMessage','Please choose a logo image first.',false);const logo=await compressImage(f,500,.82);await db.ref('schools/'+currentSchoolId).update({logo});currentSchool.logo=logo;renderAdminBranding();$('schoolLogoFile').value='';showBrandingMessage('logoMessage','School logo saved successfully.',true)}catch(e){showBrandingMessage('logoMessage','Unable to save logo: '+e.message,false)}}); 
+$('removeSchoolLogoButton')?.addEventListener('click',async()=>{try{await db.ref('schools/'+currentSchoolId+'/logo').remove();delete currentSchool.logo;renderAdminBranding();showBrandingMessage('logoMessage','School logo removed. Initials will be used.',true)}catch(e){showBrandingMessage('logoMessage','Unable to remove logo: '+e.message,false)}}); 
+$('addPartnerButton')?.addEventListener('click',()=>{editingPartnerIndex=-1;$('partnerName').value='';$('partnerLogoFile').value='';$('partnerEditor').style.display='block';$('partnerMessage').style.display='none'}); 
+$('cancelPartnerButton')?.addEventListener('click',()=>{$('partnerEditor').style.display='none'}); 
+window.editPartner=i=>{const p=partnerArray()[i];if(!p)return;editingPartnerIndex=i;$('partnerName').value=p.name||'';$('partnerLogoFile').value='';$('partnerEditor').style.display='block';$('partnerMessage').style.display='none'}; 
+window.deletePartner=async i=>{const a=partnerArray();if(!a[i])return;if(!confirm('Remove this partner from the school branding?'))return;try{a.splice(i,1);await db.ref('schools/'+currentSchoolId+'/partners').set(a);currentSchool.partners=a;renderAdminBranding()}catch(e){alert('Unable to remove partner: '+e.message)}}; 
+$('savePartnerButton')?.addEventListener('click',async()=>{try{const name=$('partnerName').value.trim();if(!name)return showBrandingMessage('partnerMessage','Enter the partner name.',false);const a=partnerArray();let item=editingPartnerIndex>=0?{...(a[editingPartnerIndex]||{})}:{id:Date.now().toString()};item.name=name;const f=$('partnerLogoFile').files[0];if(f)item.logo=await compressImage(f,400,.82);if(!item.logo)return showBrandingMessage('partnerMessage','Please choose a partner logo.',false);if(editingPartnerIndex>=0)a[editingPartnerIndex]=item;else a.push(item);await db.ref('schools/'+currentSchoolId+'/partners').set(a);currentSchool.partners=a;renderAdminBranding();$('partnerEditor').style.display='none'}catch(e){showBrandingMessage('partnerMessage','Unable to save partner: '+e.message,false)}}); 
+ 
+const CONFIG_GRADING_TERMS = {
+    "4Q": {label:"4 Quarters", terms:["Q1","Q2","Q3","Q4","Final"]},
+    "2SEM": {label:"2 Terms / Semesters", terms:["SEM1","SEM2","Final"]},
+    "3TRIM": {label:"3 Terms / Trimesters", terms:["T1","T2","T3","Final"]}
 };
 
-
-firebase.initializeApp(
-    firebaseConfig
-);
-
-const db =
-    firebase.database();
-
-
-/* =====================================================
-   HELPERS
-===================================================== */
-
-function $(id){
-
-    return document.getElementById(id);
-
-}
-
-
-function escapeHTML(value){
-
-    return String(
-        value ?? ""
-    ).replace(
-        /[&<>"']/g,
-        function(char){
-
-            const map = {
-
-                "&":"&amp;",
-                "<":"&lt;",
-                ">":"&gt;",
-                '"':"&quot;",
-                "'":"&#039;"
-
-            };
-
-            return map[char];
-
-        }
-    );
-
-}
-
-
-function objectCount(data){
-
-    if(
-        !data ||
-        typeof data !== "object"
-    ){
-
-        return 0;
-
+function normalizeGradingTerms(value){
+    if(Array.isArray(value)) return value.map(String).filter(x=>CONFIG_GRADING_TERMS[x]);
+    if(value && typeof value === "object"){
+        return Object.entries(value).filter(([,v])=>v===true).map(([k])=>k).filter(k=>CONFIG_GRADING_TERMS[k]);
     }
-
-    return Object.keys(data).length;
-
-}
-
-
-/* =====================================================
-   LOGIN
-===================================================== */
-
-$("loginButton").addEventListener(
-    "click",
-    loginAdmin
-);
-
-
-$("adminUsername").addEventListener(
-    "keydown",
-    function(event){
-
-        if(
-            event.key === "Enter"
-        ){
-
-            loginAdmin();
-
-        }
-
-    }
-);
-
-
-$("adminPassword").addEventListener(
-    "keydown",
-    function(event){
-
-        if(
-            event.key === "Enter"
-        ){
-
-            loginAdmin();
-
-        }
-
-    }
-);
-
-
-function loginAdmin(){
-
-    const username =
-        $("adminUsername").value.trim();
-
-    const password =
-        $("adminPassword").value;
-
-
-    if(
-        username === ADMIN_USERNAME &&
-        password === ADMIN_PASSWORD
-    ){
-
-        $("loginError").style.display =
-            "none";
-
-        $("loginScreen").style.display =
-            "none";
-
-        $("adminApp").style.display =
-            "block";
-
-
-        sessionStorage.setItem("jpnhsAdminLoggedIn","true");
-        localStorage.setItem("schoolPortalUser", JSON.stringify({key:"admin:Administrator",name:"Administrator",role:"Administrator"}));
-
-
-        loadAdminData();
-
-    }
-    else{
-
-        $("loginError").style.display =
-            "block";
-
-    }
-
-}
-
-
-/* =====================================================
-   LOGOUT
-===================================================== */
-
-$("logoutButton").addEventListener(
-    "click",
-    function(){
-
-        sessionStorage.removeItem("jpnhsAdminLoggedIn");
-        localStorage.removeItem("schoolPortalUser");
-
-        location.reload();
-
-    }
-);
-
-
-/* =====================================================
-   SESSION
-===================================================== */
-
-if(
-    sessionStorage.getItem(
-        "jpnhsAdminLoggedIn"
-    ) === "true"
-){
-
-    $("loginScreen").style.display =
-        "none";
-
-    $("adminApp").style.display =
-        "block";
-
-    loadAdminData();
-
-}
-
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
-document.querySelectorAll(
-    ".nav-button"
-).forEach(
-    function(button){
-
-        button.addEventListener(
-            "click",
-            function(){
-
-                const page =
-                    button.dataset.page;
-
-
-                document.querySelectorAll(
-                    ".nav-button"
-                ).forEach(
-                    function(item){
-
-                        item.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                document.querySelectorAll(
-                    ".page"
-                ).forEach(
-                    function(item){
-
-                        item.classList.remove(
-                            "active"
-                        );
-
-                    }
-                );
-
-
-                button.classList.add(
-                    "active"
-                );
-
-
-                const target =
-                    document.getElementById(
-                        page
-                    );
-
-
-                if(target){
-
-                    target.classList.add(
-                        "active"
-                    );
-
-                }
-
-            }
-        );
-
-    }
-);
-
-
-/* =====================================================
-   FIND SCHOOL
-===================================================== */
-
-async function findSchool(){
-    const requestedSchool = new URLSearchParams(location.search).get("school");
-
-    const snapshot =
-        await db.ref(
-            "schools"
-        ).once("value");
-
-
-    const schools =
-        snapshot.val() || {};
-
-
-    const ids = Object.keys(schools);
-
-    const preferred = requestedSchool && ids.includes(requestedSchool) ? requestedSchool : (ids.includes('jpnhs') ? 'jpnhs' : ids[0]);
-
-
-    if(
-        ids.length === 0
-    ){
-
-        return null;
-
-    }
-
-
-    return {
-
-        id:preferred,
-
-        data:
-            schools[preferred] || {}
-
-    };
-
-}
-
-
-/* =====================================================
-   LOAD ADMIN DATA
-===================================================== */
-
-async function loadAdminData(){
-
-    try{
-
-        const school =
-            await findSchool();
-
-
-        if(!school){
-
-            renderEmptySchool();
-
-            return;
-
-        }
-
-
-        currentSchoolId =
-            school.id;
-
-        currentSchool =
-            school.data;
-
-
-        renderSchool(
-            school.id,
-            school.data
-        );
-
-        renderAdminBranding();
-
-
-        await loadStudents(
-            school.id
-        );
-        adminStudents = (await db.ref("studentsBySchool/" + school.id).once("value")).val() || {};
-        adminSections = (await db.ref("sections/" + school.id).once("value")).val() || {};
-        setupAdminStudentRegistration();
-
-
-        await loadStaff(
-            school.id
-        );
-
-
-        renderFeatures(
-            school.data.features ||
-            {}
-        );
-
-
-        loadConfiguration(
-            school.data
-        );
-
-    }
-    catch(error){
-
-        console.error(
-            "ADMIN FIREBASE ERROR:",
-            error
-        );
-
-
-        $("subscriptionStatus").innerHTML =
-
-            "<strong>Unable to load school information.</strong>" +
-
-            "<br><br>" +
-
-            "Firebase error: " +
-
-            escapeHTML(
-                error.message
-            ) +
-
-            "<br><br>" +
-
-            "Check your Firebase Realtime Database Rules.";
-
-    }
-
-}
-
-
-/* =====================================================
-   CURRENT SCHOOL
-===================================================== */
-
-let currentSchoolId =
-    null;
-
-let currentSchool =
-    {};
-
-let adminStudents = {};
-let adminSections = {};
-
-
-/* =====================================================
-   SCHOOL
-===================================================== */
-
-function renderSchool(
-    schoolId,
-    school
-){
-
-    $("schoolId").textContent =
-        schoolId || "—";
-
-
-    $("schoolName").textContent =
-        school.name ||
-        school.schoolName ||
-        "School Portal";
-
-
-    $("schoolShortName").textContent =
-        school.shortName ||
-        school.short_name ||
-        "SP";
-
-
-    $("gradingSystem").textContent =
-        school.gradingSystem ||
-        school.grading_system ||
-        "Standard";
-
-
-    const plan =
-        school.plan ||
-        school.subscription ||
-        "STANDARD";
-
-
-    const expires =
-        school.expires ||
-        school.expiration ||
-        school.expiry ||
-        "Not set";
-
-
-    const status =
-        school.open === false
-            ? "CLOSED"
-            : "OPEN";
-
-
-    $("subscriptionStatus").innerHTML =
-
-        "<strong>Plan:</strong> " +
-
-        escapeHTML(plan) +
-
-        "<br>" +
-
-        "<strong>Expiration:</strong> " +
-
-        escapeHTML(expires) +
-
-        "<br>" +
-
-        "<strong>Portal Status:</strong> " +
-
-        escapeHTML(status);
-
-}
-
-
-function renderEmptySchool(){
-
-    $("schoolId").textContent =
-        "—";
-
-    $("schoolName").textContent =
-        "No school configured";
-
-    $("schoolShortName").textContent =
-        "—";
-
-    $("gradingSystem").textContent =
-        "—";
-
-    $("subscriptionStatus").innerHTML =
-
-        "<strong>No school configuration was found.</strong>" +
-
-        "<br><br>" +
-
-        "Use VA Access to import or configure the school.";
-
-}
-
-
-/* =====================================================
-   STUDENTS
-===================================================== */
-
-async function loadStudents(
-    schoolId
-){
-
-    const possiblePaths = [
-
-        "studentsBySchool/" +
-        schoolId,
-
-        "students/" +
-        schoolId,
-
-        "studentRecords/" +
-        schoolId
-
-    ];
-
-
-    let students =
-        {};
-
-    let found =
-        false;
-
-
-    for(
-        const path of possiblePaths
-    ){
-
-        try{
-
-            const snapshot =
-                await db.ref(
-                    path
-                ).once("value");
-
-
-            const value =
-                snapshot.val();
-
-
-            if(
-                value &&
-                typeof value === "object" &&
-                Object.keys(value).length > 0
-            ){
-
-                students =
-                    value;
-
-                found =
-                    true;
-
-                break;
-
-            }
-
-        }
-        catch(error){
-
-            console.warn(
-                "Student path unavailable:",
-                path,
-                error.message
-            );
-
-        }
-
-    }
-
-
-    const entries =
-        Object.entries(
-            students
-        );
-
-
-    $("studentCount").textContent =
-        entries.length;
-
-
-    $("studentPageCount").textContent =
-        entries.length;
-
-
-    renderStudentTable(
-        entries
-    );
-
-}
-
-
-function renderStudentTable(
-    entries
-){
-
-    const table =
-        $("studentTable");
-
-
-    if(
-        entries.length === 0
-    ){
-
-        table.innerHTML =
-
-            "<tr>" +
-
-            "<td colspan='5'>" +
-
-            "No registered students found." +
-
-            "</td>" +
-
-            "</tr>";
-
-        return;
-
-    }
-
-
-    table.innerHTML =
-
-        entries.map(
-            function(item){
-
-                const id =
-                    item[0];
-
-                const student =
-                    item[1] || {};
-
-
-                const name =
-                    student.name ||
-                    student.fullName ||
-                    (
-                        (
-                            student.firstName ||
-                            ""
-                        ) +
-                        " " +
-                        (
-                            student.lastName ||
-                            ""
-                        )
-                    ).trim() ||
-                    "—";
-
-
-                const grade =
-                    student.gradeLevel ||
-                    student.grade ||
-                    student.yearLevel ||
-                    "—";
-
-
-                const section =
-                    student.section ||
-                    student.sectionName ||
-                    "—";
-
-
-                const schoolYear =
-                    student.schoolYear ||
-                    student.sy ||
-                    "—";
-
-
-                return `
-
-<tr>
-
-<td>
-${escapeHTML(id)}
-</td>
-
-<td>
-${escapeHTML(name)}
-</td>
-
-<td>
-${escapeHTML(grade)}
-</td>
-
-<td>
-${escapeHTML(section)}
-</td>
-
-<td>
-${escapeHTML(schoolYear)}
-</td>
-
-</tr>
-
-`;
-
-            }
-        ).join("");
-
-}
-
-
-/* =====================================================
-   STAFF
-===================================================== */
-
-async function loadStaff(
-    schoolId
-){
-
-    try{
-
-        const snapshot =
-            await db.ref(
-                "staff/" +
-                schoolId
-            ).once("value");
-
-
-        const staff =
-            snapshot.val() || {};
-
-
-        const entries =
-            Object.entries(
-                staff
-            );
-
-
-        $("staffCount").textContent =
-            entries.length;
-
-
-        const teachers =
-            entries.filter(
-                function(item){
-
-                    const person =
-                        item[1] || {};
-
-
-                    const role =
-                        String(
-                            person.role || ""
-                        ).toLowerCase();
-
-
-                    return (
-                        role.includes(
-                            "teacher"
-                        ) ||
-                        role ===
-                            "faculty"
-                    );
-
-                }
-            );
-
-
-        $("teacherCount").textContent =
-            teachers.length;
-
-
-        renderStaffTable(
-            entries
-        );
-
-    }
-    catch(error){
-
-        console.error(
-            "Staff error:",
-            error
-        );
-
-
-        $("staffCount").textContent =
-            "—";
-
-        $("teacherCount").textContent =
-            "—";
-
-
-        $("staffTable").innerHTML =
-
-            "<tr>" +
-
-            "<td colspan='5'>" +
-
-            "Unable to load staff: " +
-
-            escapeHTML(
-                error.message
-            ) +
-
-            "</td>" +
-
-            "</tr>";
-
-    }
-
-}
-
-
-function renderStaffTable(
-    entries
-){
-
-    if(
-        entries.length === 0
-    ){
-
-        $("staffTable").innerHTML =
-
-            "<tr>" +
-
-            "<td colspan='5'>" +
-
-            "No staff accounts found." +
-
-            "</td>" +
-
-            "</tr>";
-
-        return;
-
-    }
-
-
-    $("staffTable").innerHTML =
-
-        entries.map(
-            function(item){
-
-                const id =
-                    item[0];
-
-                const staff =
-                    item[1] || {};
-
-
-                const name =
-                    staff.name ||
-                    staff.fullName ||
-                    (
-                        (
-                            staff.firstName ||
-                            ""
-                        ) +
-                        " " +
-                        (
-                            staff.lastName ||
-                            ""
-                        )
-                    ).trim() ||
-                    "—";
-
-
-                const role =
-                    staff.role ||
-                    "—";
-
-
-                const email =
-                    staff.email ||
-                    "—";
-
-
-                const status =
-                    staff.status ||
-                    (
-                        staff.active === false
-                            ? "Inactive"
-                            : "Active"
-                    );
-
-
-                return `
-
-<tr>
-
-<td>
-${escapeHTML(id)}
-</td>
-
-<td>
-${escapeHTML(name)}
-</td>
-
-<td>
-${escapeHTML(role)}
-</td>
-
-<td>
-${escapeHTML(email)}
-</td>
-
-<td>
-${escapeHTML(status)}
-</td>
-
-</tr>
-
-`;
-
-            }
-        ).join("");
-
-}
-
-
-/* =====================================================
-   ADMIN STUDENT REGISTRATION / 9-DIGIT IDN
-===================================================== */
-function adminEnabledLevels(){
-    const v=currentSchool.gradeLevels;
-    if(Array.isArray(v)) return v.map(String).filter(Boolean);
-    if(v&&typeof v==='object') return Object.entries(v).filter(([,x])=>x!==false&&x!=null).map(([k,x])=>typeof x==='string'?x:(x&&x.name?String(x.name):String(k)));
-    return [];
-}
-function adminGenerateIDN(){
-    let id;
-    do{id=String(Math.floor(100000000+Math.random()*900000000));}while(adminStudents[id]);
-    $("adminStudentIDN").value=id;
-    return id;
-}
-function adminStudentMessage(msg,ok=false){const b=$("adminStudentMessage");if(!b)return;b.textContent=msg;b.style.display='block';b.className=ok?'notice':'notice error';}
-function setupAdminStudentRegistration(){
-    const levels=adminEnabledLevels();
-    if($("adminStudentLevel")){
-        $("adminStudentLevel").innerHTML='<option value="">Select grade level</option>'+levels.map(x=>'<option value="'+escapeHTML(x)+'">'+escapeHTML(x)+'</option>').join('');
-        $("adminStudentLevel").onchange=()=>{
-            const level=$("adminStudentLevel").value;
-            const sections=Object.values(adminSections||{}).filter(x=>x&&x.level===level&&!x.blocked).map(x=>x.name).filter(Boolean);
-            $("adminStudentSection").innerHTML='<option value="">Select section</option>'+sections.map(x=>'<option value="'+escapeHTML(x)+'">'+escapeHTML(x)+'</option>').join('');
-        };
-    }
-}
-$("adminGenerateIDN")?.addEventListener('click',adminGenerateIDN);
-$("adminClearStudent")?.addEventListener('click',()=>{
-    ['adminStudentIDN','adminStudentName','adminStudentBirthday','adminStudentGuardian','adminStudentAddress','adminStudentContact','adminStudentLRN'].forEach(id=>{if($(id))$(id).value='';});
-    if($("adminStudentLevel"))$("adminStudentLevel").value='';
-    if($("adminStudentSection"))$("adminStudentSection").innerHTML='<option value="">Select section</option>';
-    if($("adminStudentMessage"))$("adminStudentMessage").style.display='none';
-});
-$("adminSaveStudent")?.addEventListener('click',async()=>{
-    try{
-        if(!currentSchoolId)throw Error('School configuration has not loaded yet.');
-        let id=$("adminStudentIDN").value.trim();
-        if(!/^\d{9}$/.test(id))id=adminGenerateIDN();
-        if(adminStudents[id]){id=adminGenerateIDN();}
-        const name=$("adminStudentName").value.trim(), birthday=$("adminStudentBirthday").value, level=$("adminStudentLevel").value, section=$("adminStudentSection").value;
-        if(!name||!birthday||!level||!section)throw Error('Please complete the student name, birthday, grade level, and section.');
-        if(!adminEnabledLevels().includes(level))throw Error('This grade level is not enabled in School Configuration.');
-        const data={schoolID:currentSchoolId,studentID:id,name,fullName:name,birthday,level,section,guardian:$("adminStudentGuardian").value.trim(),address:$("adminStudentAddress").value.trim(),contact:$("adminStudentContact").value.trim(),lrn:$("adminStudentLRN").value.trim(),schoolYear:currentSchool.schoolYear||'',gradingSystem:currentSchool.gradingSystem||'Standard',grades:{},coreValues:{},attendance:{},createdAt:new Date().toISOString(),registeredBy:'Administrator'};
-        await db.ref('studentsBySchool/'+currentSchoolId+'/'+id).set(data);
-        adminStudents[id]=data;
-        adminStudentMessage('Student registered successfully. Student ID: '+id,true);
-        $("adminStudentIDN").value='';$("adminStudentName").value='';$("adminStudentBirthday").value='';$("adminStudentGuardian").value='';$("adminStudentAddress").value='';$("adminStudentContact").value='';$("adminStudentLRN").value='';$("adminStudentLevel").value='';$("adminStudentSection").innerHTML='<option value="">Select section</option>';
-        await loadStudents(currentSchoolId);
-    }catch(e){adminStudentMessage('Unable to register student: '+e.message,false);}
-});
-
-/* =====================================================
-   REGISTER STAFF
-===================================================== */
-
-$("addStaffButton").addEventListener(
-    "click",
-    registerStaff
-);
-
-
-async function registerStaff(){
-
-    if(!currentSchoolId){
-
-        showStaffMessage(
-            "School configuration has not loaded yet.",
-            false
-        );
-
-        return;
-
-    }
-
-
-    const staffId =
-        $("newStaffId")
-        .value
-        .trim();
-
-
-    const name =
-        $("newStaffName")
-        .value
-        .trim();
-
-
-    const role =
-        $("newStaffRole")
-        .value;
-
-
-    const email =
-        $("newStaffEmail")
-        .value
-        .trim();
-
-
-    const password =
-        $("newStaffPassword")
-        .value;
-
-
-    const status =
-        $("newStaffStatus")
-        .value;
-
-
-    if(
-        !staffId ||
-        !name ||
-        !role ||
-        !email ||
-        !password
-    ){
-
-        showStaffMessage(
-            "Please complete all staff account fields.",
-            false
-        );
-
-        return;
-
-    }
-
-
-    try{
-
-        const staffRef =
-            db.ref(
-                "staff/" +
-                currentSchoolId +
-                "/" +
-                staffId
-            );
-
-
-        const existing =
-            await staffRef.once(
-                "value"
-            );
-
-
-        if(
-            existing.exists()
-        ){
-
-            showStaffMessage(
-                "That Staff ID already exists.",
-                false
-            );
-
-            return;
-
-        }
-
-
-        await staffRef.set({
-
-            staffId:
-                staffId,
-
-            name:
-                name,
-
-            fullName:
-                name,
-
-            role:
-                role,
-
-            email:
-                email,
-
-            password:
-                password,
-
-            status:
-                status,
-
-            active:
-                status ===
-                    "Active",
-
-            createdAt:
-                new Date()
-                    .toISOString()
-
-        });
-
-
-        showStaffMessage(
-            "Staff account registered successfully.",
-            true
-        );
-
-
-        $("newStaffId").value =
-            "";
-
-        $("newStaffName").value =
-            "";
-
-        $("newStaffRole").value =
-            "";
-
-        $("newStaffEmail").value =
-            "";
-
-        $("newStaffPassword").value =
-            "";
-
-
-        await loadStaff(
-            currentSchoolId
-        );
-
-    }
-    catch(error){
-
-        console.error(
-            "REGISTER STAFF ERROR:",
-            error
-        );
-
-
-        showStaffMessage(
-            "Unable to register staff: " +
-            error.message,
-            false
-        );
-
-    }
-
-}
-
-
-function showStaffMessage(
-    message,
-    success
-){
-
-    const box =
-        $("staffMessage");
-
-
-    box.style.display =
-        "block";
-
-
-    box.className =
-        success
-            ? "notice success"
-            : "notice";
-
-
-    box.textContent =
-        message;
-
-}
-
-
-/* =====================================================
-   CONFIGURATION
-===================================================== */
-
-const CONFIG_GRADE_LEVELS = ["Kindergarten","Grade 1","Grade 2","Grade 3","Grade 4","Grade 5","Grade 6","Grade 7","Grade 8","Grade 9","Grade 10","Grade 11","Grade 12","College 1","College 2","College 3","College 4"];
-
-function normalizeGradeLevels(value){
-    if(Array.isArray(value)) return value.map(String).filter(Boolean);
-    if(value && typeof value === "object") return Object.entries(value).filter(([,v]) => v !== false && v != null).map(([k,v]) => typeof v === "string" ? v : (v && v.name ? String(v.name) : String(k)));
+    if(typeof value === "string" && CONFIG_GRADING_TERMS[value]) return [value];
     return [];
 }
 
-function renderGradeLevelChecklist(selected){
-    const set = new Set(normalizeGradeLevels(selected));
-    const box = $("gradeLevelChecklist");
-    if(!box) return;
-    const groups = [
-        ["Early / Basic Education",["Kindergarten"]],
-        ["Elementary",["Grade 1","Grade 2","Grade 3","Grade 4","Grade 5","Grade 6"]],
-        ["Junior High School",["Grade 7","Grade 8","Grade 9","Grade 10"]],
-        ["Senior High School",["Grade 11","Grade 12"]],
-        ["College",["College 1","College 2","College 3","College 4"]]
-    ];
-    box.innerHTML = groups.map(([title,levels]) => `<div class="grade-group">${escapeHTML(title)}</div>${levels.map(level => `<label class="grade-check"><input type="checkbox" class="config-grade" value="${escapeHTML(level)}" ${set.has(level)?"checked":""}><span>${escapeHTML(level)}</span></label>`).join("")}`).join("");
+function getSelectedGradingTerms(){
+    return Array.from(document.querySelectorAll(".config-grading-term:checked")).map(x=>x.value);
 }
 
-function getSelectedGradeLevels(){ return Array.from(document.querySelectorAll(".config-grade:checked")).map(x=>x.value); }
-
-$("selectAllGradeLevels").addEventListener("click",()=>document.querySelectorAll(".config-grade").forEach(x=>x.checked=true));
-$("clearAllGradeLevels").addEventListener("click",()=>document.querySelectorAll(".config-grade").forEach(x=>x.checked=false));
-
-// ---------------- SCHOOL BRANDING ----------------
-function brandingInitials(name){return String(name||'School Portal').trim().split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase()||'SP'}
-function compressImage(file,maxSize=500,quality=.82){return new Promise((resolve,reject)=>{if(!file)return resolve('');const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const scale=Math.min(1,maxSize/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',quality));};img.onerror=reject;img.src=r.result};r.onerror=reject;r.readAsDataURL(file)})}
-function showBrandingMessage(id,msg,ok=true){const e=$(id);if(!e)return;e.textContent=msg;e.style.display='block';e.style.background=ok?'#ecfdf3':'#fff1f2';e.style.borderColor=ok?'#bbf7d0':'#fecdd3';e.style.color=ok?'#166534':'#9f1239'}
-function partnerArray(){const p=currentSchool?.partners;if(Array.isArray(p))return p;return p&&typeof p==='object'?Object.entries(p).map(([id,v])=>({...v,id})):[]}
-function renderAdminBranding(){const s=currentSchool||{};const logo=$('adminSchoolLogoPreview');if(logo){logo.innerHTML=s.logo?`<img src="${escapeHTML(s.logo)}" alt="School logo">`:escapeHTML(brandingInitials(s.shortName||s.name));}const topLogo=$('adminTopLogo');if(topLogo)topLogo.innerHTML=s.logo?`<img src="${escapeHTML(s.logo)}" alt="School logo">`:escapeHTML(brandingInitials(s.shortName||s.name));[$('topSchoolName'),$('topSchoolName2')].forEach(e=>{if(e)e.textContent=s.name||s.schoolName||'School Portal'});const tp=$('adminTopPartners');if(tp){tp.innerHTML=partnerArray().map(p=>`<span class="admin-top-partner">${p.logo?`<img src="${escapeHTML(p.logo)}" alt="">`:escapeHTML(brandingInitials(p.name))}<span>${escapeHTML(p.name||'Partner')}</span></span>`).join('')}const box=$('partnerList');if(!box)return;const partners=partnerArray();box.innerHTML=partners.length?partners.map((p,i)=>`<div class="partner-item"><div class="partner-logo">${p.logo?`<img src="${escapeHTML(p.logo)}" alt="">`:escapeHTML(brandingInitials(p.name))}</div><div class="partner-meta"><strong>${escapeHTML(p.name||'Unnamed Partner')}</strong><small>Visible on school portals, PDFs and Excel exports</small></div><div class="partner-actions"><button type="button" class="btn secondary small" onclick="editPartner(${i})">Edit</button><button type="button" class="btn danger small" onclick="deletePartner(${i})">Remove</button></div></div>`).join(''):'<div class="empty">No partners added yet.</div>'}
-let editingPartnerIndex=-1;
-$('saveSchoolLogoButton')?.addEventListener('click',async()=>{try{if(!currentSchoolId)return showBrandingMessage('logoMessage','School is not loaded.',false);const f=$('schoolLogoFile').files[0];if(!f)return showBrandingMessage('logoMessage','Please choose a logo image first.',false);const logo=await compressImage(f,500,.82);await db.ref('schools/'+currentSchoolId).update({logo});currentSchool.logo=logo;renderAdminBranding();$('schoolLogoFile').value='';showBrandingMessage('logoMessage','School logo saved successfully.',true)}catch(e){showBrandingMessage('logoMessage','Unable to save logo: '+e.message,false)}});
-$('removeSchoolLogoButton')?.addEventListener('click',async()=>{try{await db.ref('schools/'+currentSchoolId+'/logo').remove();delete currentSchool.logo;renderAdminBranding();showBrandingMessage('logoMessage','School logo removed. Initials will be used.',true)}catch(e){showBrandingMessage('logoMessage','Unable to remove logo: '+e.message,false)}});
-$('addPartnerButton')?.addEventListener('click',()=>{editingPartnerIndex=-1;$('partnerName').value='';$('partnerLogoFile').value='';$('partnerEditor').style.display='block';$('partnerMessage').style.display='none'});
-$('cancelPartnerButton')?.addEventListener('click',()=>{$('partnerEditor').style.display='none'});
-window.editPartner=i=>{const p=partnerArray()[i];if(!p)return;editingPartnerIndex=i;$('partnerName').value=p.name||'';$('partnerLogoFile').value='';$('partnerEditor').style.display='block';$('partnerMessage').style.display='none'};
-window.deletePartner=async i=>{const a=partnerArray();if(!a[i])return;if(!confirm('Remove this partner from the school branding?'))return;try{a.splice(i,1);await db.ref('schools/'+currentSchoolId+'/partners').set(a);currentSchool.partners=a;renderAdminBranding()}catch(e){alert('Unable to remove partner: '+e.message)}};
-$('savePartnerButton')?.addEventListener('click',async()=>{try{const name=$('partnerName').value.trim();if(!name)return showBrandingMessage('partnerMessage','Enter the partner name.',false);const a=partnerArray();let item=editingPartnerIndex>=0?{...(a[editingPartnerIndex]||{})}:{id:Date.now().toString()};item.name=name;const f=$('partnerLogoFile').files[0];if(f)item.logo=await compressImage(f,400,.82);if(!item.logo)return showBrandingMessage('partnerMessage','Please choose a partner logo.',false);if(editingPartnerIndex>=0)a[editingPartnerIndex]=item;else a.push(item);await db.ref('schools/'+currentSchoolId+'/partners').set(a);currentSchool.partners=a;renderAdminBranding();$('partnerEditor').style.display='none'}catch(e){showBrandingMessage('partnerMessage','Unable to save partner: '+e.message,false)}});
-
-function loadConfiguration(school){
-    $("configSchoolYear").value = school.schoolYear || school.sy || "";
-    $("configGrading").value = school.gradingSystem || school.grading_system || "Standard";
-    let levels = normalizeGradeLevels(school.gradeLevels);
-    if(levels.length === 0) levels = ["Grade 7","Grade 8","Grade 9","Grade 10","Grade 11","Grade 12"];
-    renderGradeLevelChecklist(levels);
+function renderGradingTerms(selected){
+    const set=new Set(normalizeGradingTerms(selected));
+    document.querySelectorAll(".config-grading-term").forEach(x=>x.checked=set.has(x.value));
 }
 
-$("saveConfigurationButton").addEventListener("click", saveConfiguration);
-
-async function saveConfiguration(){
-    if(!currentSchoolId){ showConfigurationMessage("School is not loaded.",false); return; }
-    const schoolYear=$("configSchoolYear").value.trim();
-    const grading=$("configGrading").value;
-    const gradeLevels=getSelectedGradeLevels();
-    if(!schoolYear){ showConfigurationMessage("Please enter the school year.",false); return; }
-    if(!gradeLevels.length){ showConfigurationMessage("Please check at least one grade level.",false); return; }
-    const button=$("saveConfigurationButton"); button.disabled=true; button.textContent="Saving...";
-    try{
-        // Save all administrator configuration in the existing school record.
-        // This removes the old extra writes to gradeLevels/subjects/strands that caused PERMISSION_DENIED.
-        await db.ref("schools/"+currentSchoolId).update({schoolYear,gradingSystem:grading,gradeLevels});
-        currentSchool=Object.assign({},currentSchool,{schoolYear,gradingSystem:grading,gradeLevels});
-        $("gradingSystem").textContent=grading;
-        showConfigurationMessage("Configuration saved successfully. Registrar access is now limited to the checked grade levels.",true);
-    }catch(error){
-        console.error("CONFIG ERROR:",error);
-        showConfigurationMessage("Unable to save configuration: "+error.message+". If this still says PERMISSION_DENIED, the Firebase rule for schools/"+currentSchoolId+" must allow the Administrator to update the school record.",false);
-    }finally{button.disabled=false;button.textContent="Save Configuration";}
+function gradingTermsLabel(selected){
+    const terms=normalizeGradingTerms(selected);
+    if(!terms.length) return "Not configured";
+    return terms.map(x=>CONFIG_GRADING_TERMS[x].label).join(" + ");
 }
 
-
-function safeKey(
-    value
-){
-
-    return String(
-        value
-    )
-    .trim()
-    .replace(
-        /[.#$/\[\]]/g,
-        "-"
-    );
-
-}
-
-
-function showConfigurationMessage(
-    message,
-    success
-){
-
-    const box =
-        $("configurationMessage");
-
-
-    box.style.display =
-        "block";
-
-
-    box.className =
-        success
-            ? "notice success"
-            : "notice";
-
-
-    box.textContent =
-        message;
-
-}
-
-
-/* =====================================================
-   FEATURES
-===================================================== */
-
-const FEATURE_NAMES = {
-
-    student:
-        "Student Portal",
-
-    teacher:
-        "Teacher Portal",
-
-    registrar:
-        "Registrar Portal",
-
-    pdfReportCard:
-        "PDF Report Card",
-
-    attendance:
-        "Attendance",
-
-    coreValues:
-        "Core Values",
-
-    excelExport:
-        "Excel Export",
-
-    archive:
-        "Archive",
-
-    sms:
-        "SMS Notifications",
-
-    parent:
-        "Parent Portal",
-
-    onlineEnrollment:
-        "Online Enrollment"
-
-};
-
-
-function renderFeatures(
-    featureData
-){
-
-    const container =
-        $("featureList");
-
-
-    const keys =
-        Object.keys(
-            FEATURE_NAMES
-        );
-
-
-    let unlocked =
-        0;
-
-
-    container.innerHTML =
-
-        keys.map(
-            function(key){
-
-                const enabled =
-                    featureData[key] === true;
-
-
-                if(enabled){
-
-                    unlocked++;
-
-                }
-
-
-                return `
-
-<div class="feature">
-
-<div>
-
-<div class="feature-name">
-
-${escapeHTML(
-    FEATURE_NAMES[key]
-)}
-
-</div>
-
-<div class="feature-description">
-
-Feature access status
-
-</div>
-
-</div>
-
-<span class="pill ${
-    enabled
-        ? "pill-unlocked"
-        : "pill-locked"
-}">
-
-${
-    enabled
-        ? "UNLOCKED"
-        : "LOCKED"
-}
-
-</span>
-
-</div>
-
-`;
-
-            }
-        ).join("");
-
-
-    $("featureCount").textContent =
-        unlocked;
-
-}
-
-
-/* =====================================================
-   COMPLETE EXCEL BACKUP
-===================================================== */
-
-$("exportAllButton")
-.addEventListener(
-    "click",
-    exportAllData
-);
-
-
-async function exportAllData(){
-
-    if(!currentSchoolId){
-
-        showExportStatus(
-            "School configuration is not loaded.",
-            false
-        );
-
-        return;
-
-    }
-
-
-    const button =
-        $("exportAllButton");
-
-
-    button.disabled =
-        true;
-
-
-    button.textContent =
-        "Preparing Excel Backup...";
-
-
-    showExportStatus(
-        "Collecting school data...",
-        true
-    );
-
-
-    try{
-
-        const paths = {
-
-            school:
-                "schools/" +
-                currentSchoolId,
-
-            staff:
-                "staff/" +
-                currentSchoolId,
-
-            students:
-                "studentsBySchool/" +
-                currentSchoolId,
-
-            sections:
-                "sections/" +
-                currentSchoolId,
-
-            assignments:
-                "assignments/" +
-                currentSchoolId,
-
-            grades:
-                "grades/" +
-                currentSchoolId,
-
-            coreValues:
-                "coreValues/" +
-                currentSchoolId,
-
-            attendance:
-                "attendance/" +
-                currentSchoolId
-
-        };
-
-
-        const results =
-            {};
-
-
-        for(
-            const [name,path]
-            of Object.entries(paths)
-        ){
-
-            try{
-
-                const snapshot =
-                    await db.ref(
-                        path
-                    ).once("value");
-
-
-                results[name] =
-                    snapshot.val() || {};
-
-            }
-            catch(error){
-
-                console.warn(
-                    "Backup path unavailable:",
-                    path,
-                    error.message
-                );
-
-
-                results[name] =
-                    {};
-
-            }
-
-        }
-
-
-        /*
-         * If students are stored in
-         * another supported location,
-         * try those too.
-         */
-
-        if(
-            Object.keys(
-                results.students
-            ).length === 0
-        ){
-
-            const alternateStudentPaths = [
-
-                "students/" +
-                currentSchoolId,
-
-                "studentRecords/" +
-                currentSchoolId
-
-            ];
-
-
-            for(
-                const path
-                of alternateStudentPaths
-            ){
-
-                try{
-
-                    const snapshot =
-                        await db.ref(
-                            path
-                        ).once("value");
-
-
-                    const value =
-                        snapshot.val();
-
-
-                    if(
-                        value &&
-                        Object.keys(value).length
-                    ){
-
-                        results.students =
-                            value;
-
-                        break;
-
-                    }
-
-                }
-                catch(error){
-
-                    console.warn(
-                        error
-                    );
-
-                }
-
-            }
-
-        }
-
-
-        createExcelBackup(
-            results
-        );
-
-
-        showExportStatus(
-            "Complete school backup exported successfully.",
-            true
-        );
-
-    }
-    catch(error){
-
-        console.error(
-            "EXPORT ERROR:",
-            error
-        );
-
-
-        showExportStatus(
-            "Export failed: " +
-            error.message,
-            false
-        );
-
-    }
-    finally{
-
-        button.disabled =
-            false;
-
-        button.textContent =
-            "⬇ Export ALL Data to Excel";
-
-    }
-
-}
-
-
-/* =====================================================
-   CREATE EXCEL
-===================================================== */
-
-async function createExcelBackup(data){
-    const wb=new ExcelJS.Workbook();
-    const branding=wb.addWorksheet('Branding');
-    let row=1;
-    if(currentSchool.logo){
-        const base=currentSchool.logo.split(',')[1]||currentSchool.logo;
-        const ext=currentSchool.logo.includes('png')?'png':'jpeg';
-        const img=wb.addImage({base64:base,extension:ext});
-        branding.addImage(img,{tl:{col:0,row:0},ext:{width:100,height:100}}); row=7;
-    }
-    branding.getCell(row,1).value=currentSchool.name||'School Portal';branding.getCell(row,1).font={bold:true,size:18};row+=2;
-    branding.getCell(row,1).value='Partner Organizations';branding.getCell(row,1).font={bold:true};row++;
-    const partners=Array.isArray(currentSchool.partners)?currentSchool.partners:(currentSchool.partners&&typeof currentSchool.partners==='object'?Object.values(currentSchool.partners):[]);
-    if(partners.length){
-        for(const p of partners){branding.getCell(row,1).value=p.name||'Partner';if(p.logo){const base=p.logo.split(',')[1]||p.logo;const ext=p.logo.includes('png')?'png':'jpeg';const img=wb.addImage({base64:base,extension:ext});branding.addImage(img,{tl:{col:1,row:row-1},ext:{width:55,height:55}})}row+=4}
-    }else branding.getCell(row,1).value='No partners configured.';
-    branding.getColumn(1).width=38;branding.getColumn(2).width=18;
-    function addSheet(name,obj){const ws=wb.addWorksheet(name);const rows=[];if(obj&&typeof obj==='object'){Object.entries(obj).forEach(([id,v])=>{if(v&&typeof v==='object'&&!Array.isArray(v))rows.push({ID:id,...flattenObject(v)});else rows.push({ID:id,Value:v})})}if(!rows.length)rows.push({Status:'No data'});const keys=[...new Set(rows.flatMap(r=>Object.keys(r)))];keys.forEach((k,i)=>{ws.getCell(1,i+1).value=k;ws.getCell(1,i+1).font={bold:true}});rows.forEach((r,ri)=>keys.forEach((k,ci)=>ws.getCell(ri+2,ci+1).value=r[k]??''));keys.forEach((k,i)=>ws.getColumn(i+1).width=Math.min(40,Math.max(12,k.length+3)));}
-    addSheet('School Settings',{school:currentSchool});addSheet('Staff',data.staff);addSheet('Students',data.students);addSheet('Sections',data.sections);addSheet('Assignments',data.assignments);addSheet('Grades',data.grades);addSheet('Core Values',data.coreValues);addSheet('Attendance',data.attendance);
-    const info=wb.addWorksheet('Backup Info');[['SCHOOL PORTAL BACKUP'],['School ID',currentSchoolId],['Export Date',new Date().toLocaleString()],['School Name',currentSchool.name||'School Portal'],['Students',Object.keys(data.students||{}).length],['Staff',Object.keys(data.staff||{}).length],['Partners',partners.length]].forEach((r,i)=>r.forEach((v,j)=>info.getCell(i+1,j+1).value=v));info.getColumn(1).width=28;info.getColumn(2).width=45;
-    const date=new Date().toISOString().slice(0,10);const filename=(currentSchool.shortName||currentSchool.name||'SCHOOL').replace(/[^a-z0-9_-]+/gi,'_')+'_COMPLETE_BACKUP_'+date+'.xlsx';const buf=await wb.xlsx.writeBuffer();const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-}
-
-
-/* =====================================================
-   OBJECT -> EXCEL SHEET
-===================================================== */
-
-function addObjectSheet(
-    workbook,
-    sheetName,
-    object
-){
-
-    const rows =
-        [];
-
-
-    if(
-        !object ||
-        typeof object !== "object"
-    ){
-
-        rows.push(
-            {
-                Status:
-                    "No data"
-            }
-        );
-
-    }
-    else{
-
-        Object.entries(
-            object
-        ).forEach(
-            function([id,value]){
-
-                if(
-                    value &&
-                    typeof value === "object" &&
-                    !Array.isArray(value)
-                ){
-
-                    rows.push({
-
-                        ID:
-                            id,
-
-                        ...flattenObject(
-                            value
-                        )
-
-                    });
-
-                }
-                else{
-
-                    rows.push({
-
-                        ID:
-                            id,
-
-                        Value:
-                            value
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        if(
-            rows.length === 0
-        ){
-
-            rows.push(
-                {
-                    Status:
-                        "No records"
-                }
-            );
-
-        }
-
-    }
-
-
-    const worksheet =
-        XLSX.utils.json_to_sheet(
-            rows
-        );
-
-
-    XLSX.utils.book_append_sheet(
-        workbook,
-        worksheet,
-        sheetName.slice(
-            0,
-            31
-        )
-    );
-
-}
-
-
-function flattenObject(
-    object,
-    prefix = ""
-){
-
-    const result =
-        {};
-
-
-    Object.entries(
-        object || {}
-    ).forEach(
-        function([key,value]){
-
-            const name =
-                prefix
-                    ? prefix +
-                      "." +
-                      key
-                    : key;
-
-
-            if(
-                value &&
-                typeof value === "object" &&
-                !Array.isArray(value)
-            ){
-
-                Object.assign(
-                    result,
-                    flattenObject(
-                        value,
-                        name
-                    )
-                );
-
-            }
-            else{
-
-                result[name] =
-                    value;
-
-            }
-
-        }
-    );
-
-
-    return result;
-
-}
-
-
-/* =====================================================
-   EXPORT STATUS
-===================================================== */
-
-function showExportStatus(
-    message,
-    success
-){
-
-    const box =
-        $("exportStatus");
-
-
-    box.style.display =
-        "block";
-
-
-    box.className =
-        success
-            ? "notice success export-status"
-            : "notice export-status";
-
-
-    box.textContent =
-        message;
-
-}
-
-</script>
-
-<script src="community.js"></script></body>
-</html>
+function loadConfiguration(school){ 
+    $("configSchoolYear").value = school.schoolYear || school.sy || ""; 
+    const savedTerms=normalizeGradingTerms(school.gradingTerms || school.grading_terms);
+    const fallback= savedTerms.length ? savedTerms : normalizeGradingTerms(school.gradingSystem || school.grading_system);
+    renderGradingTerms(fallback.length ? fallback : ["4Q"]);
+    let levels = normalizeGradeLevels(school.gradeLevels); 
+    if(levels.length === 0) levels = ["Grade 7","Grade 8","Grade 9","Grade 10","Grade 11","Grade 12"]; 
+    renderGradeLevelChecklist(levels); 
+} 
+ 
+$("saveConfigurationButton").addEventListener("click", saveConfiguration); 
+ 
+async function saveConfiguration(){ 
+    if(!currentSchoolId){ showConfigurationMessage("School is not loaded.",false); return; } 
+    const schoolYear=$("configSchoolYear").value.trim(); 
+    const gradingTerms=getSelectedGradingTerms(); 
+    const gradeLevels=getSelectedGradeLevels(); 
+    if(!schoolYear){ showConfigurationMessage("Please enter the school year.",false); return; } 
+    if(!gradingTerms.length){ showConfigurationMessage("Please check at least one grading term system.",false); return; } 
+    if(!gradeLevels.length){ showConfigurationMessage("Please check at least one grade level.",false); return; } 
+    const gradingSystem=gradingTerms.length===1 ? gradingTerms[0] : "Multiple";
+    const button=$("saveConfigurationButton"); button.disabled=true; button.textContent="Saving..."; 
+    try{ 
+        await db.ref("schools/"+currentSchoolId).update({schoolYear,gradingSystem,gradingTerms,gradeLevels}); 
+        currentSchool=Object.assign({},currentSchool,{schoolYear,gradingSystem,gradingTerms,gradeLevels}); 
+        $("gradingSystem").textContent=gradingTermsLabel(gradingTerms); 
+        showConfigurationMessage("Configuration saved successfully. The checked grading terms and grade levels are now available to the Registrar Portal.",true); 
+    }catch(error){ 
+        console.error("CONFIG ERROR:",error); 
+        showConfigurationMessage("Unable to save configuration: "+error.message+". If this still says PERMISSION_DENIED, the Firebase rule for schools/"+currentSchoolId+" must allow the Administrator to update the school record.",false); 
+    }finally{button.disabled=false;button.textContent="Save Configuration";} 
+} 
+ 
+ 
+function safeKey( 
+    value 
+){ 
+ 
+    return String( 
+        value 
+    ) 
+    .trim() 
+    .replace( 
+        /[.#$/\[\]]/g, 
+        "-" 
+    ); 
+ 
+} 
+ 
+ 
+function showConfigurationMessage( 
+    message, 
+    success 
+){ 
+ 
+    const box = 
+        $("configurationMessage"); 
+ 
+ 
+    box.style.display = 
+        "block"; 
+ 
+ 
+    box.className = 
+        success 
+            ? "notice success" 
+            : "notice"; 
+ 
+ 
+    box.textContent = 
+        message; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   FEATURES 
+===================================================== */ 
+ 
+const FEATURE_NAMES = { 
+ 
+    student: 
+        "Student Portal", 
+ 
+    teacher: 
+        "Teacher Portal", 
+ 
+    registrar: 
+        "Registrar Portal", 
+ 
+    pdfReportCard: 
+        "PDF Report Card", 
+ 
+    attendance: 
+        "Attendance", 
+ 
+    coreValues: 
+        "Core Values", 
+ 
+    excelExport: 
+        "Excel Export", 
+ 
+    archive: 
+        "Archive", 
+ 
+    sms: 
+        "SMS Notifications", 
+ 
+    parent: 
+        "Parent Portal", 
+ 
+    onlineEnrollment: 
+        "Online Enrollment" 
+ 
+}; 
+ 
+ 
+function renderFeatures( 
+    featureData 
+){ 
+ 
+    const container = 
+        $("featureList"); 
+ 
+ 
+    const keys = 
+        Object.keys( 
+            FEATURE_NAMES 
+        ); 
+ 
+ 
+    let unlocked = 
+        0; 
+ 
+ 
+    container.innerHTML = 
+ 
+        keys.map( 
+            function(key){ 
+ 
+                const enabled = 
+                    featureData[key] === true; 
+ 
+ 
+                if(enabled){ 
+ 
+                    unlocked++; 
+ 
+                } 
+ 
+ 
+                return ` 
+ 
+<div class="feature"> 
+ 
+<div> 
+ 
+<div class="feature-name"> 
+ 
+${escapeHTML( 
+    FEATURE_NAMES[key] 
+)} 
+ 
+</div> 
+ 
+<div class="feature-description"> 
+ 
+Feature access status 
+ 
+</div> 
+ 
+</div> 
+ 
+<span class="pill ${ 
+    enabled 
+        ? "pill-unlocked" 
+        : "pill-locked" 
+}"> 
+ 
+${ 
+    enabled 
+        ? "UNLOCKED" 
+        : "LOCKED" 
+} 
+ 
+</span> 
+ 
+</div> 
+ 
+`; 
+ 
+            } 
+        ).join(""); 
+ 
+ 
+    $("featureCount").textContent = 
+        unlocked; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   COMPLETE EXCEL BACKUP 
+===================================================== */ 
+ 
+$("exportAllButton") 
+.addEventListener( 
+    "click", 
+    exportAllData 
+); 
+ 
+ 
+async function exportAllData(){ 
+ 
+    if(!currentSchoolId){ 
+ 
+        showExportStatus( 
+            "School configuration is not loaded.", 
+            false 
+        ); 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    const button = 
+        $("exportAllButton"); 
+ 
+ 
+    button.disabled = 
+        true; 
+ 
+ 
+    button.textContent = 
+        "Preparing Excel Backup..."; 
+ 
+ 
+    showExportStatus( 
+        "Collecting school data...", 
+        true 
+    ); 
+ 
+ 
+    try{ 
+ 
+        const paths = { 
+ 
+            school: 
+                "schools/" + 
+                currentSchoolId, 
+ 
+            staff: 
+                "staff/" + 
+                currentSchoolId, 
+ 
+            students: 
+                "studentsBySchool/" + 
+                currentSchoolId, 
+ 
+            sections: 
+                "sections/" + 
+                currentSchoolId, 
+ 
+            assignments: 
+                "assignments/" + 
+                currentSchoolId, 
+ 
+            grades: 
+                "grades/" + 
+                currentSchoolId, 
+ 
+            coreValues: 
+                "coreValues/" + 
+                currentSchoolId, 
+ 
+            attendance: 
+                "attendance/" + 
+                currentSchoolId 
+ 
+        }; 
+ 
+ 
+        const results = 
+            {}; 
+ 
+ 
+        for( 
+            const [name,path] 
+            of Object.entries(paths) 
+        ){ 
+ 
+            try{ 
+ 
+                const snapshot = 
+                    await db.ref( 
+                        path 
+                    ).once("value"); 
+ 
+ 
+                results[name] = 
+                    snapshot.val() || {}; 
+ 
+            } 
+            catch(error){ 
+ 
+                console.warn( 
+                    "Backup path unavailable:", 
+                    path, 
+                    error.message 
+                ); 
+ 
+ 
+                results[name] = 
+                    {}; 
+ 
+            } 
+ 
+        } 
+ 
+ 
+        /* 
+         * If students are stored in 
+         * another supported location, 
+         * try those too. 
+         */ 
+ 
+        if( 
+            Object.keys( 
+                results.students 
+            ).length === 0 
+        ){ 
+ 
+            const alternateStudentPaths = [ 
+ 
+                "students/" + 
+                currentSchoolId, 
+ 
+                "studentRecords/" + 
+                currentSchoolId 
+ 
+            ]; 
+ 
+ 
+            for( 
+                const path 
+                of alternateStudentPaths 
+            ){ 
+ 
+                try{ 
+ 
+                    const snapshot = 
+                        await db.ref( 
+                            path 
+                        ).once("value"); 
+ 
+ 
+                    const value = 
+                        snapshot.val(); 
+ 
+ 
+                    if( 
+                        value && 
+                        Object.keys(value).length 
+                    ){ 
+ 
+                        results.students = 
+                            value; 
+ 
+                        break; 
+ 
+                    } 
+ 
+                } 
+                catch(error){ 
+ 
+                    console.warn( 
+                        error 
+                    ); 
+ 
+                } 
+ 
+            } 
+ 
+        } 
+ 
+ 
+        createExcelBackup( 
+            results 
+        ); 
+ 
+ 
+        showExportStatus( 
+            "Complete school backup exported successfully.", 
+            true 
+        ); 
+ 
+    } 
+    catch(error){ 
+ 
+        console.error( 
+            "EXPORT ERROR:", 
+            error 
+        ); 
+ 
+ 
+        showExportStatus( 
+            "Export failed: " + 
+            error.message, 
+            false 
+        ); 
+ 
+    } 
+    finally{ 
+ 
+        button.disabled = 
+            false; 
+ 
+        button.textContent = 
+            "⬇ Export ALL Data to Excel"; 
+ 
+    } 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   CREATE EXCEL 
+===================================================== */ 
+ 
+async function createExcelBackup(data){ 
+    const wb=new ExcelJS.Workbook(); 
+    const branding=wb.addWorksheet('Branding'); 
+    let row=1; 
+    if(currentSchool.logo){ 
+        const base=currentSchool.logo.split(',')[1]||currentSchool.logo; 
+        const ext=currentSchool.logo.includes('png')?'png':'jpeg'; 
+        const img=wb.addImage({base64:base,extension:ext}); 
+        branding.addImage(img,{tl:{col:0,row:0},ext:{width:100,height:100}}); row=7; 
+    } 
+    branding.getCell(row,1).value=currentSchool.name||'School Portal';branding.getCell(row,1).font={bold:true,size:18};row+=2; 
+    branding.getCell(row,1).value='Partner Organizations';branding.getCell(row,1).font={bold:true};row++; 
+    const partners=Array.isArray(currentSchool.partners)?currentSchool.partners:(currentSchool.partners&&typeof currentSchool.partners==='object'?Object.values(currentSchool.partners):[]); 
+    if(partners.length){ 
+        for(const p of partners){branding.getCell(row,1).value=p.name||'Partner';if(p.logo){const base=p.logo.split(',')[1]||p.logo;const ext=p.logo.includes('png')?'png':'jpeg';const img=wb.addImage({base64:base,extension:ext});branding.addImage(img,{tl:{col:1,row:row-1},ext:{width:55,height:55}})}row+=4} 
+    }else branding.getCell(row,1).value='No partners configured.'; 
+    branding.getColumn(1).width=38;branding.getColumn(2).width=18; 
+    function addSheet(name,obj){const ws=wb.addWorksheet(name);const rows=[];if(obj&&typeof obj==='object'){Object.entries(obj).forEach(([id,v])=>{if(v&&typeof v==='object'&&!Array.isArray(v))rows.push({ID:id,...flattenObject(v)});else rows.push({ID:id,Value:v})})}if(!rows.length)rows.push({Status:'No data'});const keys=[...new Set(rows.flatMap(r=>Object.keys(r)))];keys.forEach((k,i)=>{ws.getCell(1,i+1).value=k;ws.getCell(1,i+1).font={bold:true}});rows.forEach((r,ri)=>keys.forEach((k,ci)=>ws.getCell(ri+2,ci+1).value=r[k]??''));keys.forEach((k,i)=>ws.getColumn(i+1).width=Math.min(40,Math.max(12,k.length+3)));} 
+    addSheet('School Settings',{school:currentSchool});addSheet('Staff',data.staff);addSheet('Students',data.students);addSheet('Sections',data.sections);addSheet('Assignments',data.assignments);addSheet('Grades',data.grades);addSheet('Core Values',data.coreValues);addSheet('Attendance',data.attendance); 
+    const info=wb.addWorksheet('Backup Info');[['SCHOOL PORTAL BACKUP'],['School ID',currentSchoolId],['Export Date',new Date().toLocaleString()],['School Name',currentSchool.name||'School Portal'],['Students',Object.keys(data.students||{}).length],['Staff',Object.keys(data.staff||{}).length],['Partners',partners.length]].forEach((r,i)=>r.forEach((v,j)=>info.getCell(i+1,j+1).value=v));info.getColumn(1).width=28;info.getColumn(2).width=45; 
+    const date=new Date().toISOString().slice(0,10);const filename=(currentSchool.shortName||currentSchool.name||'SCHOOL').replace(/[^a-z0-9_-]+/gi,'_')+'_COMPLETE_BACKUP_'+date+'.xlsx';const buf=await wb.xlsx.writeBuffer();const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000); 
+} 
+ 
+ 
+/* ===================================================== 
+   OBJECT -> EXCEL SHEET 
+===================================================== */ 
+ 
+function addObjectSheet( 
+    workbook, 
+    sheetName, 
+    object 
+){ 
+ 
+    const rows = 
+        []; 
+ 
+ 
+    if( 
+        !object || 
+        typeof object !== "object" 
+    ){ 
+ 
+        rows.push( 
+            { 
+                Status: 
+                    "No data" 
+            } 
+        ); 
+ 
+    } 
+    else{ 
+ 
+        Object.entries( 
+            object 
+        ).forEach( 
+            function([id,value]){ 
+ 
+                if( 
+                    value && 
+                    typeof value === "object" && 
+                    !Array.isArray(value) 
+                ){ 
+ 
+                    rows.push({ 
+ 
+                        ID: 
+                            id, 
+ 
+                        ...flattenObject( 
+                            value 
+                        ) 
+ 
+                    }); 
+ 
+                } 
+                else{ 
+ 
+                    rows.push({ 
+ 
+                        ID: 
+                            id, 
+ 
+                        Value: 
+                            value 
+ 
+                    }); 
+ 
+                } 
+ 
+            } 
+        ); 
+ 
+ 
+        if( 
+            rows.length === 0 
+        ){ 
+ 
+            rows.push( 
+                { 
+                    Status: 
+                        "No records" 
+                } 
+            ); 
+ 
+        } 
+ 
+    } 
+ 
+ 
+    const worksheet = 
+        XLSX.utils.json_to_sheet( 
+            rows 
+        ); 
+ 
+ 
+    XLSX.utils.book_append_sheet( 
+        workbook, 
+        worksheet, 
+        sheetName.slice( 
+            0, 
+            31 
+        ) 
+    ); 
+ 
+} 
+ 
+ 
+function flattenObject( 
+    object, 
+    prefix = "" 
+){ 
+ 
+    const result = 
+        {}; 
+ 
+ 
+    Object.entries( 
+        object || {} 
+    ).forEach( 
+        function([key,value]){ 
+ 
+            const name = 
+                prefix 
+                    ? prefix + 
+                      "." + 
+                      key 
+                    : key; 
+ 
+ 
+            if( 
+                value && 
+                typeof value === "object" && 
+                !Array.isArray(value) 
+            ){ 
+ 
+                Object.assign( 
+                    result, 
+                    flattenObject( 
+                        value, 
+                        name 
+                    ) 
+                ); 
+ 
+            } 
+            else{ 
+ 
+                result[name] = 
+                    value; 
+ 
+            } 
+ 
+        } 
+    ); 
+ 
+ 
+    return result; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   EXPORT STATUS 
+===================================================== */ 
+ 
+function showExportStatus( 
+    message, 
+    success 
+){ 
+ 
+    const box = 
+        $("exportStatus"); 
+ 
+ 
+    box.style.display = 
+        "block"; 
+ 
+ 
+    box.className = 
+        success 
+            ? "notice success export-status" 
+            : "notice export-status"; 
+ 
+ 
+    box.textContent = 
+        message; 
+ 
+} 
+ 
+</script> 
+ 
+<script src="community.js"></script></body> 
+</html> ok heres the admin code so which one of them needs fixing?
