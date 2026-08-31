@@ -1,0 +1,24 @@
+School Community Feed
+
+Main school page:
+- Generic, school-branded social-feed style homepage.
+- Horizontal menu: Home, Registrar, Teacher, Student, Administrator.
+- VA Access is intentionally omitted from the public/main menu.
+- View-only feed for visitors.
+
+Logged-in portals:
+- Community menu added to Administrator, Registrar, Teacher, and Student portals.
+- Post types: Post, Announcement, Calling Attention.
+- Calling Attention supports ID Search or Name Search and multiple people.
+- Notifications are created for each called-out person.
+- Notification links to index.html?school=...&post=... and opens the referenced post.
+- The original poster can delete their own post.
+- Administrator can delete any community post.
+- No image upload is used for community posts.
+- School logo/partners remain handled by the existing branding system.
+
+Firebase paths:
+community/{schoolId}/posts/{postId}
+community/{schoolId}/notifications/{personKey}/{postId}
+
+For the current development rules, community read/write is enabled. Secure production rules should later use Firebase Authentication and roles.
