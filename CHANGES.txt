@@ -1,0 +1,11 @@
+JPNHS PORTAL UPDATE
+===================
+
+1. Registrar student editing updates the existing Student ID.
+2. Teacher grade entry is matched to teacher assignments and enabled school levels.
+3. Administrator Configuration now uses grade-level checkboxes from Kindergarten through College 4.
+4. Only Administrator-selected grade levels are available to Registrar enrollment, sections, reports, and teacher assignments.
+5. Subjects are now managed by the Registrar, not Administrator.
+6. Administrator configuration saves schoolYear, gradingSystem, and gradeLevels directly inside the school record in one Firebase write.
+7. The old separate gradeLevels/subjects/strands configuration writes were removed; this fixes the common PERMISSION_DENIED error caused by those extra database paths.
+8. No Super Admin role was added.
