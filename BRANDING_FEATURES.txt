@@ -1,0 +1,13 @@
+School Portal Branding Update
+
+Administrator > School > School Branding:
+- Upload/remove school logo.
+- Add/edit/remove partner organizations with partner logos.
+- Branding is saved under schools/{schoolId}/logo and schools/{schoolId}/partners.
+
+All school portals load the branding from the active school's Firebase record.
+School logo and partner logos/names appear in portal headers and generated PDF reports.
+Registrar and Teacher Excel exports use ExcelJS and embed the school/partner logos.
+Administrator complete backup Excel also includes a Branding sheet with embedded logos.
+
+Images are resized/compressed in the browser before being stored in Realtime Database to keep the stored data smaller.
