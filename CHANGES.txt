@@ -1,0 +1,31 @@
+JPNHS PORTAL UPDATE
+===================
+
+1. Registrar student editing updates the existing Student ID.
+2. Teacher grade entry is matched to teacher assignments and enabled school levels.
+3. Administrator Configuration now uses grade-level checkboxes from Kindergarten through College 4.
+4. Only Administrator-selected grade levels are available to Registrar enrollment, sections, reports, and teacher assignments.
+5. Subjects are now managed by the Registrar, not Administrator.
+6. Administrator configuration saves schoolYear, gradingSystem, and gradeLevels directly inside the school record in one Firebase write.
+7. The old separate gradeLevels/subjects/strands configuration writes were removed; this fixes the common PERMISSION_DENIED error caused by those extra database paths.
+8. No Super Admin role was added.
+
+
+Community Feed Update
+- Generic school-branded main feed.
+- Text-only posts, announcements, and multi-person call-outs.
+- Call-outs support ID Search or Name Search.
+- Notifications link directly to the referenced post.
+- Poster can delete their own post; Administrator can delete any post.
+- VA remains private and is not shown in the main portal menu.
+
+
+FINAL INTEGRATION UPDATE
+- VA plan, expiry, feature controls and VA-managed metadata are persisted in Firebase under schools/{schoolId}/planConfig and va/schools/{schoolId}; existing schools are backfilled when VA loads them.
+- Added Community Feed as a configurable school feature.
+- Teacher attendance is stored per subject/day; teachers can save holiday/classes-suspended notices with reasons.
+- Student attendance calendar shows multiple subject records for a clicked date and no-class notices.
+- Student report-card download supports selecting a stored school year.
+- Teacher year-end Promoted/Not Promoted status archives the current-year record and locks teacher editing.
+- Registrar Student Info supports viewing school-year history and reenrollment while preserving archived records.
+- Added Firebase rules for schoolDays and VA metadata.
