@@ -1,1 +1,0 @@
-Index page fixed: visible fallback shell remains available if community.js fails to load. Community interface now hides fallback only after successful mount.
