@@ -1,0 +1,3976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Administrator | School Portal</title>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
+<!-- SheetJS - Excel export -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+
+:root{
+    --blue:#2563eb;
+    --blue-dark:#1d4ed8;
+    --blue-light:#eff6ff;
+
+    --maroon:#7f1d2d;
+    --maroon-dark:#651525;
+    --maroon-light:#fff1f2;
+
+    --green:#15803d;
+    --green-light:#ecfdf3;
+
+    --red:#b91c1c;
+
+    --ink:#172033;
+    --muted:#667085;
+    --line:#e5e7eb;
+
+    --bg:#f7f9fc;
+    --white:#ffffff;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    color:var(--ink);
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef6ff 0%,
+            #ffffff 55%,
+            #fff5f6 100%
+        );
+
+    min-height:100vh;
+}
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+.login-screen{
+    min-height:100vh;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:25px;
+}
+
+.login-box{
+    width:100%;
+    max-width:430px;
+
+    background:white;
+
+    border:1px solid var(--line);
+    border-radius:22px;
+
+    padding:34px;
+
+    box-shadow:
+        0 25px 70px
+        rgba(15,23,42,.12);
+}
+
+.login-accent{
+    width:75px;
+    height:5px;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--blue),
+            var(--maroon)
+        );
+
+    margin-bottom:22px;
+}
+
+.login-box h1{
+    margin:0;
+
+    font-size:32px;
+
+    letter-spacing:-.04em;
+}
+
+.login-box p{
+    color:var(--muted);
+    line-height:1.6;
+}
+
+.field{
+    margin-top:17px;
+}
+
+.field label{
+    display:block;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    margin-bottom:7px;
+}
+
+.field input,
+.field select{
+    width:100%;
+
+    padding:12px 13px;
+
+    border:
+        1px solid
+        #cfd6df;
+
+    border-radius:10px;
+
+    outline:none;
+
+    background:white;
+
+    color:var(--ink);
+
+    font-size:14px;
+}
+
+.field input:focus,
+.field select:focus{
+    border-color:var(--blue);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(37,99,235,.10);
+}
+
+.login-button{
+    width:100%;
+    margin-top:20px;
+}
+
+.error{
+    display:none;
+
+    background:#fff1f2;
+
+    color:#9f1239;
+
+    border:
+        1px solid
+        #fecdd3;
+
+    border-radius:10px;
+
+    padding:11px 13px;
+
+    margin-top:15px;
+
+    font-size:13px;
+}
+
+.back-link{
+    display:inline-block;
+
+    margin-top:18px;
+
+    color:var(--blue);
+
+    text-decoration:none;
+
+    font-size:13px;
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+button,
+.btn{
+    border:0;
+
+    border-radius:10px;
+
+    padding:11px 15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+    display:inline-block;
+}
+
+.primary{
+    background:var(--blue);
+    color:white;
+}
+
+.primary:hover{
+    background:var(--blue-dark);
+}
+
+.secondary{
+    background:white;
+
+    color:var(--ink);
+
+    border:
+        1px solid
+        var(--line);
+}
+
+.maroon{
+    background:var(--maroon);
+    color:white;
+}
+
+.maroon:hover{
+    background:var(--maroon-dark);
+}
+
+.danger{
+    background:#fff1f2;
+    color:var(--red);
+
+    border:
+        1px solid
+        #fecdd3;
+}
+
+/* =====================================================
+   APP
+===================================================== */
+
+.app{
+    display:none;
+    min-height:100vh;
+}
+
+.topbar{
+    position:sticky;
+
+    top:0;
+
+    z-index:20;
+
+    background:
+        rgba(255,255,255,.94);
+
+    backdrop-filter:blur(12px);
+
+    border-bottom:
+        1px solid
+        var(--line);
+}
+
+.topbar-inner{
+    max-width:1250px;
+
+    margin:auto;
+
+    padding:15px 22px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+}
+
+.brand-title{
+    font-weight:800;
+    font-size:17px;
+}
+
+.brand-sub{
+    color:var(--muted);
+
+    font-size:12px;
+
+    margin-top:2px;
+}
+
+.top-actions{
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+}
+
+.admin-badge{
+    background:var(--blue-light);
+
+    color:var(--blue-dark);
+
+    padding:7px 10px;
+
+    border-radius:999px;
+
+    font-size:11px;
+
+    font-weight:800;
+}
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.layout{
+    max-width:1250px;
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:
+        230px 1fr;
+
+    min-height:
+        calc(100vh - 70px);
+}
+
+.sidebar{
+    padding:22px 15px;
+
+    border-right:
+        1px solid
+        var(--line);
+}
+
+.sidebar-title{
+    font-size:11px;
+
+    color:var(--muted);
+
+    font-weight:800;
+
+    padding:
+        0 11px 9px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.06em;
+}
+
+.nav-button{
+    width:100%;
+
+    background:transparent;
+
+    color:var(--ink);
+
+    text-align:left;
+
+    padding:11px 12px;
+
+    margin-bottom:4px;
+
+    border-radius:10px;
+}
+
+.nav-button:hover{
+    background:#f4f7fb;
+}
+
+.nav-button.active{
+    background:var(--blue-light);
+
+    color:var(--blue-dark);
+}
+
+.content{
+    padding:
+        28px
+        25px
+        60px;
+
+    min-width:0;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.page-title{
+    margin-bottom:22px;
+}
+
+.page-title h1{
+    margin:0 0 5px;
+
+    font-size:30px;
+
+    letter-spacing:-.04em;
+}
+
+.page-title p{
+    margin:0;
+
+    color:var(--muted);
+}
+
+/* =====================================================
+   CARDS
+===================================================== */
+
+.card{
+    background:white;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:17px;
+
+    padding:20px;
+
+    box-shadow:
+        0 10px 32px
+        rgba(15,23,42,.05);
+
+    margin-bottom:17px;
+}
+
+.card h2{
+    margin:
+        0 0 6px;
+
+    font-size:18px;
+}
+
+.card-sub{
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-bottom:18px;
+}
+
+/* =====================================================
+   STATS
+===================================================== */
+
+.stats{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:14px;
+
+    margin-bottom:18px;
+}
+
+.stat{
+    background:white;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:15px;
+
+    padding:18px;
+}
+
+.stat-label{
+    color:var(--muted);
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+.stat-value{
+    font-size:27px;
+
+    font-weight:800;
+
+    margin-top:7px;
+}
+
+/* =====================================================
+   FEATURE
+===================================================== */
+
+.feature-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:10px;
+}
+
+.feature{
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:12px;
+
+    padding:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+}
+
+.feature-name{
+    font-weight:700;
+
+    font-size:13px;
+}
+
+.feature-description{
+    color:var(--muted);
+
+    font-size:11px;
+
+    margin-top:3px;
+}
+
+.pill{
+    padding:6px 9px;
+
+    border-radius:999px;
+
+    font-size:10px;
+
+    font-weight:800;
+
+    white-space:nowrap;
+}
+
+.pill-unlocked{
+    background:
+        var(--green-light);
+
+    color:#166534;
+}
+
+.pill-locked{
+    background:
+        var(--maroon-light);
+
+    color:#9f1239;
+}
+
+/* =====================================================
+   TABLE
+===================================================== */
+
+.table-wrap{
+    width:100%;
+
+    overflow:auto;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:12px;
+}
+
+table{
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+th,
+td{
+    padding:12px 13px;
+
+    border-bottom:
+        1px solid
+        var(--line);
+
+    text-align:left;
+
+    font-size:13px;
+
+    white-space:nowrap;
+}
+
+th{
+    background:#f8fafc;
+
+    font-size:12px;
+}
+
+tr:last-child td{
+    border-bottom:0;
+}
+
+/* =====================================================
+   SCHOOL INFO
+===================================================== */
+
+.info-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:14px;
+}
+
+.info-box{
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:12px;
+
+    padding:15px;
+}
+
+.info-label{
+    color:var(--muted);
+
+    font-size:11px;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+}
+
+.info-value{
+    font-weight:800;
+
+    margin-top:5px;
+}
+
+/* =====================================================
+   FORMS
+===================================================== */
+
+.form-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:14px;
+}
+
+.form-actions{
+    margin-top:18px;
+
+    display:flex;
+
+    gap:9px;
+
+    flex-wrap:wrap;
+}
+
+/* =====================================================
+   NOTICE
+===================================================== */
+
+.notice{
+    padding:13px 15px;
+
+    border-radius:11px;
+
+    background:var(--blue-light);
+
+    border:
+        1px solid
+        #bfdbfe;
+
+    color:#1e40af;
+
+    font-size:13px;
+}
+
+.success{
+    background:#ecfdf3;
+
+    border-color:#bbf7d0;
+
+    color:#166534;
+}
+
+.warning{
+    background:#fff7ed;
+
+    border-color:#fed7aa;
+
+    color:#9a3412;
+}
+
+.owner-note{
+    padding:14px;
+
+    border-radius:11px;
+
+    background:#fff7ed;
+
+    border:
+        1px solid
+        #fed7aa;
+
+    color:#9a3412;
+
+    font-size:13px;
+}
+
+/* =====================================================
+   BACKUP
+===================================================== */
+
+.backup-box{
+    text-align:center;
+
+    padding:25px;
+}
+
+.backup-icon{
+    font-size:42px;
+
+    margin-bottom:10px;
+}
+
+.backup-box h2{
+    margin-bottom:8px;
+}
+
+.backup-box p{
+    color:var(--muted);
+
+    max-width:650px;
+
+    margin:
+        0 auto 20px;
+
+    line-height:1.6;
+}
+
+.backup-button{
+    background:var(--maroon);
+
+    color:white;
+
+    padding:
+        14px 22px;
+
+    font-size:14px;
+}
+
+.backup-button:hover{
+    background:var(--maroon-dark);
+}
+
+.export-status{
+    margin-top:15px;
+
+    display:none;
+}
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.loading{
+    color:var(--muted);
+
+    padding:18px;
+
+    text-align:center;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:950px){
+
+    .layout{
+        grid-template-columns:1fr;
+    }
+
+    .sidebar{
+        border-right:0;
+
+        border-bottom:
+            1px solid
+            var(--line);
+
+        display:flex;
+
+        overflow:auto;
+
+        gap:5px;
+
+        padding:10px;
+    }
+
+    .sidebar-title{
+        display:none;
+    }
+
+    .nav-button{
+        min-width:max-content;
+
+        width:auto;
+
+        margin:0;
+    }
+
+    .stats{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+}
+
+@media(max-width:650px){
+
+    .topbar-inner{
+        padding:13px 15px;
+
+        flex-wrap:wrap;
+    }
+
+    .top-actions{
+        width:100%;
+    }
+
+    .content{
+        padding:
+            20px
+            14px
+            45px;
+    }
+
+    .stats,
+    .feature-grid,
+    .info-grid,
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .page-title h1{
+        font-size:26px;
+    }
+}
+
+
+.branding-grid{display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start}.branding-preview{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fbfdff}.branding-label{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:10px}.big-logo{width:130px;height:130px;border-radius:18px;border:1px dashed #cbd5e1;background:#f8fafc;display:grid;place-items:center;font-weight:900;font-size:30px;overflow:hidden;margin-bottom:12px}.big-logo img{width:100%;height:100%;object-fit:contain;background:#fff}.partner-list{display:grid;gap:10px}.partner-item{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}.partner-logo{width:52px;height:52px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;font-weight:800;background:#f8fafc;flex:0 0 52px}.partner-logo img{width:100%;height:100%;object-fit:contain}.partner-meta{flex:1;min-width:0}.partner-meta strong{display:block}.partner-meta small{color:var(--muted)}.partner-actions{display:flex;gap:6px;flex-wrap:wrap}.partner-editor{margin-top:16px;padding:16px;border:1px dashed #b8c7d9;border-radius:12px;background:#fbfdff}@media(max-width:800px){.branding-grid{grid-template-columns:1fr}}
+.admin-top-logo{width:44px;height:44px;border:1px solid var(--line);border-radius:11px;display:grid;place-items:center;overflow:hidden;background:#fff;font-weight:900}.admin-top-logo img{width:100%;height:100%;object-fit:contain}.admin-top-partners{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}.admin-top-partner{display:flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:999px;padding:3px 7px;font-size:9px;background:#fff}.admin-top-partner img{width:20px;height:20px;object-fit:contain}@media(max-width:900px){.admin-top-partners{display:none}}
+</style><style>
+.grade-checklist{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px;margin-top:14px}
+.grade-check{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #dce5ef;border-radius:9px;background:#fff;cursor:pointer;font-weight:700}
+.grade-check:hover{background:#f6faff;border-color:#9fc7ea}
+.grade-check input{width:18px;height:18px}
+.grade-group{grid-column:1/-1;font-size:12px;color:#52637a;text-transform:uppercase;letter-spacing:.04em;margin-top:8px}
+@media(max-width:900px){.grade-checklist{grid-template-columns:repeat(2,minmax(140px,1fr))}}
+@media(max-width:600px){.grade-checklist{grid-template-columns:1fr}}
+
+.grading-terms-checklist{display:grid;grid-template-columns:1fr;gap:8px;margin-top:7px}
+.grading-term-check{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid #dce5ef;border-radius:10px;background:#fff;cursor:pointer}
+.grading-term-check:hover{background:#f6faff;border-color:#9fc7ea}
+.grading-term-check input{width:18px;height:18px;margin-top:2px;accent-color:var(--blue)}
+.grading-term-check strong{display:block;font-size:13px}
+.grading-term-check small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.field-help{display:block;color:var(--muted);font-size:11px;line-height:1.5;margin-top:7px}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script><script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script></head>
+
+<body>
+
+
+<!-- =====================================================
+     LOGIN
+===================================================== -->
+
+<div id="loginScreen" class="login-screen">
+
+<div class="login-box">
+
+<div class="login-accent"></div>
+
+<h1>Administrator</h1>
+
+<p>
+<span id="topSchoolName">School Portal</span>
+<br>
+School Administration Portal
+</p>
+
+<div class="field">
+
+<label>Username</label>
+
+<input
+    id="adminUsername"
+    type="text"
+    autocomplete="username"
+    placeholder="Enter username"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>Password</label>
+
+<input
+    id="adminPassword"
+    type="password"
+    autocomplete="current-password"
+    placeholder="Enter password"
+>
+
+</div>
+
+
+<button
+    id="loginButton"
+    class="btn primary login-button"
+>
+Log In
+</button>
+
+
+<div id="loginError" class="error">
+Invalid Administrator username or password.
+</div>
+
+
+<a
+    class="back-link"
+    href="registrar.html"
+>
+← Back to School Portal
+</a>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     ADMIN APP
+===================================================== -->
+
+<div id="adminApp" class="app">
+
+
+<header class="topbar">
+
+<div class="topbar-inner">
+
+<div style="display:flex;align-items:center;gap:12px">
+<div id="adminTopLogo" class="admin-top-logo">SP</div>
+<div>
+<div class="brand-title"><span id="topSchoolName2">School Portal</span></div>
+<div class="brand-sub">Administrator Portal</div>
+</div>
+</div>
+
+<div id="adminTopPartners" class="admin-top-partners"></div>
+
+<div class="top-actions">
+
+<span class="admin-badge">
+ADMINISTRATOR
+</span>
+
+<button
+    id="logoutButton"
+    class="btn secondary"
+>
+Logout
+</button>
+
+</div>
+
+</div>
+
+</header>
+
+
+<div class="layout">
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+<div class="sidebar-title">
+Administration
+</div>
+
+
+<button
+    class="nav-button active"
+    data-page="dashboard"
+>
+Dashboard
+</button>
+
+
+<button
+    class="nav-button"
+    data-page="school"
+>
+School
+</button>
+
+
+<button
+    class="nav-button"
+    data-page="staff"
+>
+School Staff
+</button>
+
+
+<button
+    class="nav-button"
+    data-page="students"
+>
+Students
+</button>
+
+
+<button
+    class="nav-button"
+    data-page="configuration"
+>
+Configuration
+</button>
+
+
+<button
+    class="nav-button"
+    data-page="features"
+>
+Features Unlocked
+</button>
+
+
+<button
+    class="nav-button"
+    data-page="backup"
+>
+Backup
+</button>
+
+</aside>
+
+
+<!-- =====================================================
+     CONTENT
+===================================================== -->
+
+<main class="content">
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<section
+    id="dashboard"
+    class="page active"
+>
+
+<div class="page-title">
+
+<h1>Dashboard</h1>
+
+<p>
+School overview and portal status.
+</p>
+
+</div>
+
+
+<div class="stats">
+
+
+<div class="stat">
+
+<div class="stat-label">
+ENROLLED STUDENTS
+</div>
+
+<div
+    id="studentCount"
+    class="stat-value"
+>
+0
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-label">
+SCHOOL STAFF
+</div>
+
+<div
+    id="staffCount"
+    class="stat-value"
+>
+0
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-label">
+TEACHERS
+</div>
+
+<div
+    id="teacherCount"
+    class="stat-value"
+>
+0
+</div>
+
+</div>
+
+
+<div class="stat">
+
+<div class="stat-label">
+FEATURES UNLOCKED
+</div>
+
+<div
+    id="featureCount"
+    class="stat-value"
+>
+0
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+School Subscription
+</h2>
+
+<div
+    id="subscriptionStatus"
+    class="notice"
+>
+Loading school information...
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+Administrator Access
+</h2>
+
+<p class="card-sub">
+You can manage normal school administration functions
+from this portal.
+</p>
+
+
+<div class="owner-note">
+
+<strong>Feature Control:</strong>
+
+Feature unlocking and locking is controlled
+exclusively from VA Access.
+
+The Administrator can only view the current
+feature status.
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     SCHOOL
+===================================================== -->
+
+<section
+    id="school"
+    class="page"
+>
+
+<div class="page-title">
+
+<h1>School</h1>
+
+<p>
+View the school's current information.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="info-grid">
+
+
+<div class="info-box">
+
+<div class="info-label">
+School ID
+</div>
+
+<div
+    id="schoolId"
+    class="info-value"
+>
+—
+</div>
+
+</div>
+
+
+<div class="info-box">
+
+<div class="info-label">
+School Name
+</div>
+
+<div
+    id="schoolName"
+    class="info-value"
+>
+—
+</div>
+
+</div>
+
+
+<div class="info-box">
+
+<div class="info-label">
+Short Name
+</div>
+
+<div
+    id="schoolShortName"
+    class="info-value"
+>
+—
+</div>
+
+</div>
+
+
+<div class="info-box">
+
+<div class="info-label">
+Grading System
+</div>
+
+<div
+    id="gradingSystem"
+    class="info-value"
+>
+—
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card branding-card">
+<h2>School Branding</h2>
+<p class="card-sub">Upload the official school logo and optionally add partner organizations. These will appear across the school portals and in generated reports/exports.</p>
+<div class="branding-grid">
+  <div class="branding-preview">
+    <div class="branding-label">School Logo</div>
+    <div id="adminSchoolLogoPreview" class="big-logo">SP</div>
+    <input id="schoolLogoFile" type="file" accept="image/png,image/jpeg,image/webp">
+    <div class="form-actions" style="margin-top:10px">
+      <button type="button" id="saveSchoolLogoButton" class="btn primary">Upload / Save Logo</button>
+      <button type="button" id="removeSchoolLogoButton" class="btn secondary">Remove Logo</button>
+    </div>
+    <div id="logoMessage" class="notice" style="display:none;margin-top:10px"></div>
+  </div>
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+      <div><strong>Partner Organizations</strong><div class="card-sub" style="margin-top:4px">Add partners whose names and logos should be shown on school portals, PDFs, and Excel exports.</div></div>
+      <button type="button" id="addPartnerButton" class="btn primary">＋ Add Partner</button>
+    </div>
+    <div id="partnerList" class="partner-list" style="margin-top:14px"></div>
+  </div>
+</div>
+<div id="partnerEditor" class="partner-editor" style="display:none">
+  <div class="form-grid">
+    <div class="field"><label>Partner Name</label><input id="partnerName" type="text" placeholder="Example: Cebu Technological University"></div>
+    <div class="field"><label>Partner Logo</label><input id="partnerLogoFile" type="file" accept="image/png,image/jpeg,image/webp"></div>
+  </div>
+  <div class="form-actions">
+    <button type="button" id="savePartnerButton" class="btn primary">Save Partner</button>
+    <button type="button" id="cancelPartnerButton" class="btn secondary">Cancel</button>
+  </div>
+  <div id="partnerMessage" class="notice" style="display:none;margin-top:10px"></div>
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     STAFF
+===================================================== -->
+
+<section
+    id="staff"
+    class="page"
+>
+
+<div class="page-title">
+
+<h1>School Staff</h1>
+
+<p>
+Register and manage school staff accounts.
+</p>
+
+</div>
+
+
+<!-- ADD STAFF -->
+
+<div class="card">
+
+<h2>
+Staff Account
+</h2>
+
+<p class="card-sub">
+Create a staff account for a teacher, registrar,
+or other school personnel.
+</p>
+
+
+<div class="form-grid">
+
+
+<div class="field">
+
+<label>Staff ID</label>
+
+<input
+    id="newStaffId"
+    type="text"
+    placeholder="Example: TCH001"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>Full Name</label>
+
+<input
+    id="newStaffName"
+    type="text"
+    placeholder="Full name"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>Role</label>
+
+<select id="newStaffRole">
+
+<option value="">
+Select Role
+</option>
+
+<option value="Teacher">
+Teacher
+</option>
+
+<option value="Registrar">
+Registrar
+</option>
+
+<option value="Staff">
+Staff
+</option>
+
+<option value="Guidance">
+Guidance
+</option>
+
+<option value="Principal">
+Principal
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>Email</label>
+
+<input
+    id="newStaffEmail"
+    type="email"
+    placeholder="staff@example.com"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>Password</label>
+
+<input
+    id="newStaffPassword"
+    type="text"
+    placeholder="Temporary password"
+>
+
+</div>
+
+
+<div class="field">
+
+<label>Status</label>
+
+<select id="newStaffStatus">
+
+<option value="Active">
+Active
+</option>
+
+<option value="Inactive">
+Inactive
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="form-actions">
+
+<button
+    id="addStaffButton"
+    class="btn primary"
+>
++ Register Staff
+</button>
+
+</div>
+
+
+<div
+    id="staffMessage"
+    class="notice"
+    style="display:none;margin-top:15px;"
+></div>
+
+</div>
+
+
+<!-- STAFF LIST -->
+
+<div class="card">
+
+<h2>
+Registered Staff
+</h2>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Staff ID</th>
+<th>Name</th>
+<th>Role</th>
+<th>Email</th>
+<th>Status</th>
+
+</tr>
+
+</thead>
+
+<tbody id="staffTable">
+
+<tr>
+<td colspan="5" class="loading">
+Loading staff...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     STUDENTS
+===================================================== -->
+
+<section
+    id="students"
+    class="page"
+>
+
+<div class="page-title">
+
+<h1>Students</h1>
+
+<p>
+View students registered by the Registrar.
+</p>
+
+</div>
+
+
+<div class="stats">
+
+<div class="stat">
+
+<div class="stat-label">
+REGISTERED STUDENTS
+</div>
+
+<div
+    id="studentPageCount"
+    class="stat-value"
+>
+0
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+<h2>Quick Student Registration</h2>
+<p class="card-sub">Administrators can also register students. Click Generate IDN to create a unique 9-digit Student ID Number.</p>
+<div class="form-grid">
+<div class="field"><label>Student ID Number (9 digits)</label><div style="display:flex;gap:8px"><input id="adminStudentIDN" inputmode="numeric" maxlength="9" placeholder="Click Generate IDN" readonly style="flex:1"><button type="button" class="btn secondary" id="adminGenerateIDN">Generate IDN</button></div></div>
+<div class="field"><label>Full Name</label><input id="adminStudentName" placeholder="Full name"></div>
+<div class="field"><label>Birthday</label><input id="adminStudentBirthday" type="date"></div>
+<div class="field"><label>Grade Level</label><select id="adminStudentLevel"></select></div>
+<div class="field"><label>Section</label><select id="adminStudentSection"></select></div>
+<div class="field"><label>Guardian</label><input id="adminStudentGuardian"></div>
+<div class="field"><label>Address</label><input id="adminStudentAddress"></div>
+<div class="field"><label>Contact Number</label><input id="adminStudentContact"></div>
+<div class="field"><label>LRN</label><input id="adminStudentLRN"></div>
+</div>
+<div class="form-actions"><button type="button" class="btn primary" id="adminSaveStudent">Register Student</button><button type="button" class="btn secondary" id="adminClearStudent">Clear</button></div>
+<div id="adminStudentMessage" class="notice" style="display:none;margin-top:12px"></div>
+</div>
+
+<div class="card">
+
+<h2>
+Registrar Student Records
+</h2>
+
+<p class="card-sub">
+Students registered through the Registrar Portal
+are shown here.
+</p>
+
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Student ID</th>
+<th>Name</th>
+<th>Grade Level</th>
+<th>Section</th>
+<th>School Year</th>
+
+</tr>
+
+</thead>
+
+<tbody id="studentTable">
+
+<tr>
+
+<td
+    colspan="5"
+    class="loading"
+>
+Loading students...
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     CONFIGURATION
+===================================================== -->
+
+<section
+    id="configuration"
+    class="page"
+>
+
+<div class="page-title">
+
+<h1>Configuration</h1>
+
+<p>
+Manage basic school configuration.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>School Configuration</h2>
+<p class="card-sub">Set the school year, grading system, and the grade levels that exist in this school. Only checked levels will appear in the Registrar portal.</p>
+
+<div class="form-grid">
+<div class="field">
+<label>School Year</label>
+<input id="configSchoolYear" type="text" placeholder="2026-2027">
+</div>
+<div class="field">
+<label>Grading Terms Used by This School</label>
+<div id="gradingTermsChecklist" class="grading-terms-checklist">
+<label class="grading-term-check"><input type="checkbox" class="config-grading-term" value="4Q"><span><strong>4 Quarters</strong><small>Q1, Q2, Q3, Q4 + Final</small></span></label>
+<label class="grading-term-check"><input type="checkbox" class="config-grading-term" value="2SEM"><span><strong>2 Terms / Semesters</strong><small>SEM1, SEM2 + Final</small></span></label>
+<label class="grading-term-check"><input type="checkbox" class="config-grading-term" value="3TRIM"><span><strong>3 Terms / Trimesters</strong><small>T1, T2, T3 + Final</small></span></label>
+</div>
+<small class="field-help">Check the grading term systems that this school uses. The checked terms will automatically appear in the Registrar Portal.</small>
+</div>
+</div>
+
+<div style="margin-top:22px">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+<div><strong style="font-size:16px">Available Grade Levels</strong><div class="card-sub" style="margin-top:4px">Check every level offered by this school. This can be Kindergarten through College.</div></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn secondary" id="selectAllGradeLevels">Select All</button><button type="button" class="btn secondary" id="clearAllGradeLevels">Clear All</button></div>
+</div>
+<div id="gradeLevelChecklist" class="grade-checklist"></div>
+</div>
+
+<div class="notice" style="margin-top:16px"><strong>Role separation:</strong> The Administrator controls which grade levels are available. The Registrar creates sections, registers students, adds subjects, and assigns teachers only within those enabled levels.</div>
+
+<div class="form-actions"><button id="saveConfigurationButton" class="btn primary">Save Configuration</button></div>
+<div id="configurationMessage" class="notice" style="display:none;margin-top:15px;"></div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     FEATURES
+===================================================== -->
+
+<section
+    id="features"
+    class="page"
+>
+
+<div class="page-title">
+
+<h1>
+Features Unlocked
+</h1>
+
+<p>
+View features currently available for this school.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="notice">
+
+<strong>VIEW ONLY</strong>
+
+<br>
+
+Administrator cannot modify feature access.
+
+Feature controls are managed exclusively
+through VA Access.
+
+</div>
+
+<br>
+
+
+<div
+    id="featureList"
+    class="feature-grid"
+>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     BACKUP
+===================================================== -->
+
+<section
+    id="backup"
+    class="page"
+>
+
+<div class="page-title">
+
+<h1>
+Backup
+</h1>
+
+<p>
+Export the complete school database.
+</p>
+
+</div>
+
+
+<div class="card backup-box">
+
+<div class="backup-icon">
+📊
+</div>
+
+
+<h2>
+Complete School Backup
+</h2>
+
+
+<p>
+
+Exports school settings, staff, students,
+sections, assignments, grades, core values,
+and attendance into one Excel workbook.
+
+</p>
+
+
+<button
+    id="exportAllButton"
+    class="btn backup-button"
+>
+⬇ Export ALL Data to Excel
+</button>
+
+
+<div
+    id="exportStatus"
+    class="notice export-status"
+></div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+Backup Contents
+</h2>
+
+<div class="feature-grid">
+
+<div class="feature">
+
+<div>
+<div class="feature-name">
+School Settings
+</div>
+<div class="feature-description">
+School configuration and subscription
+</div>
+</div>
+
+<span class="pill pill-unlocked">
+INCLUDED
+</span>
+
+</div>
+
+
+<div class="feature">
+
+<div>
+<div class="feature-name">
+Staff
+</div>
+<div class="feature-description">
+Registered school staff
+</div>
+</div>
+
+<span class="pill pill-unlocked">
+INCLUDED
+</span>
+
+</div>
+
+
+<div class="feature">
+
+<div>
+<div class="feature-name">
+Students
+</div>
+<div class="feature-description">
+Registrar student records
+</div>
+</div>
+
+<span class="pill pill-unlocked">
+INCLUDED
+</span>
+
+</div>
+
+
+<div class="feature">
+
+<div>
+<div class="feature-name">
+Sections
+</div>
+<div class="feature-description">
+School sections
+</div>
+</div>
+
+<span class="pill pill-unlocked">
+INCLUDED
+</span>
+
+</div>
+
+
+<div class="feature">
+
+<div>
+<div class="feature-name">
+Assignments
+</div>
+<div class="feature-description">
+Teacher assignments
+</div>
+</div>
+
+<span class="pill pill-unlocked">
+INCLUDED
+</span>
+
+</div>
+
+
+<div class="feature">
+
+<div>
+<div class="feature-name">
+Grades
+</div>
+<div class="feature-description">
+Student grades
+</div>
+</div>
+
+<span class="pill pill-unlocked">
+INCLUDED
+</span>
+
+</div>
+
+
+<div class="feature">
+
+<div>
+<div class="feature-name">
+Core Values
+</div>
+<div class="feature-description">
+Student core values records
+</div>
+</div>
+
+<span class="pill pill-unlocked">
+INCLUDED
+</span>
+
+</div>
+
+
+<div class="feature">
+
+<div>
+<div class="feature-name">
+Attendance
+</div>
+<div class="feature-description">
+Attendance records
+</div>
+</div>
+
+<span class="pill pill-unlocked">
+INCLUDED
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+</main>
+
+</div>
+
+</div>
+
+
+<script>
+
+"use strict";
+
+
+/* =====================================================
+   ADMIN LOGIN
+===================================================== */
+
+const ADMIN_USERNAME =
+    "Administrator";
+
+const ADMIN_PASSWORD =
+    "isAdmin1234";
+
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyDIm2towADazJ9yuhUaIzVfX7ZaQEFbCpI",
+
+    authDomain:
+        "jpnhs-a2ba2.firebaseapp.com",
+
+    databaseURL:
+        "https://jpnhs-a2ba2-default-rtdb.firebaseio.com", 
+ 
+    projectId: 
+        "jpnhs-a2ba2", 
+ 
+    storageBucket: 
+        "jpnhs-a2ba2.firebasestorage.app", 
+ 
+    messagingSenderId: 
+        "689552509381", 
+ 
+    appId: 
+        "1:689552509381:web:98d043fc17189a636ea3ac" 
+ 
+}; 
+ 
+ 
+firebase.initializeApp( 
+    firebaseConfig 
+); 
+ 
+const db = 
+    firebase.database(); 
+ 
+ 
+/* ===================================================== 
+   HELPERS 
+===================================================== */ 
+ 
+function $(id){ 
+ 
+    return document.getElementById(id); 
+ 
+} 
+ 
+ 
+function escapeHTML(value){ 
+ 
+    return String( 
+        value ?? "" 
+    ).replace( 
+        /[&<>"']/g, 
+        function(char){ 
+ 
+            const map = { 
+ 
+                "&":"&amp;", 
+                "<":"&lt;", 
+                ">":"&gt;", 
+                '"':"&quot;", 
+                "'":"&#039;" 
+ 
+            }; 
+ 
+            return map[char]; 
+ 
+        } 
+    ); 
+ 
+} 
+ 
+ 
+function objectCount(data){ 
+ 
+    if( 
+        !data || 
+        typeof data !== "object" 
+    ){ 
+ 
+        return 0; 
+ 
+    } 
+ 
+    return Object.keys(data).length; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   LOGIN 
+===================================================== */ 
+ 
+$("loginButton").addEventListener( 
+    "click", 
+    loginAdmin 
+); 
+ 
+ 
+$("adminUsername").addEventListener( 
+    "keydown", 
+    function(event){ 
+ 
+        if( 
+            event.key === "Enter" 
+        ){ 
+ 
+            loginAdmin(); 
+ 
+        } 
+ 
+    } 
+); 
+ 
+ 
+$("adminPassword").addEventListener( 
+    "keydown", 
+    function(event){ 
+ 
+        if( 
+            event.key === "Enter" 
+        ){ 
+ 
+            loginAdmin(); 
+ 
+        } 
+ 
+    } 
+); 
+ 
+ 
+function loginAdmin(){ 
+ 
+    const username = 
+        $("adminUsername").value.trim(); 
+ 
+    const password = 
+        $("adminPassword").value; 
+ 
+ 
+    if( 
+        username === ADMIN_USERNAME && 
+        password === ADMIN_PASSWORD 
+    ){ 
+ 
+        $("loginError").style.display = 
+            "none"; 
+ 
+        $("loginScreen").style.display = 
+            "none"; 
+ 
+        $("adminApp").style.display = 
+            "block"; 
+ 
+ 
+        sessionStorage.setItem("jpnhsAdminLoggedIn","true"); 
+ 
+ 
+        loadAdminData(); 
+ 
+    } 
+    else{ 
+ 
+        $("loginError").style.display = 
+            "block"; 
+ 
+    } 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   LOGOUT 
+===================================================== */ 
+ 
+$("logoutButton").addEventListener( 
+    "click", 
+    function(){ 
+ 
+        sessionStorage.removeItem("jpnhsAdminLoggedIn"); 
+ 
+        location.reload(); 
+ 
+    } 
+); 
+ 
+ 
+/* ===================================================== 
+   SESSION 
+===================================================== */ 
+ 
+if( 
+    sessionStorage.getItem( 
+        "jpnhsAdminLoggedIn" 
+    ) === "true" 
+){ 
+ 
+    $("loginScreen").style.display = 
+        "none"; 
+ 
+    $("adminApp").style.display = 
+        "block"; 
+ 
+    loadAdminData(); 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   NAVIGATION 
+===================================================== */ 
+ 
+document.querySelectorAll( 
+    ".nav-button" 
+).forEach( 
+    function(button){ 
+ 
+        button.addEventListener( 
+            "click", 
+            function(){ 
+ 
+                const page = 
+                    button.dataset.page; 
+ 
+ 
+                document.querySelectorAll( 
+                    ".nav-button" 
+                ).forEach( 
+                    function(item){ 
+ 
+                        item.classList.remove( 
+                            "active" 
+                        ); 
+ 
+                    } 
+                ); 
+ 
+ 
+                document.querySelectorAll( 
+                    ".page" 
+                ).forEach( 
+                    function(item){ 
+ 
+                        item.classList.remove( 
+                            "active" 
+                        ); 
+ 
+                    } 
+                ); 
+ 
+ 
+                button.classList.add( 
+                    "active" 
+                ); 
+ 
+ 
+                const target = 
+                    document.getElementById( 
+                        page 
+                    ); 
+ 
+ 
+                if(target){ 
+ 
+                    target.classList.add( 
+                        "active" 
+                    ); 
+ 
+                } 
+ 
+            } 
+        ); 
+ 
+    } 
+); 
+ 
+ 
+/* ===================================================== 
+   FIND SCHOOL 
+===================================================== */ 
+ 
+async function findSchool(){ 
+    const requestedSchool = new URLSearchParams(location.search).get("school"); 
+ 
+    const snapshot = 
+        await db.ref( 
+            "schools" 
+        ).once("value"); 
+ 
+ 
+    const schools = 
+        snapshot.val() || {}; 
+ 
+ 
+    const ids = Object.keys(schools); 
+ 
+    const preferred = requestedSchool && ids.includes(requestedSchool) ? requestedSchool : (ids.includes('jpnhs') ? 'jpnhs' : ids[0]); 
+ 
+ 
+    if( 
+        ids.length === 0 
+    ){ 
+ 
+        return null; 
+ 
+    } 
+ 
+ 
+    return { 
+ 
+        id:preferred, 
+ 
+        data: 
+            schools[preferred] || {} 
+ 
+    }; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   LOAD ADMIN DATA 
+===================================================== */ 
+ 
+async function loadAdminData(){ 
+ 
+    try{ 
+ 
+        const school = 
+            await findSchool(); 
+ 
+ 
+        if(!school){ 
+ 
+            renderEmptySchool(); 
+ 
+            return; 
+ 
+        } 
+ 
+ 
+        currentSchoolId = 
+            school.id; 
+ 
+        currentSchool = 
+            school.data; 
+ 
+ 
+        renderSchool( 
+            school.id, 
+            school.data 
+        ); 
+ 
+        renderAdminBranding(); 
+ 
+ 
+        await loadStudents( 
+            school.id 
+        ); 
+        adminStudents = (await db.ref("studentsBySchool/" + school.id).once("value")).val() || {}; 
+        adminSections = (await db.ref("sections/" + school.id).once("value")).val() || {}; 
+        setupAdminStudentRegistration(); 
+ 
+ 
+        await loadStaff( 
+            school.id 
+        ); 
+ 
+ 
+        renderFeatures( 
+            school.data.features || 
+            {} 
+        ); 
+ 
+ 
+        loadConfiguration( 
+            school.data 
+        ); 
+ 
+    } 
+    catch(error){ 
+ 
+        console.error( 
+            "ADMIN FIREBASE ERROR:", 
+            error 
+        ); 
+ 
+ 
+        $("subscriptionStatus").innerHTML = 
+ 
+            "<strong>Unable to load school information.</strong>" + 
+ 
+            "<br><br>" + 
+ 
+            "Firebase error: " + 
+ 
+            escapeHTML( 
+                error.message 
+            ) + 
+ 
+            "<br><br>" + 
+ 
+            "Check your Firebase Realtime Database Rules."; 
+ 
+    } 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   CURRENT SCHOOL 
+===================================================== */ 
+ 
+let currentSchoolId = 
+    null; 
+ 
+let currentSchool = 
+    {}; 
+ 
+let adminStudents = {}; 
+let adminSections = {}; 
+ 
+ 
+/* ===================================================== 
+   SCHOOL 
+===================================================== */ 
+ 
+function renderSchool( 
+    schoolId, 
+    school 
+){ 
+ 
+    $("schoolId").textContent = 
+        schoolId || "—"; 
+ 
+ 
+    $("schoolName").textContent = 
+        school.name || 
+        school.schoolName || 
+        "School Portal"; 
+ 
+ 
+    $("schoolShortName").textContent = 
+        school.shortName || 
+        school.short_name || 
+        "SP"; 
+ 
+ 
+    const displayTerms=normalizeGradingTerms(school.gradingTerms || school.grading_terms);
+    $("gradingSystem").textContent = displayTerms.length
+        ? gradingTermsLabel(displayTerms)
+        : (school.gradingSystem || school.grading_system || "Not configured"); 
+ 
+ 
+    const plan = 
+        school.plan || 
+        school.subscription || 
+        "STANDARD"; 
+ 
+ 
+    const expires = 
+        school.expires || 
+        school.expiration || 
+        school.expiry || 
+        "Not set"; 
+ 
+ 
+    const status = 
+        school.open === false 
+            ? "CLOSED" 
+            : "OPEN"; 
+ 
+ 
+    $("subscriptionStatus").innerHTML = 
+ 
+        "<strong>Plan:</strong> " + 
+ 
+        escapeHTML(plan) + 
+ 
+        "<br>" + 
+ 
+        "<strong>Expiration:</strong> " + 
+ 
+        escapeHTML(expires) + 
+ 
+        "<br>" + 
+ 
+        "<strong>Portal Status:</strong> " + 
+ 
+        escapeHTML(status); 
+ 
+} 
+ 
+ 
+function renderEmptySchool(){ 
+ 
+    $("schoolId").textContent = 
+        "—"; 
+ 
+    $("schoolName").textContent = 
+        "No school configured"; 
+ 
+    $("schoolShortName").textContent = 
+        "—"; 
+ 
+    $("gradingSystem").textContent = 
+        "—"; 
+ 
+    $("subscriptionStatus").innerHTML = 
+ 
+        "<strong>No school configuration was found.</strong>" + 
+ 
+        "<br><br>" + 
+ 
+        "Use VA Access to import or configure the school."; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   STUDENTS 
+===================================================== */ 
+ 
+async function loadStudents( 
+    schoolId 
+){ 
+ 
+    const possiblePaths = [ 
+ 
+        "studentsBySchool/" + 
+        schoolId, 
+ 
+        "students/" + 
+        schoolId, 
+ 
+        "studentRecords/" + 
+        schoolId 
+ 
+    ]; 
+ 
+ 
+    let students = 
+        {}; 
+ 
+    let found = 
+        false; 
+ 
+ 
+    for( 
+        const path of possiblePaths 
+    ){ 
+ 
+        try{ 
+ 
+            const snapshot = 
+                await db.ref( 
+                    path 
+                ).once("value"); 
+ 
+ 
+            const value = 
+                snapshot.val(); 
+ 
+ 
+            if( 
+                value && 
+                typeof value === "object" && 
+                Object.keys(value).length > 0 
+            ){ 
+ 
+                students = 
+                    value; 
+ 
+                found = 
+                    true; 
+ 
+                break; 
+ 
+            } 
+ 
+        } 
+        catch(error){ 
+ 
+            console.warn( 
+                "Student path unavailable:", 
+                path, 
+                error.message 
+            ); 
+ 
+        } 
+ 
+    } 
+ 
+ 
+    const entries = 
+        Object.entries( 
+            students 
+        ); 
+ 
+ 
+    $("studentCount").textContent = 
+        entries.length; 
+ 
+ 
+    $("studentPageCount").textContent = 
+        entries.length; 
+ 
+ 
+    renderStudentTable( 
+        entries 
+    ); 
+ 
+} 
+ 
+ 
+function renderStudentTable( 
+    entries 
+){ 
+ 
+    const table = 
+        $("studentTable"); 
+ 
+ 
+    if( 
+        entries.length === 0 
+    ){ 
+ 
+        table.innerHTML = 
+ 
+            "<tr>" + 
+ 
+            "<td colspan='5'>" + 
+ 
+            "No registered students found." + 
+ 
+            "</td>" + 
+ 
+            "</tr>"; 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    table.innerHTML = 
+ 
+        entries.map( 
+            function(item){ 
+ 
+                const id = 
+                    item[0]; 
+ 
+                const student = 
+                    item[1] || {}; 
+ 
+ 
+                const name = 
+                    student.name || 
+                    student.fullName || 
+                    ( 
+                        ( 
+                            student.firstName || 
+                            "" 
+                        ) + 
+                        " " + 
+                        ( 
+                            student.lastName || 
+                            "" 
+                        ) 
+                    ).trim() || 
+                    "—"; 
+ 
+ 
+                const grade = 
+                    student.gradeLevel || 
+                    student.grade || 
+                    student.yearLevel || 
+                    "—"; 
+ 
+ 
+                const section = 
+                    student.section || 
+                    student.sectionName || 
+                    "—"; 
+ 
+ 
+                const schoolYear = 
+                    student.schoolYear || 
+                    student.sy || 
+                    "—"; 
+ 
+ 
+                return ` 
+ 
+<tr> 
+ 
+<td> 
+${escapeHTML(id)} 
+</td> 
+ 
+<td> 
+${escapeHTML(name)} 
+</td> 
+ 
+<td> 
+${escapeHTML(grade)} 
+</td> 
+ 
+<td> 
+${escapeHTML(section)} 
+</td> 
+ 
+<td> 
+${escapeHTML(schoolYear)} 
+</td> 
+ 
+</tr> 
+ 
+`; 
+ 
+            } 
+        ).join(""); 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   STAFF 
+===================================================== */ 
+ 
+async function loadStaff( 
+    schoolId 
+){ 
+ 
+    try{ 
+ 
+        const snapshot = 
+            await db.ref( 
+                "staff/" + 
+                schoolId 
+            ).once("value"); 
+ 
+ 
+        const staff = 
+            snapshot.val() || {}; 
+ 
+ 
+        const entries = 
+            Object.entries( 
+                staff 
+            ); 
+ 
+ 
+        $("staffCount").textContent = 
+            entries.length; 
+ 
+ 
+        const teachers = 
+            entries.filter( 
+                function(item){ 
+ 
+                    const person = 
+                        item[1] || {}; 
+ 
+ 
+                    const role = 
+                        String( 
+                            person.role || "" 
+                        ).toLowerCase(); 
+ 
+ 
+                    return ( 
+                        role.includes( 
+                            "teacher" 
+                        ) || 
+                        role === 
+                            "faculty" 
+                    ); 
+ 
+                } 
+            ); 
+ 
+ 
+        $("teacherCount").textContent = 
+            teachers.length; 
+ 
+ 
+        renderStaffTable( 
+            entries 
+        ); 
+ 
+    } 
+    catch(error){ 
+ 
+        console.error( 
+            "Staff error:", 
+            error 
+        ); 
+ 
+ 
+        $("staffCount").textContent = 
+            "—"; 
+ 
+        $("teacherCount").textContent = 
+            "—"; 
+ 
+ 
+        $("staffTable").innerHTML = 
+ 
+            "<tr>" + 
+ 
+            "<td colspan='5'>" + 
+ 
+            "Unable to load staff: " + 
+ 
+            escapeHTML( 
+                error.message 
+            ) + 
+ 
+            "</td>" + 
+ 
+            "</tr>"; 
+ 
+    } 
+ 
+} 
+ 
+ 
+function renderStaffTable( 
+    entries 
+){ 
+ 
+    if( 
+        entries.length === 0 
+    ){ 
+ 
+        $("staffTable").innerHTML = 
+ 
+            "<tr>" + 
+ 
+            "<td colspan='5'>" + 
+ 
+            "No staff accounts found." + 
+ 
+            "</td>" + 
+ 
+            "</tr>"; 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    $("staffTable").innerHTML = 
+ 
+        entries.map( 
+            function(item){ 
+ 
+                const id = 
+                    item[0]; 
+ 
+                const staff = 
+                    item[1] || {}; 
+ 
+ 
+                const name = 
+                    staff.name || 
+                    staff.fullName || 
+                    ( 
+                        ( 
+                            staff.firstName || 
+                            "" 
+                        ) + 
+                        " " + 
+                        ( 
+                            staff.lastName || 
+                            "" 
+                        ) 
+                    ).trim() || 
+                    "—"; 
+ 
+ 
+                const role = 
+                    staff.role || 
+                    "—"; 
+ 
+ 
+                const email = 
+                    staff.email || 
+                    "—"; 
+ 
+ 
+                const status = 
+                    staff.status || 
+                    ( 
+                        staff.active === false 
+                            ? "Inactive" 
+                            : "Active" 
+                    ); 
+ 
+ 
+                return ` 
+ 
+<tr> 
+ 
+<td> 
+${escapeHTML(id)} 
+</td> 
+ 
+<td> 
+${escapeHTML(name)} 
+</td> 
+ 
+<td> 
+${escapeHTML(role)} 
+</td> 
+ 
+<td> 
+${escapeHTML(email)} 
+</td> 
+ 
+<td> 
+${escapeHTML(status)} 
+</td> 
+ 
+</tr> 
+ 
+`; 
+ 
+            } 
+        ).join(""); 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   ADMIN STUDENT REGISTRATION / 9-DIGIT IDN 
+===================================================== */ 
+function adminEnabledLevels(){ 
+    const v=currentSchool.gradeLevels; 
+    if(Array.isArray(v)) return v.map(String).filter(Boolean); 
+    if(v&&typeof v==='object') return Object.entries(v).filter(([,x])=>x!==false&&x!=null).map(([k,x])=>typeof x==='string'?x:(x&&x.name?String(x.name):String(k))); 
+    return []; 
+} 
+function adminGenerateIDN(){ 
+    let id; 
+    do{id=String(Math.floor(100000000+Math.random()*900000000));}while(adminStudents[id]); 
+    $("adminStudentIDN").value=id; 
+    return id; 
+} 
+function adminStudentMessage(msg,ok=false){const b=$("adminStudentMessage");if(!b)return;b.textContent=msg;b.style.display='block';b.className=ok?'notice':'notice error';} 
+function setupAdminStudentRegistration(){ 
+    const levels=adminEnabledLevels(); 
+    if($("adminStudentLevel")){ 
+        $("adminStudentLevel").innerHTML='<option value="">Select grade level</option>'+levels.map(x=>'<option value="'+escapeHTML(x)+'">'+escapeHTML(x)+'</option>').join(''); 
+        $("adminStudentLevel").onchange=()=>{ 
+            const level=$("adminStudentLevel").value; 
+            const sections=Object.values(adminSections||{}).filter(x=>x&&x.level===level&&!x.blocked).map(x=>x.name).filter(Boolean); 
+            $("adminStudentSection").innerHTML='<option value="">Select section</option>'+sections.map(x=>'<option value="'+escapeHTML(x)+'">'+escapeHTML(x)+'</option>').join(''); 
+        }; 
+    } 
+} 
+$("adminGenerateIDN")?.addEventListener('click',adminGenerateIDN); 
+$("adminClearStudent")?.addEventListener('click',()=>{ 
+    ['adminStudentIDN','adminStudentName','adminStudentBirthday','adminStudentGuardian','adminStudentAddress','adminStudentContact','adminStudentLRN'].forEach(id=>{if($(id))$(id).value='';}); 
+    if($("adminStudentLevel"))$("adminStudentLevel").value=''; 
+    if($("adminStudentSection"))$("adminStudentSection").innerHTML='<option value="">Select section</option>'; 
+    if($("adminStudentMessage"))$("adminStudentMessage").style.display='none'; 
+}); 
+$("adminSaveStudent")?.addEventListener('click',async()=>{ 
+    try{ 
+        if(!currentSchoolId)throw Error('School configuration has not loaded yet.'); 
+        let id=$("adminStudentIDN").value.trim(); 
+        if(!/^\d{9}$/.test(id))id=adminGenerateIDN(); 
+        if(adminStudents[id]){id=adminGenerateIDN();} 
+        const name=$("adminStudentName").value.trim(), birthday=$("adminStudentBirthday").value, level=$("adminStudentLevel").value, section=$("adminStudentSection").value; 
+        if(!name||!birthday||!level||!section)throw Error('Please complete the student name, birthday, grade level, and section.'); 
+        if(!adminEnabledLevels().includes(level))throw Error('This grade level is not enabled in School Configuration.'); 
+        const data={schoolID:currentSchoolId,studentID:id,name,fullName:name,birthday,level,section,guardian:$("adminStudentGuardian").value.trim(),address:$("adminStudentAddress").value.trim(),contact:$("adminStudentContact").value.trim(),lrn:$("adminStudentLRN").value.trim(),schoolYear:currentSchool.schoolYear||'',gradingSystem:currentSchool.gradingSystem||'Standard',grades:{},coreValues:{},attendance:{},createdAt:new Date().toISOString(),registeredBy:'Administrator'}; 
+        await db.ref('studentsBySchool/'+currentSchoolId+'/'+id).set(data); 
+        adminStudents[id]=data; 
+        adminStudentMessage('Student registered successfully. Student ID: '+id,true); 
+        $("adminStudentIDN").value='';$("adminStudentName").value='';$("adminStudentBirthday").value='';$("adminStudentGuardian").value='';$("adminStudentAddress").value='';$("adminStudentContact").value='';$("adminStudentLRN").value='';$("adminStudentLevel").value='';$("adminStudentSection").innerHTML='<option value="">Select section</option>'; 
+        await loadStudents(currentSchoolId); 
+    }catch(e){adminStudentMessage('Unable to register student: '+e.message,false);} 
+}); 
+ 
+/* ===================================================== 
+   REGISTER STAFF 
+===================================================== */ 
+ 
+$("addStaffButton").addEventListener( 
+    "click", 
+    registerStaff 
+); 
+ 
+ 
+async function registerStaff(){ 
+ 
+    if(!currentSchoolId){ 
+ 
+        showStaffMessage( 
+            "School configuration has not loaded yet.", 
+            false 
+        ); 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    const staffId = 
+        $("newStaffId") 
+        .value 
+        .trim(); 
+ 
+ 
+    const name = 
+        $("newStaffName") 
+        .value 
+        .trim(); 
+ 
+ 
+    const role = 
+        $("newStaffRole") 
+        .value; 
+ 
+ 
+    const email = 
+        $("newStaffEmail") 
+        .value 
+        .trim(); 
+ 
+ 
+    const password = 
+        $("newStaffPassword") 
+        .value; 
+ 
+ 
+    const status = 
+        $("newStaffStatus") 
+        .value; 
+ 
+ 
+    if( 
+        !staffId || 
+        !name || 
+        !role || 
+        !email || 
+        !password 
+    ){ 
+ 
+        showStaffMessage( 
+            "Please complete all staff account fields.", 
+            false 
+        ); 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    try{ 
+ 
+        const staffRef = 
+            db.ref( 
+                "staff/" + 
+                currentSchoolId + 
+                "/" + 
+                staffId 
+            ); 
+ 
+ 
+        const existing = 
+            await staffRef.once( 
+                "value" 
+            ); 
+ 
+ 
+        if( 
+            existing.exists() 
+        ){ 
+ 
+            showStaffMessage( 
+                "That Staff ID already exists.", 
+                false 
+            ); 
+ 
+            return; 
+ 
+        } 
+ 
+ 
+        await staffRef.set({ 
+ 
+            staffId: 
+                staffId, 
+ 
+            name: 
+                name, 
+ 
+            fullName: 
+                name, 
+ 
+            role: 
+                role, 
+ 
+            email: 
+                email, 
+ 
+            password: 
+                password, 
+ 
+            status: 
+                status, 
+ 
+            active: 
+                status === 
+                    "Active", 
+ 
+            createdAt: 
+                new Date() 
+                    .toISOString() 
+ 
+        }); 
+ 
+ 
+        showStaffMessage( 
+            "Staff account registered successfully.", 
+            true 
+        ); 
+ 
+ 
+        $("newStaffId").value = 
+            ""; 
+ 
+        $("newStaffName").value = 
+            ""; 
+ 
+        $("newStaffRole").value = 
+            ""; 
+ 
+        $("newStaffEmail").value = 
+            ""; 
+ 
+        $("newStaffPassword").value = 
+            ""; 
+ 
+ 
+        await loadStaff( 
+            currentSchoolId 
+        ); 
+ 
+    } 
+    catch(error){ 
+ 
+        console.error( 
+            "REGISTER STAFF ERROR:", 
+            error 
+        ); 
+ 
+ 
+        showStaffMessage( 
+            "Unable to register staff: " + 
+            error.message, 
+            false 
+        ); 
+ 
+    } 
+ 
+} 
+ 
+ 
+function showStaffMessage( 
+    message, 
+    success 
+){ 
+ 
+    const box = 
+        $("staffMessage"); 
+ 
+ 
+    box.style.display = 
+        "block"; 
+ 
+ 
+    box.className = 
+        success 
+            ? "notice success" 
+            : "notice"; 
+ 
+ 
+    box.textContent = 
+        message; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   CONFIGURATION 
+===================================================== */ 
+ 
+const CONFIG_GRADE_LEVELS = ["Kindergarten","Grade 1","Grade 2","Grade 3","Grade 4","Grade 5","Grade 6","Grade 7","Grade 8","Grade 9","Grade 10","Grade 11","Grade 12","College 1","College 2","College 3","College 4"]; 
+ 
+function normalizeGradeLevels(value){ 
+    if(Array.isArray(value)) return value.map(String).filter(Boolean); 
+    if(value && typeof value === "object") return Object.entries(value).filter(([,v]) => v !== false && v != null).map(([k,v]) => typeof v === "string" ? v : (v && v.name ? String(v.name) : String(k))); 
+    return []; 
+} 
+ 
+function renderGradeLevelChecklist(selected){ 
+    const set = new Set(normalizeGradeLevels(selected)); 
+    const box = $("gradeLevelChecklist"); 
+    if(!box) return; 
+    const groups = [ 
+        ["Early / Basic Education",["Kindergarten"]], 
+        ["Elementary",["Grade 1","Grade 2","Grade 3","Grade 4","Grade 5","Grade 6"]], 
+        ["Junior High School",["Grade 7","Grade 8","Grade 9","Grade 10"]], 
+        ["Senior High School",["Grade 11","Grade 12"]], 
+        ["College",["College 1","College 2","College 3","College 4"]] 
+    ]; 
+    box.innerHTML = groups.map(([title,levels]) => `<div class="grade-group">${escapeHTML(title)}</div>${levels.map(level => `<label class="grade-check"><input type="checkbox" class="config-grade" value="${escapeHTML(level)}" ${set.has(level)?"checked":""}><span>${escapeHTML(level)}</span></label>`).join("")}`).join(""); 
+} 
+ 
+function getSelectedGradeLevels(){ return Array.from(document.querySelectorAll(".config-grade:checked")).map(x=>x.value); } 
+ 
+$("selectAllGradeLevels").addEventListener("click",()=>document.querySelectorAll(".config-grade").forEach(x=>x.checked=true)); 
+$("clearAllGradeLevels").addEventListener("click",()=>document.querySelectorAll(".config-grade").forEach(x=>x.checked=false)); 
+ 
+// ---------------- SCHOOL BRANDING ---------------- 
+function brandingInitials(name){return String(name||'School Portal').trim().split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join('').toUpperCase()||'SP'} 
+function compressImage(file,maxSize=500,quality=.82){return new Promise((resolve,reject)=>{if(!file)return resolve('');const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const scale=Math.min(1,maxSize/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',quality));};img.onerror=reject;img.src=r.result};r.onerror=reject;r.readAsDataURL(file)})} 
+function showBrandingMessage(id,msg,ok=true){const e=$(id);if(!e)return;e.textContent=msg;e.style.display='block';e.style.background=ok?'#ecfdf3':'#fff1f2';e.style.borderColor=ok?'#bbf7d0':'#fecdd3';e.style.color=ok?'#166534':'#9f1239'} 
+function partnerArray(){const p=currentSchool?.partners;if(Array.isArray(p))return p;return p&&typeof p==='object'?Object.entries(p).map(([id,v])=>({...v,id})):[]} 
+function renderAdminBranding(){const s=currentSchool||{};const logo=$('adminSchoolLogoPreview');if(logo){logo.innerHTML=s.logo?`<img src="${escapeHTML(s.logo)}" alt="School logo">`:escapeHTML(brandingInitials(s.shortName||s.name));}const topLogo=$('adminTopLogo');if(topLogo)topLogo.innerHTML=s.logo?`<img src="${escapeHTML(s.logo)}" alt="School logo">`:escapeHTML(brandingInitials(s.shortName||s.name));[$('topSchoolName'),$('topSchoolName2')].forEach(e=>{if(e)e.textContent=s.name||s.schoolName||'School Portal'});const tp=$('adminTopPartners');if(tp){tp.innerHTML=partnerArray().map(p=>`<span class="admin-top-partner">${p.logo?`<img src="${escapeHTML(p.logo)}" alt="">`:escapeHTML(brandingInitials(p.name))}<span>${escapeHTML(p.name||'Partner')}</span></span>`).join('')}const box=$('partnerList');if(!box)return;const partners=partnerArray();box.innerHTML=partners.length?partners.map((p,i)=>`<div class="partner-item"><div class="partner-logo">${p.logo?`<img src="${escapeHTML(p.logo)}" alt="">`:escapeHTML(brandingInitials(p.name))}</div><div class="partner-meta"><strong>${escapeHTML(p.name||'Unnamed Partner')}</strong><small>Visible on school portals, PDFs and Excel exports</small></div><div class="partner-actions"><button type="button" class="btn secondary small" onclick="editPartner(${i})">Edit</button><button type="button" class="btn danger small" onclick="deletePartner(${i})">Remove</button></div></div>`).join(''):'<div class="empty">No partners added yet.</div>'} 
+let editingPartnerIndex=-1; 
+$('saveSchoolLogoButton')?.addEventListener('click',async()=>{try{if(!currentSchoolId)return showBrandingMessage('logoMessage','School is not loaded.',false);const f=$('schoolLogoFile').files[0];if(!f)return showBrandingMessage('logoMessage','Please choose a logo image first.',false);const logo=await compressImage(f,500,.82);await db.ref('schools/'+currentSchoolId).update({logo});currentSchool.logo=logo;renderAdminBranding();$('schoolLogoFile').value='';showBrandingMessage('logoMessage','School logo saved successfully.',true)}catch(e){showBrandingMessage('logoMessage','Unable to save logo: '+e.message,false)}}); 
+$('removeSchoolLogoButton')?.addEventListener('click',async()=>{try{await db.ref('schools/'+currentSchoolId+'/logo').remove();delete currentSchool.logo;renderAdminBranding();showBrandingMessage('logoMessage','School logo removed. Initials will be used.',true)}catch(e){showBrandingMessage('logoMessage','Unable to remove logo: '+e.message,false)}}); 
+$('addPartnerButton')?.addEventListener('click',()=>{editingPartnerIndex=-1;$('partnerName').value='';$('partnerLogoFile').value='';$('partnerEditor').style.display='block';$('partnerMessage').style.display='none'}); 
+$('cancelPartnerButton')?.addEventListener('click',()=>{$('partnerEditor').style.display='none'}); 
+window.editPartner=i=>{const p=partnerArray()[i];if(!p)return;editingPartnerIndex=i;$('partnerName').value=p.name||'';$('partnerLogoFile').value='';$('partnerEditor').style.display='block';$('partnerMessage').style.display='none'}; 
+window.deletePartner=async i=>{const a=partnerArray();if(!a[i])return;if(!confirm('Remove this partner from the school branding?'))return;try{a.splice(i,1);await db.ref('schools/'+currentSchoolId+'/partners').set(a);currentSchool.partners=a;renderAdminBranding()}catch(e){alert('Unable to remove partner: '+e.message)}}; 
+$('savePartnerButton')?.addEventListener('click',async()=>{try{const name=$('partnerName').value.trim();if(!name)return showBrandingMessage('partnerMessage','Enter the partner name.',false);const a=partnerArray();let item=editingPartnerIndex>=0?{...(a[editingPartnerIndex]||{})}:{id:Date.now().toString()};item.name=name;const f=$('partnerLogoFile').files[0];if(f)item.logo=await compressImage(f,400,.82);if(!item.logo)return showBrandingMessage('partnerMessage','Please choose a partner logo.',false);if(editingPartnerIndex>=0)a[editingPartnerIndex]=item;else a.push(item);await db.ref('schools/'+currentSchoolId+'/partners').set(a);currentSchool.partners=a;renderAdminBranding();$('partnerEditor').style.display='none'}catch(e){showBrandingMessage('partnerMessage','Unable to save partner: '+e.message,false)}}); 
+ 
+const CONFIG_GRADING_TERMS = {
+    "4Q": {label:"4 Quarters", terms:["Q1","Q2","Q3","Q4","Final"]},
+    "2SEM": {label:"2 Terms / Semesters", terms:["SEM1","SEM2","Final"]},
+    "3TRIM": {label:"3 Terms / Trimesters", terms:["T1","T2","T3","Final"]}
+};
+
+function normalizeGradingTerms(value){
+    if(Array.isArray(value)) return value.map(String).filter(x=>CONFIG_GRADING_TERMS[x]);
+    if(value && typeof value === "object"){
+        return Object.entries(value).filter(([,v])=>v===true).map(([k])=>k).filter(k=>CONFIG_GRADING_TERMS[k]);
+    }
+    if(typeof value === "string" && CONFIG_GRADING_TERMS[value]) return [value];
+    return [];
+}
+
+function getSelectedGradingTerms(){
+    return Array.from(document.querySelectorAll(".config-grading-term:checked")).map(x=>x.value);
+}
+
+function renderGradingTerms(selected){
+    const set=new Set(normalizeGradingTerms(selected));
+    document.querySelectorAll(".config-grading-term").forEach(x=>x.checked=set.has(x.value));
+}
+
+function gradingTermsLabel(selected){
+    const terms=normalizeGradingTerms(selected);
+    if(!terms.length) return "Not configured";
+    return terms.map(x=>CONFIG_GRADING_TERMS[x].label).join(" + ");
+}
+
+function loadConfiguration(school){ 
+    $("configSchoolYear").value = school.schoolYear || school.sy || ""; 
+    const savedTerms=normalizeGradingTerms(school.gradingTerms || school.grading_terms);
+    const fallback= savedTerms.length ? savedTerms : normalizeGradingTerms(school.gradingSystem || school.grading_system);
+    renderGradingTerms(fallback.length ? fallback : ["4Q"]);
+    let levels = normalizeGradeLevels(school.gradeLevels); 
+    if(levels.length === 0) levels = ["Grade 7","Grade 8","Grade 9","Grade 10","Grade 11","Grade 12"]; 
+    renderGradeLevelChecklist(levels); 
+} 
+ 
+$("saveConfigurationButton").addEventListener("click", saveConfiguration); 
+ 
+async function saveConfiguration(){ 
+    if(!currentSchoolId){ showConfigurationMessage("School is not loaded.",false); return; } 
+    const schoolYear=$("configSchoolYear").value.trim(); 
+    const gradingTerms=getSelectedGradingTerms(); 
+    const gradeLevels=getSelectedGradeLevels(); 
+    if(!schoolYear){ showConfigurationMessage("Please enter the school year.",false); return; } 
+    if(!gradingTerms.length){ showConfigurationMessage("Please check at least one grading term system.",false); return; } 
+    if(!gradeLevels.length){ showConfigurationMessage("Please check at least one grade level.",false); return; } 
+    const gradingSystem=gradingTerms.length===1 ? gradingTerms[0] : "Multiple";
+    const button=$("saveConfigurationButton"); button.disabled=true; button.textContent="Saving..."; 
+    try{ 
+        await db.ref("schools/"+currentSchoolId).update({schoolYear,gradingSystem,gradingTerms,gradeLevels}); 
+        currentSchool=Object.assign({},currentSchool,{schoolYear,gradingSystem,gradingTerms,gradeLevels}); 
+        $("gradingSystem").textContent=gradingTermsLabel(gradingTerms); 
+        showConfigurationMessage("Configuration saved successfully. The checked grading terms and grade levels are now available to the Registrar Portal.",true); 
+    }catch(error){ 
+        console.error("CONFIG ERROR:",error); 
+        showConfigurationMessage("Unable to save configuration: "+error.message+". If this still says PERMISSION_DENIED, the Firebase rule for schools/"+currentSchoolId+" must allow the Administrator to update the school record.",false); 
+    }finally{button.disabled=false;button.textContent="Save Configuration";} 
+} 
+ 
+ 
+function safeKey( 
+    value 
+){ 
+ 
+    return String( 
+        value 
+    ) 
+    .trim() 
+    .replace( 
+        /[.#$/\[\]]/g, 
+        "-" 
+    ); 
+ 
+} 
+ 
+ 
+function showConfigurationMessage( 
+    message, 
+    success 
+){ 
+ 
+    const box = 
+        $("configurationMessage"); 
+ 
+ 
+    box.style.display = 
+        "block"; 
+ 
+ 
+    box.className = 
+        success 
+            ? "notice success" 
+            : "notice"; 
+ 
+ 
+    box.textContent = 
+        message; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   FEATURES 
+===================================================== */ 
+ 
+const FEATURE_NAMES = { 
+ 
+    student: 
+        "Student Portal", 
+ 
+    teacher: 
+        "Teacher Portal", 
+ 
+    registrar: 
+        "Registrar Portal", 
+ 
+    pdfReportCard: 
+        "PDF Report Card", 
+ 
+    attendance: 
+        "Attendance", 
+ 
+    coreValues: 
+        "Core Values", 
+ 
+    excelExport: 
+        "Excel Export", 
+ 
+    archive: 
+        "Archive", 
+ 
+    sms: 
+        "SMS Notifications", 
+ 
+    parent: 
+        "Parent Portal", 
+ 
+    onlineEnrollment: 
+        "Online Enrollment" 
+ 
+}; 
+ 
+ 
+function renderFeatures( 
+    featureData 
+){ 
+ 
+    const container = 
+        $("featureList"); 
+ 
+ 
+    const keys = 
+        Object.keys( 
+            FEATURE_NAMES 
+        ); 
+ 
+ 
+    let unlocked = 
+        0; 
+ 
+ 
+    container.innerHTML = 
+ 
+        keys.map( 
+            function(key){ 
+ 
+                const enabled = 
+                    featureData[key] === true; 
+ 
+ 
+                if(enabled){ 
+ 
+                    unlocked++; 
+ 
+                } 
+ 
+ 
+                return ` 
+ 
+<div class="feature"> 
+ 
+<div> 
+ 
+<div class="feature-name"> 
+ 
+${escapeHTML( 
+    FEATURE_NAMES[key] 
+)} 
+ 
+</div> 
+ 
+<div class="feature-description"> 
+ 
+Feature access status 
+ 
+</div> 
+ 
+</div> 
+ 
+<span class="pill ${ 
+    enabled 
+        ? "pill-unlocked" 
+        : "pill-locked" 
+}"> 
+ 
+${ 
+    enabled 
+        ? "UNLOCKED" 
+        : "LOCKED" 
+} 
+ 
+</span> 
+ 
+</div> 
+ 
+`; 
+ 
+            } 
+        ).join(""); 
+ 
+ 
+    $("featureCount").textContent = 
+        unlocked; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   COMPLETE EXCEL BACKUP 
+===================================================== */ 
+ 
+$("exportAllButton") 
+.addEventListener( 
+    "click", 
+    exportAllData 
+); 
+ 
+ 
+async function exportAllData(){ 
+ 
+    if(!currentSchoolId){ 
+ 
+        showExportStatus( 
+            "School configuration is not loaded.", 
+            false 
+        ); 
+ 
+        return; 
+ 
+    } 
+ 
+ 
+    const button = 
+        $("exportAllButton"); 
+ 
+ 
+    button.disabled = 
+        true; 
+ 
+ 
+    button.textContent = 
+        "Preparing Excel Backup..."; 
+ 
+ 
+    showExportStatus( 
+        "Collecting school data...", 
+        true 
+    ); 
+ 
+ 
+    try{ 
+ 
+        const paths = { 
+ 
+            school: 
+                "schools/" + 
+                currentSchoolId, 
+ 
+            staff: 
+                "staff/" + 
+                currentSchoolId, 
+ 
+            students: 
+                "studentsBySchool/" + 
+                currentSchoolId, 
+ 
+            sections: 
+                "sections/" + 
+                currentSchoolId, 
+ 
+            assignments: 
+                "assignments/" + 
+                currentSchoolId, 
+ 
+            grades: 
+                "grades/" + 
+                currentSchoolId, 
+ 
+            coreValues: 
+                "coreValues/" + 
+                currentSchoolId, 
+ 
+            attendance: 
+                "attendance/" + 
+                currentSchoolId 
+ 
+        }; 
+ 
+ 
+        const results = 
+            {}; 
+ 
+ 
+        for( 
+            const [name,path] 
+            of Object.entries(paths) 
+        ){ 
+ 
+            try{ 
+ 
+                const snapshot = 
+                    await db.ref( 
+                        path 
+                    ).once("value"); 
+ 
+ 
+                results[name] = 
+                    snapshot.val() || {}; 
+ 
+            } 
+            catch(error){ 
+ 
+                console.warn( 
+                    "Backup path unavailable:", 
+                    path, 
+                    error.message 
+                ); 
+ 
+ 
+                results[name] = 
+                    {}; 
+ 
+            } 
+ 
+        } 
+ 
+ 
+        /* 
+         * If students are stored in 
+         * another supported location, 
+         * try those too. 
+         */ 
+ 
+        if( 
+            Object.keys( 
+                results.students 
+            ).length === 0 
+        ){ 
+ 
+            const alternateStudentPaths = [ 
+ 
+                "students/" + 
+                currentSchoolId, 
+ 
+                "studentRecords/" + 
+                currentSchoolId 
+ 
+            ]; 
+ 
+ 
+            for( 
+                const path 
+                of alternateStudentPaths 
+            ){ 
+ 
+                try{ 
+ 
+                    const snapshot = 
+                        await db.ref( 
+                            path 
+                        ).once("value"); 
+ 
+ 
+                    const value = 
+                        snapshot.val(); 
+ 
+ 
+                    if( 
+                        value && 
+                        Object.keys(value).length 
+                    ){ 
+ 
+                        results.students = 
+                            value; 
+ 
+                        break; 
+ 
+                    } 
+ 
+                } 
+                catch(error){ 
+ 
+                    console.warn( 
+                        error 
+                    ); 
+ 
+                } 
+ 
+            } 
+ 
+        } 
+ 
+ 
+        createExcelBackup( 
+            results 
+        ); 
+ 
+ 
+        showExportStatus( 
+            "Complete school backup exported successfully.", 
+            true 
+        ); 
+ 
+    } 
+    catch(error){ 
+ 
+        console.error( 
+            "EXPORT ERROR:", 
+            error 
+        ); 
+ 
+ 
+        showExportStatus( 
+            "Export failed: " + 
+            error.message, 
+            false 
+        ); 
+ 
+    } 
+    finally{ 
+ 
+        button.disabled = 
+            false; 
+ 
+        button.textContent = 
+            "⬇ Export ALL Data to Excel"; 
+ 
+    } 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   CREATE EXCEL 
+===================================================== */ 
+ 
+async function createExcelBackup(data){ 
+    const wb=new ExcelJS.Workbook(); 
+    const branding=wb.addWorksheet('Branding'); 
+    let row=1; 
+    if(currentSchool.logo){ 
+        const base=currentSchool.logo.split(',')[1]||currentSchool.logo; 
+        const ext=currentSchool.logo.includes('png')?'png':'jpeg'; 
+        const img=wb.addImage({base64:base,extension:ext}); 
+        branding.addImage(img,{tl:{col:0,row:0},ext:{width:100,height:100}}); row=7; 
+    } 
+    branding.getCell(row,1).value=currentSchool.name||'School Portal';branding.getCell(row,1).font={bold:true,size:18};row+=2; 
+    branding.getCell(row,1).value='Partner Organizations';branding.getCell(row,1).font={bold:true};row++; 
+    const partners=Array.isArray(currentSchool.partners)?currentSchool.partners:(currentSchool.partners&&typeof currentSchool.partners==='object'?Object.values(currentSchool.partners):[]); 
+    if(partners.length){ 
+        for(const p of partners){branding.getCell(row,1).value=p.name||'Partner';if(p.logo){const base=p.logo.split(',')[1]||p.logo;const ext=p.logo.includes('png')?'png':'jpeg';const img=wb.addImage({base64:base,extension:ext});branding.addImage(img,{tl:{col:1,row:row-1},ext:{width:55,height:55}})}row+=4} 
+    }else branding.getCell(row,1).value='No partners configured.'; 
+    branding.getColumn(1).width=38;branding.getColumn(2).width=18; 
+    function addSheet(name,obj){const ws=wb.addWorksheet(name);const rows=[];if(obj&&typeof obj==='object'){Object.entries(obj).forEach(([id,v])=>{if(v&&typeof v==='object'&&!Array.isArray(v))rows.push({ID:id,...flattenObject(v)});else rows.push({ID:id,Value:v})})}if(!rows.length)rows.push({Status:'No data'});const keys=[...new Set(rows.flatMap(r=>Object.keys(r)))];keys.forEach((k,i)=>{ws.getCell(1,i+1).value=k;ws.getCell(1,i+1).font={bold:true}});rows.forEach((r,ri)=>keys.forEach((k,ci)=>ws.getCell(ri+2,ci+1).value=r[k]??''));keys.forEach((k,i)=>ws.getColumn(i+1).width=Math.min(40,Math.max(12,k.length+3)));} 
+    addSheet('School Settings',{school:currentSchool});addSheet('Staff',data.staff);addSheet('Students',data.students);addSheet('Sections',data.sections);addSheet('Assignments',data.assignments);addSheet('Grades',data.grades);addSheet('Core Values',data.coreValues);addSheet('Attendance',data.attendance); 
+    const info=wb.addWorksheet('Backup Info');[['SCHOOL PORTAL BACKUP'],['School ID',currentSchoolId],['Export Date',new Date().toLocaleString()],['School Name',currentSchool.name||'School Portal'],['Students',Object.keys(data.students||{}).length],['Staff',Object.keys(data.staff||{}).length],['Partners',partners.length]].forEach((r,i)=>r.forEach((v,j)=>info.getCell(i+1,j+1).value=v));info.getColumn(1).width=28;info.getColumn(2).width=45; 
+    const date=new Date().toISOString().slice(0,10);const filename=(currentSchool.shortName||currentSchool.name||'SCHOOL').replace(/[^a-z0-9_-]+/gi,'_')+'_COMPLETE_BACKUP_'+date+'.xlsx';const buf=await wb.xlsx.writeBuffer();const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000); 
+} 
+ 
+ 
+/* ===================================================== 
+   OBJECT -> EXCEL SHEET 
+===================================================== */ 
+ 
+function addObjectSheet( 
+    workbook, 
+    sheetName, 
+    object 
+){ 
+ 
+    const rows = 
+        []; 
+ 
+ 
+    if( 
+        !object || 
+        typeof object !== "object" 
+    ){ 
+ 
+        rows.push( 
+            { 
+                Status: 
+                    "No data" 
+            } 
+        ); 
+ 
+    } 
+    else{ 
+ 
+        Object.entries( 
+            object 
+        ).forEach( 
+            function([id,value]){ 
+ 
+                if( 
+                    value && 
+                    typeof value === "object" && 
+                    !Array.isArray(value) 
+                ){ 
+ 
+                    rows.push({ 
+ 
+                        ID: 
+                            id, 
+ 
+                        ...flattenObject( 
+                            value 
+                        ) 
+ 
+                    }); 
+ 
+                } 
+                else{ 
+ 
+                    rows.push({ 
+ 
+                        ID: 
+                            id, 
+ 
+                        Value: 
+                            value 
+ 
+                    }); 
+ 
+                } 
+ 
+            } 
+        ); 
+ 
+ 
+        if( 
+            rows.length === 0 
+        ){ 
+ 
+            rows.push( 
+                { 
+                    Status: 
+                        "No records" 
+                } 
+            ); 
+ 
+        } 
+ 
+    } 
+ 
+ 
+    const worksheet = 
+        XLSX.utils.json_to_sheet( 
+            rows 
+        ); 
+ 
+ 
+    XLSX.utils.book_append_sheet( 
+        workbook, 
+        worksheet, 
+        sheetName.slice( 
+            0, 
+            31 
+        ) 
+    ); 
+ 
+} 
+ 
+ 
+function flattenObject( 
+    object, 
+    prefix = "" 
+){ 
+ 
+    const result = 
+        {}; 
+ 
+ 
+    Object.entries( 
+        object || {} 
+    ).forEach( 
+        function([key,value]){ 
+ 
+            const name = 
+                prefix 
+                    ? prefix + 
+                      "." + 
+                      key 
+                    : key; 
+ 
+ 
+            if( 
+                value && 
+                typeof value === "object" && 
+                !Array.isArray(value) 
+            ){ 
+ 
+                Object.assign( 
+                    result, 
+                    flattenObject( 
+                        value, 
+                        name 
+                    ) 
+                ); 
+ 
+            } 
+            else{ 
+ 
+                result[name] = 
+                    value; 
+ 
+            } 
+ 
+        } 
+    ); 
+ 
+ 
+    return result; 
+ 
+} 
+ 
+ 
+/* ===================================================== 
+   EXPORT STATUS 
+===================================================== */ 
+ 
+function showExportStatus( 
+    message, 
+    success 
+){ 
+ 
+    const box = 
+        $("exportStatus"); 
+ 
+ 
+    box.style.display = 
+        "block"; 
+ 
+ 
+    box.className = 
+        success 
+            ? "notice success export-status" 
+            : "notice export-status"; 
+ 
+ 
+    box.textContent = 
+        message; 
+ 
+} 
+ 
+</script> 
+ 
+<script src="community.js"></script><!-- URL SCHOOL ROUTING --><script>/* Keep Firebase school context in navigation; no local storage. */(function(){const sid=(new URLSearchParams(location.search).get("school")||"").trim();if(!sid)return;document.querySelectorAll("a[href]").forEach(a=>{const h=a.getAttribute("href")||"";if(/^(index|student|teacher|registrar|admin|account|closed)\.html(?:\?|$)/.test(h)&&!h.includes("school="))a.href=h+(h.includes("?")?"&":"?")+"school="+encodeURIComponent(sid);});})();</script><script id="firebaseSchoolSelector">(function(){
+ const sid=(new URLSearchParams(location.search).get('school')||'').trim();
+ if(sid)return;
+ document.addEventListener('DOMContentLoaded',function(){
+  if(document.getElementById('schoolSelector'))return;
+  const d=document.createElement('div');d.id='schoolSelector';d.style.cssText='position:fixed;inset:0;background:rgba(7,32,64,.72);z-index:99999;display:grid;place-items:center;padding:20px';
+  d.innerHTML='<div style="background:#fff;max-width:430px;width:100%;padding:25px;border-radius:18px;box-shadow:0 20px 70px #0004;font-family:Arial"><h2 style="margin-top:0">Enter School ID</h2><p style="color:#65758b">Enter the School ID registered in Firebase. This is not saved on this device.</p><input id="firebaseSchoolIdInput" placeholder="e.g. 312422" style="width:100%;box-sizing:border-box;padding:12px;border:1px solid #ccd8e6;border-radius:9px"><button id="firebaseSchoolIdGo" style="width:100%;margin-top:12px;padding:12px;border:0;border-radius:9px;background:#0757a5;color:#fff;font-weight:800;cursor:pointer">Continue</button><p id="firebaseSchoolIdErr" style="color:#b42318;font-size:13px"></p></div>';
+  document.body.appendChild(d);const input=document.getElementById('firebaseSchoolIdInput');input.focus();
+  document.getElementById('firebaseSchoolIdGo').onclick=async function(){const id=input.value.trim();if(!id){document.getElementById('firebaseSchoolIdErr').textContent='Enter a School ID.';return}if(window.firebase&&firebase.database){try{const snap=await firebase.database().ref('schools/'+id).once('value');if(!snap.exists()){document.getElementById('firebaseSchoolIdErr').textContent='That School ID is not registered in Firebase.';return}}catch(e){document.getElementById('firebaseSchoolIdErr').textContent=e.message||'Unable to check Firebase.';return}}const u=new URL(location.href);u.searchParams.set('school',id);location.href=u.href;};
+ });
+})();</script></body> 
+</html> ok heres the admin code so which one of them needs fixing?
