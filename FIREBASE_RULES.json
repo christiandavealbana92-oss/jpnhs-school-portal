@@ -1,0 +1,17 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "schools": { "$school": { ".read": true, ".write": "auth != null" } },
+    "studentsBySchool": { "$school": { ".read": true, ".write": "auth != null" } },
+    "staff": { "$school": { ".read": true, ".write": "auth != null" } },
+    "sections": { "$school": { ".read": "auth != null", ".write": "auth != null" } },
+    "assignments": { "$school": { ".read": "auth != null", ".write": "auth != null" } },
+    "accounts": { "$school": { "$uid": { ".read": "auth != null && auth.uid === $uid", ".write": "auth != null && auth.uid === $uid" } } },
+    "accountIndex": { "$school": { "$record": { ".read": true, ".write": "auth != null" } } },
+    "community": { "$school": {
+      "posts": { ".read": true, ".write": "auth != null" },
+      "notifications": { ".read": "auth != null", ".write": "auth != null" }
+    } }
+  }
+}
