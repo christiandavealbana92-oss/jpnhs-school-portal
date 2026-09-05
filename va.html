@@ -1,0 +1,3036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VA Access | School Portal</title>
+
+<style>
+
+:root{
+    --blue:#2563eb;
+    --blue-dark:#1d4ed8;
+    --blue-light:#eff6ff;
+
+    --maroon:#7f1d2d;
+    --maroon-dark:#651525;
+
+    --green:#15803d;
+    --red:#b91c1c;
+
+    --ink:#172033;
+    --muted:#667085;
+    --line:#e5e7eb;
+
+    --bg:#f7f9fc;
+    --white:#ffffff;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    color:var(--ink);
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef6ff 0%,
+            #ffffff 55%,
+            #fff5f6 100%
+        );
+
+    min-height:100vh;
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+.login-screen{
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:25px;
+}
+
+.login-box{
+
+    width:100%;
+
+    max-width:440px;
+
+    background:#fff;
+
+    border:1px solid var(--line);
+
+    border-radius:22px;
+
+    padding:35px;
+
+    box-shadow:
+        0 25px 70px
+        rgba(15,23,42,.12);
+}
+
+.accent{
+
+    width:75px;
+
+    height:5px;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--blue),
+            var(--maroon)
+        );
+
+    margin-bottom:22px;
+}
+
+.login-box h1{
+
+    margin:0;
+
+    font-size:34px;
+
+    letter-spacing:-.04em;
+}
+
+.login-box p{
+
+    color:var(--muted);
+
+    line-height:1.5;
+}
+
+.field{
+
+    margin-top:17px;
+}
+
+.field label{
+
+    display:block;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    margin-bottom:7px;
+}
+
+input,
+select{
+
+    width:100%;
+
+    padding:12px 13px;
+
+    border:1px solid #cfd6df;
+
+    border-radius:10px;
+
+    outline:none;
+
+    background:#fff;
+
+    color:var(--ink);
+
+    font-size:14px;
+}
+
+input:focus,
+select:focus{
+
+    border-color:var(--blue);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(37,99,235,.10);
+}
+
+.btn{
+
+    border:0;
+
+    border-radius:10px;
+
+    padding:11px 15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+    display:inline-block;
+}
+
+.primary{
+
+    background:var(--blue);
+
+    color:white;
+}
+
+.primary:hover{
+
+    background:var(--blue-dark);
+}
+
+.maroon{
+
+    background:var(--maroon);
+
+    color:white;
+}
+
+.maroon:hover{
+
+    background:var(--maroon-dark);
+}
+
+.secondary{
+
+    background:white;
+
+    color:var(--ink);
+
+    border:1px solid var(--line);
+}
+
+.full{
+
+    width:100%;
+
+    margin-top:20px;
+}
+
+.error{
+
+    display:none;
+
+    background:#fff1f2;
+
+    color:#9f1239;
+
+    border:1px solid #fecdd3;
+
+    border-radius:10px;
+
+    padding:11px 13px;
+
+    margin-top:15px;
+
+    font-size:13px;
+}
+
+.back{
+
+    display:inline-block;
+
+    margin-top:18px;
+
+    color:var(--blue);
+
+    text-decoration:none;
+
+    font-size:13px;
+}
+
+
+/* =====================================================
+   APP
+===================================================== */
+
+.app{
+
+    display:none;
+
+    min-height:100vh;
+}
+
+.topbar{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:50;
+
+    background:
+        rgba(255,255,255,.95);
+
+    backdrop-filter:blur(12px);
+
+    border-bottom:1px solid var(--line);
+}
+
+.topbar-inner{
+
+    max-width:1250px;
+
+    margin:auto;
+
+    padding:15px 22px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+}
+
+.brand{
+
+    font-weight:800;
+
+    font-size:17px;
+}
+
+.brand-sub{
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    margin-top:2px;
+}
+
+.top-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+}
+
+.va-badge{
+
+    background:#fff1f2;
+
+    color:var(--maroon);
+
+    padding:7px 10px;
+
+    border-radius:999px;
+
+    font-size:11px;
+
+    font-weight:800;
+}
+
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.layout{
+
+    max-width:1250px;
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:235px 1fr;
+
+    min-height:
+        calc(100vh - 70px);
+}
+
+.sidebar{
+
+    padding:22px 15px;
+
+    border-right:1px solid var(--line);
+}
+
+.sidebar-title{
+
+    font-size:11px;
+
+    color:var(--muted);
+
+    font-weight:800;
+
+    padding:
+        0 11px 9px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.06em;
+}
+
+.nav-button{
+
+    width:100%;
+
+    background:transparent;
+
+    color:var(--ink);
+
+    text-align:left;
+
+    padding:11px 12px;
+
+    margin-bottom:4px;
+
+    border-radius:10px;
+
+    border:0;
+
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+.nav-button:hover{
+
+    background:#f4f7fb;
+}
+
+.nav-button.active{
+
+    background:var(--blue-light);
+
+    color:var(--blue-dark);
+}
+
+.content{
+
+    padding:
+        28px 25px 60px;
+
+    min-width:0;
+}
+
+.page{
+
+    display:none;
+}
+
+.page.active{
+
+    display:block;
+}
+
+.page-title{
+
+    margin-bottom:22px;
+}
+
+.page-title h1{
+
+    margin:0 0 5px;
+
+    font-size:30px;
+
+    letter-spacing:-.04em;
+}
+
+.page-title p{
+
+    margin:0;
+
+    color:var(--muted);
+}
+
+
+/* =====================================================
+   CARDS
+===================================================== */
+
+.card{
+
+    background:#fff;
+
+    border:1px solid var(--line);
+
+    border-radius:17px;
+
+    padding:21px;
+
+    box-shadow:
+        0 10px 32px
+        rgba(15,23,42,.05);
+
+    margin-bottom:17px;
+}
+
+.card h2{
+
+    margin:
+        0 0 6px;
+
+    font-size:19px;
+}
+
+.card-sub{
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    margin-bottom:18px;
+}
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:14px;
+}
+
+.actions{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:9px;
+
+    margin-top:16px;
+}
+
+.notice{
+
+    padding:13px 15px;
+
+    border-radius:11px;
+
+    background:var(--blue-light);
+
+    border:1px solid #bfdbfe;
+
+    color:#1e40af;
+
+    font-size:13px;
+
+    line-height:1.5;
+}
+
+.warning{
+
+    background:#fff7ed;
+
+    border-color:#fed7aa;
+
+    color:#9a3412;
+}
+
+.success{
+
+    background:#ecfdf3;
+
+    border-color:#bbf7d0;
+
+    color:#166534;
+}
+
+
+/* =====================================================
+   SCHOOL INFORMATION
+===================================================== */
+
+.school-info{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:12px;
+
+    margin-top:17px;
+}
+
+.info{
+
+    border:1px solid var(--line);
+
+    border-radius:12px;
+
+    padding:14px;
+}
+
+.info-label{
+
+    color:var(--muted);
+
+    font-size:10px;
+
+    font-weight:800;
+
+    text-transform:uppercase;
+}
+
+.info-value{
+
+    margin-top:5px;
+
+    font-weight:800;
+}
+
+
+/* =====================================================
+   FEATURES
+===================================================== */
+
+.feature{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+
+    border-bottom:1px solid var(--line);
+
+    padding:14px 0;
+}
+
+.feature:last-child{
+
+    border-bottom:0;
+}
+
+.feature-name{
+
+    font-weight:700;
+
+    font-size:13px;
+}
+
+.feature-desc{
+
+    color:var(--muted);
+
+    font-size:11px;
+
+    margin-top:3px;
+}
+
+.feature-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.status{
+
+    font-size:10px;
+
+    font-weight:800;
+
+    padding:6px 9px;
+
+    border-radius:999px;
+}
+
+.unlocked{
+
+    color:#166534;
+
+    background:#ecfdf3;
+}
+
+.locked{
+
+    color:#9f1239;
+
+    background:#fff1f2;
+}
+
+.switch{
+
+    position:relative;
+
+    width:46px;
+
+    height:25px;
+}
+
+.switch input{
+
+    opacity:0;
+
+    width:0;
+
+    height:0;
+}
+
+.slider{
+
+    position:absolute;
+
+    inset:0;
+
+    background:#d1d5db;
+
+    border-radius:30px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.slider:before{
+
+    content:"";
+
+    position:absolute;
+
+    width:19px;
+
+    height:19px;
+
+    left:3px;
+
+    top:3px;
+
+    background:white;
+
+    border-radius:50%;
+
+    transition:.2s;
+}
+
+.switch input:checked + .slider{
+
+    background:var(--blue);
+}
+
+.switch input:checked + .slider:before{
+
+    transform:translateX(21px);
+}
+
+
+/* =====================================================
+   PLAN
+===================================================== */
+
+.plan-card{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:14px;
+}
+
+.plan-box{
+
+    border:1px solid var(--line);
+
+    border-radius:13px;
+
+    padding:15px;
+}
+
+.plan-title{
+
+    font-weight:800;
+
+    font-size:12px;
+
+    color:var(--muted);
+
+    text-transform:uppercase;
+}
+
+.plan-value{
+
+    font-size:22px;
+
+    font-weight:800;
+
+    margin-top:6px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:900px){
+
+    .layout{
+
+        grid-template-columns:1fr;
+    }
+
+    .sidebar{
+
+        border-right:0;
+
+        border-bottom:1px solid var(--line);
+
+        display:flex;
+
+        overflow:auto;
+
+        gap:5px;
+
+        padding:10px;
+    }
+
+    .sidebar-title{
+
+        display:none;
+    }
+
+    .nav-button{
+
+        min-width:max-content;
+
+        width:auto;
+
+        margin:0;
+    }
+
+}
+
+@media(max-width:650px){
+
+    .topbar-inner{
+
+        padding:
+            13px 15px;
+
+        flex-wrap:wrap;
+    }
+
+    .top-actions{
+
+        width:100%;
+    }
+
+    .content{
+
+        padding:
+            20px 14px 45px;
+    }
+
+    .grid,
+    .school-info,
+    .plan-card{
+
+        grid-template-columns:1fr;
+    }
+
+    .feature{
+
+        align-items:flex-start;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     VA LOGIN
+===================================================== -->
+
+<div
+    id="loginScreen"
+    class="login-screen"
+>
+
+    <div class="login-box">
+
+        <div class="accent"></div>
+
+        <h1>VA Access</h1>
+
+        <p>
+            Private owner control center for
+            School Portal.
+        </p>
+
+        <p>
+            Feature unlocking, subscription control,
+            and school recovery are managed here.
+        </p>
+
+
+        <div class="field">
+
+            <label>
+                VA Email
+            </label>
+
+            <input
+                id="vaEmail"
+                type="email"
+                autocomplete="username"
+                placeholder="Enter VA email"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label>
+                Password
+            </label>
+
+            <input
+                id="vaPassword"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Enter password"
+            >
+
+        </div>
+
+
+        <button
+            id="loginButton"
+            class="btn primary full"
+        >
+            Sign In
+        </button>
+
+
+        <div
+            id="loginError"
+            class="error"
+        >
+            Unable to sign in.
+        </div>
+
+
+        <a
+            href="admin.html"
+            class="back"
+        >
+            ← Back to School Portal
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     VA APPLICATION
+===================================================== -->
+
+<div
+    id="vaApp"
+    class="app"
+>
+
+
+<header class="topbar">
+
+    <div class="topbar-inner">
+
+        <div>
+
+            <div class="brand">
+                School Portal
+            </div>
+
+            <div class="brand-sub">
+                VA Control Center
+            </div>
+
+        </div>
+
+
+        <div class="top-actions">
+
+            <span class="va-badge">
+                PRIVATE VA
+            </span>
+
+            <button
+                id="logoutButton"
+                class="btn secondary"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<div class="layout">
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+    <div class="sidebar-title">
+        VA Controls
+    </div>
+
+
+    <button
+        class="nav-button active"
+        data-page="dashboard"
+    >
+        Dashboard
+    </button>
+
+
+    <button
+        class="nav-button"
+        data-page="school"
+    >
+        School Management
+    </button>
+
+
+    <button
+        class="nav-button"
+        data-page="features"
+    >
+        Feature Controls
+    </button>
+
+
+    <button
+        class="nav-button"
+        data-page="subscription"
+    >
+        Subscription
+    </button>
+
+
+    <button
+        class="nav-button"
+        data-page="recovery"
+    >
+        Create / Restore School
+    </button>
+
+</aside>
+
+
+
+<!-- =====================================================
+     CONTENT
+===================================================== -->
+
+<main class="content">
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<section
+    id="dashboard"
+    class="page active"
+>
+
+    <div class="page-title">
+
+        <h1>
+            VA Dashboard
+        </h1>
+
+        <p>
+            Private system controls.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            Current School
+        </h2>
+
+        <div
+            id="dashboardSchool"
+            class="notice"
+        >
+            Loading school information...
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            Important
+        </h2>
+
+        <div class="notice warning">
+
+            <strong>VA-only controls</strong>
+
+            <br><br>
+
+            Feature unlocking and locking is controlled
+            exclusively from this VA portal.
+
+            The Administrator can only view the current
+            feature status.
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SCHOOL MANAGEMENT
+===================================================== -->
+
+<section
+    id="school"
+    class="page"
+>
+
+    <div class="page-title">
+
+        <h1>
+            School Management
+        </h1>
+
+        <p>
+            View and manage the school configuration.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            School Information
+        </h2>
+
+        <div
+            id="schoolInfo"
+            class="school-info"
+        >
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            School Status
+        </h2>
+
+        <div class="grid">
+
+            <div class="field">
+
+                <label>
+                    School Name
+                </label>
+
+                <input
+                    id="editSchoolName"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Short Name
+                </label>
+
+                <input
+                    id="editShortName"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Grading System
+                </label>
+
+                <input
+                    id="editGrading"
+                    type="text"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Portal Status
+                </label>
+
+                <select id="editOpen">
+
+                    <option value="true">
+                        OPEN
+                    </option>
+
+                    <option value="false">
+                        CLOSED
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                id="saveSchool"
+                class="btn primary"
+            >
+                Save School Information
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FEATURE CONTROLS
+===================================================== -->
+
+<section
+    id="features"
+    class="page"
+>
+
+    <div class="page-title">
+
+        <h1>
+            Feature Controls
+        </h1>
+
+        <p>
+            Only VA can unlock or lock system features.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="notice">
+
+            <strong>VA CONTROL</strong>
+
+            <br>
+
+            These settings determine which features
+            are available to the school.
+
+            Administrator can only view the status.
+
+        </div>
+
+
+        <div
+            id="featureList"
+            style="margin-top:10px"
+        >
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                id="saveFeatures"
+                class="btn maroon"
+            >
+                Save Feature Controls
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     SUBSCRIPTION
+===================================================== -->
+
+<section
+    id="subscription"
+    class="page"
+>
+
+    <div class="page-title">
+
+        <h1>
+            Subscription
+        </h1>
+
+        <p>
+            Activate and configure the school's plan.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="plan-card">
+
+            <div class="plan-box">
+
+                <div class="plan-title">
+                    Current Plan
+                </div>
+
+                <div
+                    id="currentPlan"
+                    class="plan-value"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="plan-box">
+
+                <div class="plan-title">
+                    Expiration
+                </div>
+
+                <div
+                    id="currentExpiry"
+                    class="plan-value"
+                >
+                    —
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            Activate Plan
+        </h2>
+
+        <p class="card-sub">
+            Select a plan and enter how many months
+            the subscription should remain active.
+        </p>
+
+
+        <div class="grid">
+
+            <div class="field">
+
+                <label>
+                    Plan
+                </label>
+
+                <select id="planSelect">
+
+                    <option value="BASIC">
+                        BASIC
+                    </option>
+
+                    <option value="STANDARD">
+                        STANDARD
+                    </option>
+
+                    <option value="PREMIUM">
+                        PREMIUM
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Months
+                </label>
+
+                <input
+                    id="months"
+                    type="number"
+                    min="1"
+                    max="120"
+                    value="1"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                id="activatePlan"
+                class="btn maroon"
+            >
+                ACTIVATE PLAN
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     CREATE / RESTORE SCHOOL
+===================================================== -->
+
+<section
+    id="recovery"
+    class="page"
+>
+
+    <div class="page-title">
+
+        <h1>
+            Create / Restore School
+        </h1>
+
+        <p>
+            Recreate the selected school configuration
+            if it was accidentally deleted.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="notice warning">
+
+            <strong>Important</strong>
+
+            <br><br>
+
+            Use this if the
+            <strong>schools/{schoolId}</strong>
+            record was deleted.
+
+            This will recreate the school's basic
+            configuration and feature settings.
+
+            Existing student and staff records
+            outside the school configuration will
+            not be intentionally deleted.
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            School Configuration
+        </h2>
+
+        <div class="grid">
+
+            <div class="field">
+
+                <label>
+                    School ID
+                </label>
+
+                <input
+                    id="restoreSchoolId"
+                    type="text"
+                    value="" placeholder="school-id"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    School Name
+                </label>
+
+                <input
+                    id="restoreSchoolName"
+                    type="text"
+                    value="School Portal"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Short Name
+                </label>
+
+                <input
+                    id="restoreShortName"
+                    type="text"
+                    value="" placeholder="School short name"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Grading System
+                </label>
+
+                <input
+                    id="restoreGrading"
+                    type="text"
+                    value="Standard"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Plan
+                </label>
+
+                <select id="restorePlan">
+
+                    <option value="BASIC">
+                        BASIC
+                    </option>
+
+                    <option
+                        value="STANDARD"
+                        selected
+                    >
+                        STANDARD
+                    </option>
+
+                    <option value="PREMIUM">
+                        PREMIUM
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Expiration Date
+                </label>
+
+                <input
+                    id="restoreExpiry"
+                    type="date"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="actions">
+
+            <button
+                id="restoreSchool"
+                class="btn maroon"
+            >
+                CREATE / RESTORE SCHOOL
+            </button>
+
+        </div>
+
+        <div
+            id="restoreMessage"
+            class="notice"
+            style="display:none;margin-top:15px"
+        ></div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            What This Restores
+        </h2>
+
+        <div class="notice">
+
+            ✓ School ID
+
+            <br>
+
+            ✓ School name
+
+            <br>
+
+            ✓ Short name
+
+            <br>
+
+            ✓ Grading system
+
+            <br>
+
+            ✓ Subscription plan
+
+            <br>
+
+            ✓ Subscription expiration
+
+            <br>
+
+            ✓ Portal status
+
+            <br>
+
+            ✓ Feature control settings
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
+
+<script>
+
+"use strict";
+
+
+/* =====================================================
+   FIREBASE CONFIGURATION
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyDIm2towADazJ9yuhUaIzVfX7ZaQEFbCpI",
+
+    authDomain:
+        "jpnhs-a2ba2.firebaseapp.com",
+
+    databaseURL:
+        "https://jpnhs-a2ba2-default-rtdb.firebaseio.com",
+
+    projectId:
+        "jpnhs-a2ba2",
+
+    storageBucket:
+        "jpnhs-a2ba2.firebasestorage.app",
+
+    messagingSenderId:
+        "689552509381",
+
+    appId:
+        "1:689552509381:web:98d043fc17189a636ea3ac"
+
+};
+
+
+firebase.initializeApp(
+    firebaseConfig
+);
+
+
+const auth =
+    firebase.auth();
+
+const db =
+    firebase.database();
+
+
+/* =====================================================
+   VA AUTHORIZATION
+=====================================================
+
+   IMPORTANT:
+   Enter the email that you use for your
+   Firebase VA account here.
+
+===================================================== */
+
+const VA_OWNER_EMAIL =
+    "YOUR_VA_EMAIL_HERE";
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+function $(id){
+
+    return document.getElementById(id);
+
+}
+
+
+function escapeHTML(value){
+
+    return String(
+        value ?? ""
+    ).replace(
+        /[&<>"']/g,
+        function(char){
+
+            const map = {
+
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                '"':"&quot;",
+                "'":"&#039;"
+
+            };
+
+            return map[char];
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   FEATURES
+===================================================== */
+
+const FEATURES = {
+
+    student:{
+        name:"Student Portal",
+        description:"Student login and student portal"
+    },
+
+    teacher:{
+        name:"Teacher Portal",
+        description:"Teacher classes and grading"
+    },
+
+    registrar:{
+        name:"Registrar Portal",
+        description:"Enrollment and student records"
+    },
+
+    attendance:{
+        name:"Attendance",
+        description:"Attendance management"
+    },
+
+    pdfReportCard:{
+        name:"PDF Report Card",
+        description:"Generate report cards as PDF"
+    },
+
+    coreValues:{
+        name:"Core Values",
+        description:"Student core values records"
+    },
+
+    excelExport:{
+        name:"Excel Export",
+        description:"Export school data"
+    },
+
+    archive:{
+        name:"Archive",
+        description:"Archived school records"
+    },
+
+    parent:{
+        name:"Parent Portal",
+        description:"Parent access"
+    },
+
+    onlineEnrollment:{
+        name:"Online Enrollment",
+        description:"Online enrollment system"
+    },
+
+    sms:{
+        name:"SMS Notifications",
+        description:"SMS notification system"
+    }
+
+};
+
+
+/* =====================================================
+   PLAN PRESETS
+===================================================== */
+
+function getPlanFeatures(
+    plan
+){
+
+    const features = {};
+
+    Object.keys(
+        FEATURES
+    ).forEach(
+        function(key){
+
+            features[key] =
+                false;
+
+        }
+    );
+
+
+    if(
+        plan === "BASIC"
+    ){
+
+        features.student = true;
+
+        features.teacher = true;
+
+        features.registrar = true;
+
+        features.attendance = true;
+
+        features.excelExport = true;
+
+        features.archive = true;
+
+    }
+
+
+    if(
+        plan === "STANDARD"
+    ){
+
+        features.student = true;
+
+        features.teacher = true;
+
+        features.registrar = true;
+
+        features.attendance = true;
+
+        features.excelExport = true;
+
+        features.archive = true;
+
+        features.pdfReportCard = true;
+
+        features.coreValues = true;
+
+        features.parent = true;
+
+        features.onlineEnrollment = true;
+
+    }
+
+
+    if(
+        plan === "PREMIUM"
+    ){
+
+        Object.keys(
+            FEATURES
+        ).forEach(
+            function(key){
+
+                features[key] =
+                    true;
+
+            }
+        );
+
+    }
+
+
+    return features;
+
+}
+
+
+/* =====================================================
+   SCHOOL DATA
+===================================================== */
+
+let schoolId =
+    new URLSearchParams(location.search).get("school") || "";
+
+let school =
+    null;
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+$("loginButton").addEventListener(
+    "click",
+    loginVA
+);
+
+
+$("vaPassword").addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key === "Enter"
+        ){
+
+            loginVA();
+
+        }
+
+    }
+);
+
+
+$("vaEmail").addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key === "Enter"
+        ){
+
+            loginVA();
+
+        }
+
+    }
+);
+
+
+async function loginVA(){
+
+    const email =
+        $("vaEmail")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const password =
+        $("vaPassword")
+            .value;
+
+
+    $("loginError").style.display =
+        "none";
+
+
+    try{
+
+        if(
+            VA_OWNER_EMAIL !==
+            "YOUR_VA_EMAIL_HERE"
+        ){
+
+            if(
+                email !==
+                VA_OWNER_EMAIL
+                    .toLowerCase()
+            ){
+
+                throw new Error(
+                    "This account is not authorized for VA Access."
+                );
+
+            }
+
+        }
+
+
+        await auth.signInWithEmailAndPassword(
+            email,
+            password
+        );
+
+
+        $("loginScreen").style.display =
+            "none";
+
+        $("vaApp").style.display =
+            "block";
+
+
+        await loadSchool();
+
+    }
+    catch(error){
+
+        console.error(
+            error
+        );
+
+
+        $("loginError").textContent =
+            error.message ||
+            "Unable to sign in.";
+
+        $("loginError").style.display =
+            "block";
+
+    }
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+$("logoutButton").addEventListener(
+    "click",
+    async function(){
+
+        await auth.signOut();
+
+        location.reload();
+
+    }
+);
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+document.querySelectorAll(
+    ".nav-button"
+).forEach(
+    function(button){
+
+        button.addEventListener(
+            "click",
+            function(){
+
+                const page =
+                    button.dataset.page;
+
+
+                document.querySelectorAll(
+                    ".nav-button"
+                ).forEach(
+                    function(item){
+
+                        item.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                document.querySelectorAll(
+                    ".page"
+                ).forEach(
+                    function(item){
+
+                        item.classList.remove(
+                            "active"
+                        );
+
+                    }
+                );
+
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                const target =
+                    document.getElementById(
+                        page
+                    );
+
+
+                if(target){
+
+                    target.classList.add(
+                        "active"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+/* =====================================================
+   LOAD SCHOOL
+===================================================== */
+
+async function loadSchool(){
+
+    try{
+
+        const snapshot =
+            await db.ref(
+                "schools/" +
+                schoolId
+            ).once("value");
+
+
+        school =
+            snapshot.val();
+
+
+        if(
+            !school
+        ){
+
+            showSchoolMissing();
+
+            return;
+
+        }
+
+
+        renderSchool();
+
+        renderFeatures();
+
+    }
+    catch(error){
+
+        console.error(
+            "Unable to load school:",
+            error
+        );
+
+
+        $("dashboardSchool").innerHTML =
+
+            "<strong>Unable to load school.</strong>" +
+
+            "<br><br>" +
+
+            "Check Firebase Database rules.";
+
+    }
+
+}
+
+
+/* =====================================================
+   SCHOOL MISSING
+===================================================== */
+
+function showSchoolMissing(){
+
+    school = null;
+
+
+    $("dashboardSchool").innerHTML =
+
+        "<strong>School record not found.</strong>" +
+
+        "<br><br>" +
+
+        "The school record may have been deleted." +
+
+        "<br><br>" +
+
+        "Go to <strong>Create / Restore School</strong> " +
+        "to recreate it.";
+
+}
+
+
+/* =====================================================
+   RENDER SCHOOL
+===================================================== */
+
+function renderSchool(){
+
+    const s =
+        school || {};
+
+
+    $("dashboardSchool").innerHTML =
+
+        "<strong>" +
+        escapeHTML(
+            s.name ||
+            "School Portal"
+        ) +
+        "</strong>" +
+
+        "<br>" +
+
+        "School ID: " +
+        escapeHTML(
+            schoolId
+        ) +
+
+        "<br>" +
+
+        "Plan: " +
+        escapeHTML(
+            s.plan ||
+            "STANDARD"
+        ) +
+
+        "<br>" +
+
+        "Expires: " +
+        escapeHTML(
+            s.expires ||
+            "Not set"
+        );
+
+
+    $("schoolInfo").innerHTML = `
+
+        <div class="info">
+
+            <div class="info-label">
+                School ID
+            </div>
+
+            <div class="info-value">
+                ${escapeHTML(schoolId)}
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <div class="info-label">
+                School Name
+            </div>
+
+            <div class="info-value">
+                ${escapeHTML(
+                    s.name ||
+                    "School Portal"
+                )}
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <div class="info-label">
+                Short Name
+            </div>
+
+            <div class="info-value">
+                ${escapeHTML(
+                    s.shortName ||
+                    "SP"
+                )}
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <div class="info-label">
+                Grading System
+            </div>
+
+            <div class="info-value">
+                ${escapeHTML(
+                    s.gradingSystem ||
+                    "Standard"
+                )}
+            </div>
+
+        </div>
+
+    `;
+
+
+    $("editSchoolName").value =
+        s.name ||
+        "School Portal";
+
+
+    $("editShortName").value =
+        s.shortName ||
+        "SP";
+
+
+    $("editGrading").value =
+        s.gradingSystem ||
+        "Standard";
+
+
+    $("editOpen").value =
+        String(
+            s.open !== false
+        );
+
+
+    $("currentPlan").textContent =
+        s.plan ||
+        "STANDARD";
+
+
+    $("currentExpiry").textContent =
+        s.expires ||
+        "Not set";
+
+
+    $("planSelect").value =
+        s.plan ||
+        "STANDARD";
+
+}
+
+
+/* =====================================================
+   SAVE SCHOOL INFORMATION
+===================================================== */
+
+$("saveSchool").addEventListener(
+    "click",
+    async function(){
+
+        if(
+            !school
+        ){
+
+            alert(
+                "The school does not exist. Use Create / Restore School first."
+            );
+
+            return;
+
+        }
+
+
+        const update = {
+
+            name:
+                $("editSchoolName").value.trim(),
+
+            shortName:
+                $("editShortName").value.trim(),
+
+            gradingSystem:
+                $("editGrading").value.trim(),
+
+            open:
+                $("editOpen").value === "true"
+
+        };
+
+
+        try{
+
+            await db.ref(
+                "schools/" +
+                schoolId
+            ).update(
+                update
+            );
+
+
+            await loadSchool();
+
+
+            alert(
+                "School information saved."
+            );
+
+        }
+        catch(error){
+
+            alert(
+                "Unable to save school: " +
+                error.message
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   RENDER FEATURES
+===================================================== */
+
+function renderFeatures(){
+
+    const data =
+        school &&
+        school.features
+            ? school.features
+            : {};
+
+
+    const container =
+        $("featureList");
+
+
+    container.innerHTML =
+        Object.keys(
+            FEATURES
+        ).map(
+            function(key){
+
+                const feature =
+                    FEATURES[key];
+
+
+                const enabled =
+                    data[key] === true;
+
+
+                return `
+
+                    <div class="feature">
+
+                        <div>
+
+                            <div class="feature-name">
+
+                                ${escapeHTML(
+                                    feature.name
+                                )}
+
+                            </div>
+
+                            <div class="feature-desc">
+
+                                ${escapeHTML(
+                                    feature.description
+                                )}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="feature-right">
+
+                            <span
+                                class="status ${
+                                    enabled
+                                        ? "unlocked"
+                                        : "locked"
+                                }"
+                            >
+
+                                ${
+                                    enabled
+                                        ? "UNLOCKED"
+                                        : "LOCKED"
+                                }
+
+                            </span>
+
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    data-feature="${escapeHTML(key)}"
+                                    ${
+                                        enabled
+                                            ? "checked"
+                                            : ""
+                                    }
+                                >
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =====================================================
+   SAVE FEATURES
+===================================================== */
+
+$("saveFeatures").addEventListener(
+    "click",
+    async function(){
+
+        if(
+            !school
+        ){
+
+            alert(
+                "School record does not exist. Restore the school first."
+            );
+
+            return;
+
+        }
+
+
+        const features = {};
+
+
+        document.querySelectorAll(
+            "[data-feature]"
+        ).forEach(
+            function(input){
+
+                features[
+                    input.dataset.feature
+                ] =
+                    input.checked;
+
+            }
+        );
+
+
+        try{
+
+            await db.ref(
+                "schools/" +
+                schoolId +
+                "/features"
+            ).set(
+                features
+            );
+
+
+            school.features =
+                features;
+
+
+            renderFeatures();
+
+
+            alert(
+                "Feature controls saved successfully."
+            );
+
+        }
+        catch(error){
+
+            alert(
+                "Unable to save feature controls: " +
+                error.message
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   ACTIVATE PLAN
+===================================================== */
+
+$("activatePlan").addEventListener(
+    "click",
+    async function(){
+
+        if(
+            !school
+        ){
+
+            alert(
+                "School record does not exist. Restore the school first."
+            );
+
+            return;
+
+        }
+
+
+        const plan =
+            $("planSelect").value;
+
+
+        const months =
+            Math.max(
+                1,
+                Number(
+                    $("months").value
+                ) || 1
+            );
+
+
+        let date;
+
+
+        if(
+            school.expires
+        ){
+
+            const existing =
+                new Date(
+                    school.expires
+                );
+
+
+            if(
+                !isNaN(
+                    existing.getTime()
+                ) &&
+                existing >= new Date()
+            ){
+
+                date =
+                    existing;
+
+            }
+            else{
+
+                date =
+                    new Date();
+
+            }
+
+        }
+        else{
+
+            date =
+                new Date();
+
+        }
+
+
+        date.setMonth(
+            date.getMonth() +
+            months
+        );
+
+
+        const expires =
+            date
+                .toISOString()
+                .slice(0,10);
+
+
+        try{
+
+            await db.ref(
+                "schools/" +
+                schoolId
+            ).update({
+
+                plan:
+                    plan,
+
+                expires:
+                    expires,
+
+                open:
+                    true
+
+            });
+
+
+            await loadSchool();
+
+
+            alert(
+                "Plan activated until " +
+                expires
+            );
+
+        }
+        catch(error){
+
+            alert(
+                "Unable to activate plan: " +
+                error.message
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   CREATE / RESTORE SCHOOL
+===================================================== */
+
+$("restoreSchool").addEventListener(
+    "click",
+    async function(){
+
+        const id =
+            $("restoreSchoolId")
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        const name =
+            $("restoreSchoolName")
+                .value
+                .trim();
+
+
+        const shortName =
+            $("restoreShortName")
+                .value
+                .trim();
+
+
+        const grading =
+            $("restoreGrading")
+                .value
+                .trim();
+
+
+        const plan =
+            $("restorePlan")
+                .value;
+
+
+        const expires =
+            $("restoreExpiry")
+                .value;
+
+
+        if(
+            !id
+        ){
+
+            alert(
+                "Please enter a School ID."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            !name
+        ){
+
+            alert(
+                "Please enter the school name."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            !expires
+        ){
+
+            alert(
+                "Please select an expiration date."
+            );
+
+            return;
+
+        }
+
+
+        const confirmed =
+            confirm(
+                "Create or restore school '" +
+                id +
+                "'?"
+            );
+
+
+        if(
+            !confirmed
+        ){
+
+            return;
+
+        }
+
+
+        const features =
+            getPlanFeatures(
+                plan
+            );
+
+
+        const schoolData = {
+
+            name:
+                name,
+
+            shortName:
+                shortName ||
+                "SP",
+
+            gradingSystem:
+                grading ||
+                "Standard",
+
+            plan:
+                plan,
+
+            expires:
+                expires,
+
+            open:
+                true,
+
+            features:
+                features
+
+        };
+
+
+        try{
+
+            /*
+             * This writes only to:
+             *
+             * schools/{schoolId}
+             *
+             * It does NOT delete the entire database.
+             */
+
+            await db.ref(
+                "schools/" +
+                id
+            ).set(
+                schoolData
+            );
+
+
+            schoolId =
+                id;
+            history.replaceState(null, "", "?school=" + encodeURIComponent(id));
+
+
+            school =
+                schoolData;
+
+
+            renderSchool();
+
+            renderFeatures();
+
+
+            $("restoreMessage").className =
+                "notice success";
+
+
+            $("restoreMessage").style.display =
+                "block";
+
+
+            $("restoreMessage").innerHTML =
+
+                "<strong>School restored successfully!</strong>" +
+
+                "<br><br>" +
+
+                escapeHTML(
+                    name
+                ) +
+
+                " is now configured in Firebase.";
+
+        }
+        catch(error){
+
+            console.error(
+                error
+            );
+
+
+            $("restoreMessage").className =
+                "notice warning";
+
+
+            $("restoreMessage").style.display =
+                "block";
+
+
+            $("restoreMessage").innerHTML =
+
+                "<strong>Restore failed.</strong>" +
+
+                "<br><br>" +
+
+                escapeHTML(
+                    error.message
+                ) +
+
+                "<br><br>" +
+
+                "Check your Firebase Realtime Database rules.";
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   GENERIC SCHOOL DEFAULTS
+===================================================== */
+(function(){
+    const q=new URLSearchParams(location.search);
+    const sid=q.get("school")||"";
+    if(sid) $("restoreSchoolId").value=sid;
+    if(!$("restoreSchoolName").value || $("restoreSchoolName").value==="School Portal") $("restoreSchoolName").value="";
+    if(!$("restoreShortName").value || $("restoreShortName").value==="School Portal") $("restoreShortName").value="";
+})();
+
+/* Keep every portal link tied to the Firebase school ID from the URL. */
+(function(){
+    const sid=(new URLSearchParams(location.search).get("school")||schoolId||"").trim();
+    const link=$("vaAdminLink");
+    if(link&&sid) link.href="admin.html?school="+encodeURIComponent(sid);
+})();
+
+/* =====================================================
+   DEFAULT EXPIRATION DATE
+===================================================== */
+
+(function setDefaultDate(){
+
+    const date =
+        new Date();
+
+
+    date.setFullYear(
+        date.getFullYear() + 1
+    );
+
+
+    $("restoreExpiry").value =
+        date
+            .toISOString()
+            .slice(0,10);
+
+})();
+
+
+</script>
+
+</body>
+</html>
